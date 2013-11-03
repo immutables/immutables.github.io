@@ -1,0 +1,58 @@
+.highlight pre {
+  margin: 0 auto;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: inherit;
+  text-align: left;
+  color: #DDD;
+}
+
+.highlight .kn,
+.highlight .kd,
+.highlight .k,
+.highlight .kt,
+.highlight .kc {
+  color: #92a800;
+}
+
+.highlight .nd {
+  color: #d3d28c;
+}
+
+.highlight .c,
+.highlight .c1,
+.highlight .c2,
+.highlight .cm {
+  color: #7e8f8b;
+}
+
+.highlight .o {
+  color: #AAA;
+}
+
+.highlight .nf,
+.highlight .na {
+  color: white;
+}
+
+.highlight .s,
+.highlight .s2 {
+  color: #77c9ff;
+}
+
+.highlight .mi,
+.highlight .nt {
+  color: #4ed9b4;
+}
+
+.highlight,
+.highlight pre {
+  background-color: transparent;
+}
+
+.illustration .highlight,
+.highlight pre code {
+  font-size: 16px;
+  font-family: "Inconsolata", "Liberation Mono", "Consolas", monospace;
+}

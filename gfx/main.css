@@ -1,0 +1,119 @@
+header.jumbotron {
+  background: #ffffff;
+  background: -moz-linear-gradient(top, #ffffff 0%, #f6f8f9 43%, #d7dee3 83%, #f5f7f9 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(43%, #f6f8f9), color-stop(83%, #d7dee3), color-stop(100%, #f5f7f9));
+  background: -webkit-linear-gradient(top, #ffffff 0%, #f6f8f9 43%, #d7dee3 83%, #f5f7f9 100%);
+  background: -o-linear-gradient(top, #ffffff 0%, #f6f8f9 43%, #d7dee3 83%, #f5f7f9 100%);
+  background: -ms-linear-gradient(top, #ffffff 0%, #f6f8f9 43%, #d7dee3 83%, #f5f7f9 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #f6f8f9 43%, #d7dee3 83%, #f5f7f9 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#f5f7f9', GradientType=0);
+}
+
+.jumbotron {
+  margin-bottom: 0;
+}
+
+section.jumbotron {
+  background-color: transparent;
+  margin-bottom: 0;
+}
+
+.jumbotron h1 {
+  margin-bottom: 30px;
+}
+
+.illustration,
+.documentation .highlight {
+  margin: auto;
+  background-color: #384145;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-top: 1px solid #444;
+  border-bottom: 1px solid #888;
+}
+
+.illustration .highlight {
+  float: left;
+  width: 500px;
+  padding: 0.5em;
+}
+
+html, footer.jumbotron {
+  background-color: #9fbac7;
+}
+
+body, header, section {
+  background-color: #F5F7F9;
+}
+
+body {
+  font-size: 18px;
+}
+
+footer.jumbotron {
+  margin-top: 20px;
+  margin-bottom: 0;
+  color: #3d4e58;
+  padding-bottom: 100px;
+}
+
+footer.jumbotron a {
+  color: #3d4e58;
+  text-decoration: underline;
+}
+
+footer.jumbotron ul {
+  list-style: none;
+}
+
+footer.jumbotron li {
+  line-height: 1.5em;
+}
+
+header {
+  overflow: hidden;
+}
+
+section.documentation > *,
+section.documentation > .highlight > pre {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+section.documentation > ul li {
+  margin-left: 30px;
+}
+
+section.documentation > .highlight {
+  max-width: inherit;
+  margin: 20px 0;
+}
+
+@media (min-width: 768px) {
+  section.documentation > *,
+  section.documentation > .highlight > pre {
+    max-width: 750px;
+  }
+}
+
+@media (min-width: 992px) {
+  section.documentation > *,
+  section.documentation > .highlight > pre {
+    max-width: 970px;
+  }
+}
+
+@media (min-width: 1200px) {
+  section.documentation > *,
+  section.documentation > .highlight > pre {
+    max-width: 1170px;
+  }
+}
+
+code {
+  color: #444;
+  background-color: #e5ecf1;
+  font-family: "Inconsolata", "Liberation Mono", "Consolas", monospace;
+}
