@@ -35,9 +35,9 @@ but never mixed in one file!
 While it may seem that usage _org.immutables_ may result in some sort of [anemic domain model](http://www.martinfowler.com/bliki/AnemicDomainModel.html),
 _this impression is false_, as we see great benefits of proper domain modelling, but we need solid building blocks - value objects,
 a smart data objects, immutable values that have methods that compute other values and reduce complexity of services and entities.
-Other aspect of modern modelling is representation of system state and domain entities as sequences of _events_ or _snapshots_.
-These techniques, like [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) employs
-benefits of immutable object graphs, allow sub-graphs to be shared between states, transformed to other state
+Other aspect of modern modelling is representating state of a system and domain entities as sequences of _events_ or _snapshots_.
+The techniques, like [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) employs
+benefits of immutable object graphs, allow sub-graphs to be shared between snapshots, transform system states,
 or even reconstruct full system state at some point in time.
 For that kind of systems we just made writing immutable object a whole lot easier.
 
@@ -84,6 +84,12 @@ Builders are generated
 
 -----
 ### Constructors
+
+----
+### Collection and Map attributes
+
+----
+### Optional attributes
 
 -----
 ### Copying with modified attributes
