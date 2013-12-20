@@ -15,8 +15,8 @@ String json = Marshaling.toJson(valueObject);
 ```js
 {
   "name" : "Nameless",
-  "numbers" : [ 1, 2 ],
-  "optional" : "present"
+  "counts" : [ 1, 2 ],
+  "description" : "present"
 }
 ```
 

@@ -7,8 +7,8 @@ public abstract class Item {
   @GenerateMarshaled("_id")
   public abstract long id();
   public abstract String name();
-  public abstract Set<Integer> numbers();
-  public abstract Optional<String> optional();
+  public abstract Set<Integer> values();
+  public abstract Optional<String> comment();
 }
 ```
 ```java
@@ -20,15 +20,15 @@ ItemRepository items = ItemRepository.create(
 items.insert(ImmutableItem.builder()
     .id(1)
     .name("one")
-    .addNumbers(2)
+    .addValues(2)
     .build());
 ```
 ```java
 // Find and modify!
 Optional<Item> modifiedItem = items.findById(1)
-    .andModifyFirst()
-    .addNumbers(1)
-    .setOptional("present")
+    .andModifyFirst() // findAndModify
+    .addValues(1) // $addToSet
+    .setComment("present") // $set
     .returnNew()
     .update()
     .getUnchecked();
@@ -40,8 +40,8 @@ items.update(
     ItemRepository.where()
         .idIn(1, 2, 3)
         .nameNot("Nameless")
-        .numbersNonEmpty())
-    .clearOptional()
+        .valuesNonEmpty())
+    .clearComment()
     .updateAll();
 
 ```

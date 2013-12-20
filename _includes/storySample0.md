@@ -7,8 +7,8 @@ import org.immutables.annotation.GenerateImmutable;
 @GenerateImmutable
 public abstract class ValueObject {
   public abstract String name();
-  public abstract List<Integer> numbers();
-  public abstract Optional<String> optional();
+  public abstract List<Integer> counts();
+  public abstract Optional<String> description();
 }
 ```
 
@@ -18,8 +18,8 @@ public abstract class ValueObject {
 ValueObject valueObject =
     ImmutableValueObject.builder()
         .name("Nameless")
-        .optional("present")
-        .addNumbers(1)
-        .addNumbers(2)
+        .description("present")
+        .addCounts(1)
+        .addCounts(2)
         .build();
 ```
