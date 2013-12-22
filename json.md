@@ -21,10 +21,10 @@ so _org.immutables_ provides an alternative binding based on straightforward cod
 
 * Clean JSON representation without any synthetic fields and quite flexible ways to map immutable object graphs
 * Use of code-generation and mostly compile-time overload resolution to create high-performance binding
-* By using _Jackson core API_ we gain high-performance and and flexibility to switch "dataformat" adapters
+* By using _Jackson core API_ we gain high-performance and flexibility to switch "dataformat" adapters
 
-Additional advantages arise from how _org.immutables_ facilities work together, specifically, very convenient
-and _MongoDB_ repositories are built on top of JSON document marshaling and BSON dataformat.
+Additional advantages arise from how _org.immutables_ facilities work together, specifically,
+very convenient _MongoDB_ repositories are built on top of JSON document marshaling and BSON dataformat.
 
 Usage
 -----
@@ -55,21 +55,11 @@ public abstract class ValueObject {
   public abstract Optional<String> optional();
 }
 ```
-
 This will generate `ValueObjectMarshaler` marshaler class in the same package.
 
-**Possible problems**
-
-+ If certain types of attributes do not support marshaling
-  - Will fail to compile, `marshal` method with proper overload will not be found
-  - In some cases, will be marshaled as `toString`
-
------
-### Convenient JSON marshaling
-
-While for production use you might use different means of marshaling, but for simple use and diagnostics
-there's convenient static methods on class `org.immutables.common.marshal.Marshaling`
+There's convenient static methods on class `org.immutables.common.marshal.Marshaling`
 for marshaling immutable objects back and forth to standard textual JSON.
+While not particularly suited for production, but are fine for simple usage and evaluation.
 
 ```java
 ValueObject valueObject = ImmutableValueObject.builder()
@@ -79,15 +69,29 @@ ValueObject valueObject = ImmutableValueObject.builder()
         .addNumbers(2)
         .build();
 
-String json = Marshaling.toJson(valueObject);
+String valueObjectJson = Marshaling.toJson(valueObject);
 
-Marshaling.fromJson(json, ValueObject.class);
+Marshaling.fromJson(valueObjectJson, ValueObject.class);
 ```
+`valueObjectJson` string:
+
+```js
+{
+  "name": "Nameless",
+  "optional": "present",
+  "numbers": [1, 2]
+}
+```
+
 **Possible problems**
 
 + Parsing or generation problem that may occur
   - `IOException`s for input output errors and JSON syntax problems
   - `RuntimeException`s during unmarshaling in case of missing required attributes or JSON structure do not match attribute type
+
++ If certain types of attributes do not support marshaling
+  - Will fail to compile, `marshal` method with proper overload will not be found
+  - In some cases, will be marshaled as `toString`
 
 -----
 ### JAX-RS marshaling provider
@@ -117,9 +121,9 @@ See your JAX-RS implementation reference on how to install providers, but SPI-ba
 if you just add [org.immutables:annotation]({{ depUri }}|common|{{ v }}|jar) and [org.immutables:common]({{ depUri }}|common|{{ v }}|jar) jars in a classpath of a web application.
 
 -----
-### Flexible Jackson marshaling
+### Custom Jackson marshaling
 
-For the maximum flexibility you can use marshaler directly to work with lower level
+For the maximum flexibility you can use marshaler directly with lower level
 [Jackson core API](https://github.com/FasterXML/jackson-core).
 
 ```java
@@ -171,7 +175,7 @@ Automatically generated bindings are straightforward and generally useful withou
 -----
 #### Supported attribute types
 
-* Java primitives, Strings, Enums s- work as built-in types
+* Java primitives, Strings, Enums — work as built-in types
 * Nested documents - abstract value classes, also annotated with `@GenerateMarshaler`
 * Lists, Sets, Maps and Optional of the above types
   - Collections mapped to JSON arrays
@@ -197,13 +201,13 @@ public abstract class ValueObject {
   public abstract int otherAttribute();
 }
 
-ValueObject v = ImmutableValueObject.builder()
+ValueObject valueObject = ImmutableValueObject.builder()
   .id(1123)
   .namedAs("Valuable One")
   .otherAttribute(0)
   .build();
 ```
-`v` will be marshaled as
+`valueObject` will be marshaled as
 
 ```js
 {
@@ -231,9 +235,9 @@ public abstract class OptionalObject {
 }
 
 // both v1 and v2 attributes are absent, i.e, not specified
-OptionalObject o = ImmutableOptionalObject.builder().build();
+OptionalObject objectWithOptions = ImmutableOptionalObject.builder().build();
 ```
-`o` will be marshaled as
+`objectWithOptions` will be marshaled as
 
 ```js
 {
@@ -262,9 +266,9 @@ public abstract class CollectionObject {
 }
 
 // both c1 and c2 collections are empty
-CollectionObject c = ImmutableCollectionObject.builder().build();
+CollectionObject collectionObject = ImmutableCollectionObject.builder().build();
 ```
-`c` will be marshaled as
+`collectionObject` will be marshaled as
 
 ```js
 {
@@ -276,7 +280,7 @@ missing field or field with empty array.
 
 -----
 ### Tuples of constructor arguments
-One of the interesting features of `org.immutables` JSON marshaling is the ability to map tuples (triples and so on)
+One of the interesting features of _org.immutables_ JSON marshaling is the ability to map tuples (triples and so on)
 of constructor arguments. While not always useful, some canonical data types could be compactly represented in JSON
 as array of values, consider, for example, dimensional coordinates or RGB colors.
 
@@ -286,16 +290,16 @@ In order to marshal object as tuple, you need to annotate constructor arguments 
 @GenerateImmutable(builder = false)
 @GenerateMarshaler
 public abstract class Coordinates {
-  @GenerateConstructorArgument(order = 0)
+  @GenerateConstructorParameter(order = 0)
   public abstract double latitude();
-  @GenerateConstructorArgument(order = 1)
+  @GenerateConstructorParameter(order = 1)
   public abstract double longitude();
 }
 
 // both c1 and c2 collections are empty
-Coordinates c = ImmutableCoordinates.of(37.783333, -122.416667);
+Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 ```
-`c` will be marshaled as array rather that object
+`coordinates` will be marshaled as array rather that object
 
 ```js
 [37.783333, -122.416667]
@@ -306,7 +310,7 @@ Coordinates c = ImmutableCoordinates.of(37.783333, -122.416667);
 
 Sometimes there is a need to marshal/unmarshal some custom-made or third-party immutable objects as part
 of object with `@GenerateImmutable` and `@GenerateMarshaler` annotations. Our unique approach it to use
-static routines with special signatures and use `javac` to resolve corresponding, most specific overload.
+static routines with special signatures and use java compiler to resolve most specific overload.
 
 ```java
 // Signature to unmarshal instance of T
@@ -352,11 +356,11 @@ Be sure to verify that any static marshaling routines could be correctly referen
 -----
 ### Polymorphic mapping
 
-Another interesting features of `org.immutables` JSON marshaling is the ability to map abstract type to one of
-it's subclasses by structure (not by discriminator field).
+Another interesting features of _org.immutables_ JSON marshaling is the ability to map abstract type to one of
+it's subclasses by structure (not by "discriminator" field).
 
-Define common supertype class and it's subclasses, then use `org.immutables.annotation.GenerateMarshaledSubclasses` annotation
-to list expected superclasses. Then you can use supertype as attribute type in the JSON document,
+Define common supertype class and it's subclasses, then use `org.immutables.annotation.GenerateMarshaledSubclasses`
+annotation to list expected superclasses. Then you can use supertype as attribute type in the document,
 as plain reference or as list and set of sypertype.
 
 ```java
@@ -385,8 +389,8 @@ public abstract class HostDocument {
   public abstract List<AbstractValue> value();
 }
 ```
-As you could guess following JSON fragment could be unmarshaled to `HostDocument` which `value` attribute will contain instances
-of `InterestingValue` and `RelevantValue` mixed:
+As you could guess, following JSON fragment may be unmarshaled to `HostDocument`, which `value` attribute will contain
+instances of `InterestingValue` and `RelevantValue` and then `InterestingValue` again
 
 ```js
 {

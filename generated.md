@@ -53,7 +53,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 public final class ImmutableValueObject
     extends ValueObject {
 
-  private static ImmutableValueObject validated(ImmutableValueObject instance) {
+  private static ImmutableValueObject checkPreconditions(ImmutableValueObject instance) {
     return instance;
   }
 
@@ -252,7 +252,7 @@ public final class ImmutableValueObject
     public ValueObject build() {
       Preconditions.checkState(name != null, REQUIRED_ATTRIBUTE, "name");
       Preconditions.checkState(valueIsSet, REQUIRED_ATTRIBUTE, "value");
-      return validated(new ImmutableValueObject(this));
+      return checkPreconditions(new ImmutableValueObject(this));
     }
   }
 }

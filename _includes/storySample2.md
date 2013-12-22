@@ -24,13 +24,12 @@ items.insert(ImmutableItem.builder()
     .build());
 ```
 ```java
-// Find and modify!
 Optional<Item> modifiedItem = items.findById(1)
     .andModifyFirst() // findAndModify
     .addValues(1) // $addToSet
     .setComment("present") // $set
     .returnNew()
-    .update()
+    .update() // returns ListenableFuture
     .getUnchecked();
 
 ```
