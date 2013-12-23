@@ -12,16 +12,19 @@
 <body>
 <header>
   <div class="container">
-    <a href="/">org.immutables</a> &larr;
+    <a href="/">Immutables.org</a> &larr;
 
     <h1>{{ page.title }}</h1>
   </div>
 </header>
+<aside id="toc"></aside>
 <section class="documentation">
   {{ content }}
 
   <hr>
+  <section class="disqus">
   {% include disqus.html %}
+  </section>
 </section>
 <footer class="jumbotron">
   <div class="container">
@@ -37,5 +40,13 @@
     </div>-->
   </div>
 </footer>
+
+<script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script type="application/javascript" src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({ container: '.documentation' })
+})
+</script>
 </body>
 </html>

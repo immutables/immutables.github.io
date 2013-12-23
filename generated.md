@@ -16,10 +16,10 @@ import org.immutables.annotation.GenerateImmutable;
 
 @GenerateImmutable
 public abstract class ValueObject {
+  public abstract long id();
   public abstract String name();
-  public abstract long value();
-  public abstract List<Integer> numbers();
-  public abstract Optional<String> optional();
+  public abstract List<Number> numbers();
+  public abstract Optional<String> comment();
 }
 ```
 
@@ -33,7 +33,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Longs;
-import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -46,7 +45,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * Use static static factory methods to create instances: {@code of()} or
  * {@code builder()}.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 @ParametersAreNonnullByDefault
 @Generated({"immutable.tjs", "ValueObject"})
 @Immutable
@@ -57,16 +56,21 @@ public final class ImmutableValueObject
     return instance;
   }
 
+  private final long id;
   private final String name;
-  private final long value;
-  private final List<Integer> numbers;
-  private final Optional<String> optional;
+  private final ImmutableList<Number> numbers;
+  private final Optional<String> comment;
 
   private ImmutableValueObject(Builder builder) {
+    this.id = builder.id;
     this.name = builder.name;
-    this.value = builder.value;
     this.numbers = builder.numbersBuilder.build();
-    this.optional = builder.optional;
+    this.comment = builder.comment;
+  }
+
+  @Override
+  public long id() {
+    return id;
   }
 
   @Override
@@ -75,55 +79,50 @@ public final class ImmutableValueObject
   }
 
   @Override
-  public long value() {
-    return value;
-  }
-
-  @Override
-  public List<Integer> numbers() {
+  public ImmutableList<Number> numbers() {
     return numbers;
   }
 
   @Override
-  public Optional<String> optional() {
-    return optional;
+  public Optional<String> comment() {
+    return comment;
   }
-
+  
   @Override
   public boolean equals(Object another) {
     return this == another
         || (another instanceof ImmutableValueObject && equalTo((ImmutableValueObject) another));
   }
-
+  
   private boolean equalTo(ImmutableValueObject another) {
     return true
+          && id == another.id
           && name.equals(another.name)
-          && value == another.value
           && numbers.equals(another.numbers)
-          && optional.equals(another.optional);
+          && comment.equals(another.comment);
   }
-
+  
   private int computeHashCode() {
     int h = 31;
+    h = h * 17 + Longs.hashCode(id);
     h = h * 17 + name.hashCode();
-    h = h * 17 + Longs.hashCode(value);
     h = h * 17 + numbers.hashCode();
-    h = h * 17 + optional.hashCode();
+    h = h * 17 + comment.hashCode();
     return h;
   }
-
+  
   @Override
   public int hashCode() {
     return computeHashCode();
   }
-
+  
   @Override
   public String toString() {
     return Objects.toStringHelper("ValueObject")
+        .add("id", id)
         .add("name", name)
-        .add("value", value)
         .add("numbers", numbers)
-        .add("optional", optional)
+        .add("comment", comment)
         .toString();
   }
 
@@ -134,28 +133,28 @@ public final class ImmutableValueObject
   public static Builder builder() {
     return new Builder();
   }
-
+  
   /**
    * Builds instances of {@link ValueObject}.
-   * Builder is not thread safe and generally should not be stored in fields and collections,
+   * Builder is not thread safe and generally should not be stored in fields and collections, 
    * but used immediately to create instances.
    */
   @NotThreadSafe
   public static final class Builder {
     private static final String REQUIRED_ATTRIBUTE =
         "Cannot build ValueObject: required attribute '%s' is not set";
-
-    @Nullable
+  
+    private long id;
+    private boolean idIsSet;
+    @Nullable  
     private String name;
-    private long value;
-    private boolean valueIsSet;
-    private ImmutableList.Builder<Integer> numbersBuilder =
+    private ImmutableList.Builder<Number> numbersBuilder =
         ImmutableList.builder();
-    private Optional<String> optional = Optional.absent();
-
+    private Optional<String> comment = Optional.absent();
+  
     private Builder() {
     }
-
+  
     /**
      * Adjust builder with values from provided {@link ValueObject} instance.
      * Absent optional values will not be copied (will not override current).
@@ -165,16 +164,27 @@ public final class ImmutableValueObject
      */
     public Builder copy(ValueObject fromInstance) {
       Preconditions.checkNotNull(fromInstance);
+      id(fromInstance.id());
       name(fromInstance.name());
-      value(fromInstance.value());
       addAllNumbers(fromInstance.numbers());
-      Optional<String> optionalOptional = fromInstance.optional();
-      if (optionalOptional.isPresent()) {
-        optional = optionalOptional;
+      Optional<String> optionalComment = fromInstance.comment();
+      if (optionalComment.isPresent()) {
+        comment = optionalComment;
       }
       return this;
     }
-
+    
+    /**
+     * Initializes value for {@link ValueObject#id()}.
+     * @param id value for id, non-null
+     * @return {@code this} builder for chained invocation
+     */
+    public Builder id(long id) {
+      this.id = id;
+      idIsSet = true;
+      return this;
+    }
+    
     /**
      * Initializes value for {@link ValueObject#name()}.
      * @param name value for name, non-null
@@ -184,38 +194,27 @@ public final class ImmutableValueObject
       this.name = Preconditions.checkNotNull(name);
       return this;
     }
-
-    /**
-     * Initializes value for {@link ValueObject#value()}.
-     * @param value value for value, non-null
-     * @return {@code this} builder for chained invocation
-     */
-    public Builder value(long value) {
-      this.value = value;
-      valueIsSet = true;
-      return this;
-    }
-
+  
     /**
      * Adds one element to {@link ValueObject#numbers()} list.
      * @param numbersElement single numbers element
      * @return {@code this} builder for chained invocation
      */
-    public Builder addNumbers(int numbersElement) {
+    public Builder addNumbers(Number numbersElement) {
       numbersBuilder.add(numbersElement);
       return this;
     }
-
+    
     /**
      * Adds elements to {@link ValueObject#numbers()} list.
      * @param numbersElements iterable of numbers elements
      * @return {@code this} builder for chained invocation
      */
-    public Builder addAllNumbers(Iterable<? extends Integer> numbersElements) {
+    public Builder addAllNumbers(Iterable<? extends Number> numbersElements) {
       numbersBuilder.addAll(numbersElements);
       return this;
     }
-
+  
     /**
      * Clears all previously added elements for {@link ValueObject#numbers()} list.
      * @return {@code this} builder for chained invocation
@@ -224,34 +223,34 @@ public final class ImmutableValueObject
       numbersBuilder = ImmutableList.builder();
       return this;
     }
-
+  
     /**
-     * Initializes present value for optional {@link ValueObject#optional()}.
-     * @param optional value for optional, nonull
+     * Initializes present value for optional {@link ValueObject#comment()}.
+     * @param comment value for comment, non-null
      * @return {@code this} builder for chained invocation
      */
-    public Builder optional(String optional) {
-      this.optional(Optional.of(optional));
+    public Builder comment(String comment) {
+      this.comment(Optional.of(comment));
       return this;
     }
-
+    
     /**
-     * Initializes value for {@link ValueObject#optional()}.
-     * @param optional value for optional, non-null
+     * Initializes value for {@link ValueObject#comment()}.
+     * @param comment value for comment, non-null
      * @return {@code this} builder for chained invocation
      */
-    public Builder optional(Optional<String> optional) {
-      this.optional = Preconditions.checkNotNull(optional);
+    public Builder comment(Optional<String> comment) {
+      this.comment = Preconditions.checkNotNull(comment);
       return this;
     }
-
+    
     /**
      * Builds new {@link ValueObject}.
      * @return immutable instance of ValueObject
      */
-    public ValueObject build() {
+    public ImmutableValueObject build() {
+      Preconditions.checkState(idIsSet, REQUIRED_ATTRIBUTE, "id");
       Preconditions.checkState(name != null, REQUIRED_ATTRIBUTE, "name");
-      Preconditions.checkState(valueIsSet, REQUIRED_ATTRIBUTE, "value");
       return checkPreconditions(new ImmutableValueObject(this));
     }
   }

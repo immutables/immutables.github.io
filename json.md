@@ -17,15 +17,16 @@ parsers and generators makes it possible to use various additional textual and b
 [YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
 
 We _do not use_ [ObjectMapper](https://github.com/FasterXML/jackson-databind) and bean/POJO mapping facilities,
-so _org.immutables_ provides an alternative binding based on straightforward code generation.
+so _Immutables_ provides an alternative binding based on straightforward code generation.
 
 * Clean JSON representation without any synthetic fields and quite flexible ways to map immutable object graphs
 * Use of code-generation and mostly compile-time overload resolution to create high-performance binding
 * By using _Jackson core API_ we gain high-performance and flexibility to switch "dataformat" adapters
 
-Additional advantages arise from how _org.immutables_ facilities work together, specifically,
+Additional advantages arise from how _Immutables_ facilities work together, specifically,
 very convenient _MongoDB_ repositories are built on top of JSON document marshaling and BSON dataformat.
 
+-----
 Usage
 -----
 
@@ -93,7 +94,6 @@ Marshaling.fromJson(valueObjectJson, ValueObject.class);
   - Will fail to compile, `marshal` method with proper overload will not be found
   - In some cases, will be marshaled as `toString`
 
------
 ### JAX-RS marshaling provider
 
 To use immutable types in your JAX-RS services use `org.immutables.common.service.MarshalingMessageBodyProvider` which
@@ -120,8 +120,7 @@ public class TestResource {
 See your JAX-RS implementation reference on how to install providers, but SPI-based auto-registration should work
 if you just add [org.immutables:annotation]({{ depUri }}|common|{{ v }}|jar) and [org.immutables:common]({{ depUri }}|common|{{ v }}|jar) jars in a classpath of a web application.
 
------
-### Custom Jackson marshaling
+### Jackson core marshaling
 
 For the maximum flexibility you can use marshaler directly with lower level
 [Jackson core API](https://github.com/FasterXML/jackson-core).
@@ -165,14 +164,13 @@ For a nice examples see the source code for `org.immutables.common.marshal.Marsh
   - `RuntimeException`s during unmarshaling in case of missing required attributes or JSON structure do not match attribute type
   - `ClassNotFoundException` if marshaler could not be found reflectively
 
-
+----------------
 Mapping features
 ----------------
 
 ### Straightforward binding
 Automatically generated bindings are straightforward and generally useful without customization.
 
------
 #### Supported attribute types
 
 * Java primitives, Strings, Enums — work as built-in types
@@ -184,7 +182,6 @@ Automatically generated bindings are straightforward and generally useful withou
 
 But there are couple of ways to customize binding with support for additional custom types or just tweak output.
 
------
 ### Specify field name
 By default JSON field name is the same as an attribute name of abstract value class,
 however it is very easy to specify field name is marshaled representation.
@@ -217,7 +214,6 @@ ValueObject valueObject = ImmutableValueObject.builder()
 }
 ```
 
------
 ### Include optional values an `null`
 
 By default, absent values of `com.google.common.base.Optional` are being omitted from JSON document.
@@ -248,7 +244,6 @@ OptionalObject objectWithOptions = ImmutableOptionalObject.builder().build();
 `forceEmpty` used for marshaling, but optional attributes could be unmarshaled from JSON representation either way:
 missing field or field with `null` value.
 
------
 ### Include empty arrays
 
 By default, empty `List` and `Set` attributes are being omited from JSON.
@@ -278,9 +273,8 @@ CollectionObject collectionObject = ImmutableCollectionObject.builder().build();
 `forceEmpty` used for marshaling, but collection attributes could be unmarshaled from JSON representation either way:
 missing field or field with empty array.
 
------
 ### Tuples of constructor arguments
-One of the interesting features of _org.immutables_ JSON marshaling is the ability to map tuples (triples and so on)
+One of the interesting features of _Immutables_ JSON marshaling is the ability to map tuples (triples and so on)
 of constructor arguments. While not always useful, some canonical data types could be compactly represented in JSON
 as array of values, consider, for example, dimensional coordinates or RGB colors.
 
@@ -305,7 +299,6 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 [37.783333, -122.416667]
 ```
 
------
 ### Custom types
 
 Sometimes there is a need to marshal/unmarshal some custom-made or third-party immutable objects as part
@@ -356,7 +349,7 @@ Be sure to verify that any static marshaling routines could be correctly referen
 -----
 ### Polymorphic mapping
 
-Another interesting features of _org.immutables_ JSON marshaling is the ability to map abstract type to one of
+Another interesting features of _Immutables_ JSON marshaling is the ability to map abstract type to one of
 it's subclasses by structure (not by "discriminator" field).
 
 Define common supertype class and it's subclasses, then use `org.immutables.annotation.GenerateMarshaledSubclasses`

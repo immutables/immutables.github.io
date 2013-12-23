@@ -1,9 +1,9 @@
 ---
-title: 'When not to use org.immutables?'
+title: 'When not to use Immutables?'
 layout: page
 ---
 ## Just for fun!
-####  One should not use _org.immutables_ if one of the following is true
+####  One should not use _Immutables_ if one of the following is true
 
 - Convinced that mutability is conceptually simpler than immutability. By implication, it is
   easier to create mutable object and try to not modify it later, than create properly constructed immutable object once
@@ -18,5 +18,5 @@ layout: page
 - `NullPointerException` is natural, unavoidable and endlessly compelling thing, since it helps keep
   programmers busy for hunting _NPE_s down, inserting blind `null` check
   and closing a bug ticket at the end of a day
-- _org.immutables_ is not as convenient as anything that _Spring_ does, and, moreover,
+- _Immutables_ is not as convenient as anything that _Spring_ does, and, moreover,
   it is totally compromised by the fact that _SpringFramework's_ XML is not compatible with builders

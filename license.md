@@ -8,7 +8,7 @@ In terms of licensing _org.immutable_ has following relevant parts
 - Redistributable annotations and optional runtime libraries
   +  Covered under terms of [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 - Non-redistributable compile-only annotation processing tool
-  + Contains software developed by _org.immutables_ project
+  + Contains software developed by _Immutables_ project
       * Covered under terms of [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
   + Embedded Mozilla Rhino JavaScript engine
       * Covered under terms of [Mozilla Public License, Version 2.0](http://www.mozilla.org/MPL/2.0/index.txt)
@@ -17,7 +17,7 @@ In terms of licensing _org.immutable_ has following relevant parts
 
 <hr>
 
-All source files under _org.immutables_ are subject for the following notice
+All source files under _Immutables_ are subject for the following notice
 
 ```java
 /*

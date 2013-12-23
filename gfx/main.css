@@ -19,7 +19,35 @@ section.jumbotron {
 }
 
 .jumbotron h1 {
+  margin-top: 40px;
   margin-bottom: 30px;
+}
+
+.toc-h2, .toc-h3 {
+  font-size: 12pt;
+  list-style: none;
+}
+
+.toc-h2 a, .toc-h3 a {
+  color: inherit;
+}
+
+.toc-h3 {
+  margin-left: 10px;
+  font-size: 10pt;
+}
+
+h2, h3 {
+  margin-top: 30px;
+}
+
+aside {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  background-color: #e7eef3;
+}
+aside > ul {
+  margin: 0;
 }
 
 .illustration,
@@ -74,6 +102,14 @@ header {
   overflow: hidden;
 }
 
+
+section.documentation > span {
+  margin: 0 !important;
+  padding: 0 !important;
+  max-width: 0 !important;
+}
+
+aside > ul,
 section.documentation > *,
 section.documentation > .highlight > pre {
   margin-left: auto;
@@ -92,6 +128,7 @@ section.documentation > .highlight {
 }
 
 @media (min-width: 768px) {
+  aside > ul,
   section.documentation > *,
   section.documentation > .highlight > pre {
     max-width: 750px;
@@ -99,6 +136,7 @@ section.documentation > .highlight {
 }
 
 @media (min-width: 992px) {
+  aside > ul,
   section.documentation > *,
   section.documentation > .highlight > pre {
     max-width: 970px;
@@ -106,6 +144,7 @@ section.documentation > .highlight {
 }
 
 @media (min-width: 1200px) {
+  aside > ul,
   section.documentation > *,
   section.documentation > .highlight > pre {
     max-width: 1170px;

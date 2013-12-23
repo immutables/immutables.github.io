@@ -8,7 +8,7 @@ layout: page
 
 ## Prerequisites
 
-_org.immutables_ developed primarily for Java 7, but basic immutable object generation works also on Java 6.
+_org.immutables_ runs on Java 7.
 
 Add required dependencies for basic immutable object generation:
 
