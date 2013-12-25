@@ -40,7 +40,7 @@ Other aspect of modelling is representatation of system state and domain entitie
 The techniques like [event sourcing](http://martinfowler.com/eaaDev/EventSourcing.html) employs
 benefits of immutable object graphs, allow sub-graphs to be shared between snapshots, transform system states,
 or even reconstruct full system state at some point in time.
-For that kind of systems we just made writing immutable object a whole lot easier.
+For that kind of systems we just made writing immutable objects a whole lot easier.
 
 * Read "Item 15: Minimize mutability" [Effective Java, Second Edition](http://www.amazon.com/Effective-Java-Edition-Joshua-Bloch/dp/0321356683)
   book for classic summary on immutability
@@ -73,7 +73,7 @@ are non-`abstract` methods that have body that computes value,
 thus such accessors require special annotation to distinguish from regular method.
 
 ### Immutable implementation class
-[Generated](/generated.html) `public final class` that extends manually-written [Abstract value class](#abstract-value)
+[Generated](/generated.html) `public final class` that extends manually-written [abstract value class](#abstract-value)
 and implements all declared accessor methods as well as supporting fields, methods, constructors and builder class.
 Immutable implementation class implements abstract attribute accessors
 for scalar primitive and object reference types, special support provided for [collection attributes](#collection)
@@ -230,8 +230,8 @@ This behavior could be altered in some ways, for example, see [Precondition chec
 Someone may ask: why other kinds of containers is not supported in the same way,
 for example `java.lang.Iterable`, `java.util.Collection` or `java.util.NavigableSet`?
 That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling.
-The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic,
-other container types still usable:
+The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic support,
+other container types are still usable:
 
 ```java
 @GenerateImmutable
@@ -302,7 +302,7 @@ Otherwise construction will be broken due to unspecified initialization order.
 It's only guaranteed that all attributes with abstract accessors will be initialized before
 default and derived attributes, and therefore could be safely referred in initializers.
 
-Possible problems
+**Possible problems**
 
 + Unspecified result if initializer method body refers to non-abstract attribute accessor.
 
@@ -346,7 +346,7 @@ int totalCount33 = order.totalCount();
 As with [default attributes](#default-attribute), derived attribute method's
 body should not refer to any other derived or default attribute.
 
-Possible problems
+**Possible problems**
 
 + Unspecified result if initializer method body refers to non-abstract attribute accessor. 
 
@@ -385,11 +385,6 @@ Precondition check methods runs when immutable object _instantiated and all attr
 but _before returned to caller_. Any instance that failed precondition
 check is unreachable to caller due to runtime exception.
 
-**Possible problems**
-
-+ Wrong signature for the check method
-  - Compilation error with fine diagnostic message explaining correct signature
-
 ### Singleton instances
 
 It is easy to create "empty" or "default" instances that will be singletons.
@@ -412,8 +407,8 @@ Abstract value class should not have any mandatory attributes, otherwise generat
 You can make attributes non-mandatory by using [default attributes](#default-attribute).
 
 As it stands, empty singleton instances could be combined with builders and constructors as long
-as all attributes are non-mandatory. But if there should be forced
-one and _only one_ instance of particular immutable type, following recipe will do:
+as all attributes are non-mandatory. But if there should be one
+and _only one_ instance of particular immutable type, following recipe will do:
 
 + Use `singleton = true` and `builder = false` with `@GenerateImmutable` annotation
 + Do not use any `@GenerateConstructorParameter` on attributes 
@@ -518,7 +513,7 @@ on abstract value class and forward calls to constructor method of immutable imp
 public abstract class Point {
   @GenerateConstructorParameter(order = 0)
   public abstract double x();
-  @GenerateConstructorParameter(order = 0)
+  @GenerateConstructorParameter(order = 1)
   public abstract double y();
   
   public static Point origin() {

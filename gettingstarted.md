@@ -8,15 +8,16 @@ layout: page
 
 ## Prerequisites
 
-_org.immutables_ runs on Java 7.
+Java 7 or higher is required to run _Immutables_ annotation processor.
 
 Add required dependencies for basic immutable object generation:
 
 - [org.immutables:annotation:{{v}}]({{ depUri }}|annotation|{{ v }}|jar)
   + Compile annotations and Guava as transitive dependency
 - [org.immutables:generate-tool:{{v}}]({{ depUri }}|generate-tool|{{ v }}|jar)
-  + Compile-only annotation processing tool, declare in "provided" scope to stop propagation to runtime
+  + Compile-only annotation processing tool. Declare it in "provided" scope to prevent propagation of this artifact to runtime
 
+Snippet of maven dependencies:
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
@@ -31,7 +32,8 @@ Add required dependencies for basic immutable object generation:
 </dependency>
 ```
 
-For generation and compilation to work any Java build tool will work that supports `javac`.
+_Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend
+(given annotation processing is not disabled in build tool configuration).
 _Eclipse JDT compiler_ (ECJ) also supports this annotation processor.
 
 ## Create immutable object
