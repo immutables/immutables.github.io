@@ -3,7 +3,7 @@ title: 'JSON marshaling reference'
 layout: page
 ---
 
-{% capture v %}0.7{% endcapture %}
+{% capture v %}0.8-SNAPSHOT{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
