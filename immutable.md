@@ -393,13 +393,17 @@ factory method to obtain singleton instance.
 
 ```java
 @GenerateImmutable(singleton = true)
-public abstract class DataContainer {
-  public abstract Set<String> dataChunks();
+public abstract class Data {
+  public abstract Set<String> chunks();
 }
 
 ...
 boolean willBeTrue =
-    ImmuableDataContainer.of() == ImmuableDataContainer.of();
+    ImmuableData.of() == ImmuableData.of();
+// true
+
+boolean willBeTrueAlso =
+    ImmuableData.of().chunks().isEmpty();
 // true
 ```
 
