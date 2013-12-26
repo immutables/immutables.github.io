@@ -96,7 +96,7 @@ Marshaling.fromJson(valueObjectJson, ValueObject.class);
 
 ### JAX-RS marshaling provider
 
-To use immutable types in your JAX-RS services use `org.immutables.common.service.MarshalingMessageBodyProvider` which
+To use immutable types in your JAX-RS services use `org.immutables.common.marshal.JaxrsMessageBodyProvider` which
 implements `javax.ws.rs.ext.MessageBodyReader` and `javax.ws.rs.ext.MessageBodyWriter`. Also do not forget to specify
 "application/json" content type, so provider will match.
 
