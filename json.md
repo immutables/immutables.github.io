@@ -275,10 +275,10 @@ missing field or field with empty array.
 
 ### Tuples of constructor arguments
 One of the interesting features of _Immutables_ JSON marshaling is the ability to map tuples (triples and so on)
-of constructor arguments. While not always useful, some canonical data types could be compactly represented in JSON
+of constructor arguments. While not always useful, some data types could be compactly represented in JSON
 as array of values, consider, for example, dimensional coordinates or RGB colors.
 
-In order to marshal object as tuple, you need to annotate constructor arguments and disable generation of builder.
+In order to marshal object as tuple, you need to annotate [constructor](/immutable.html#constructor) arguments and disable generation of [builder](/immutable.html#builder).
 
 ```java
 @GenerateImmutable(builder = false)
