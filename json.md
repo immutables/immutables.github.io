@@ -174,17 +174,17 @@ Automatically generated bindings are straightforward and generally useful withou
 #### Supported attribute types
 
 * Java primitives, Strings, Enums — work as built-in types
-* Nested documents - abstract value classes, also annotated with `@GenerateMarshaler`
+* Nested documents - abstract value classes that are also annotated with `@GenerateMarshaler`
 * Lists, Sets, Maps and Optional of the above types
   - Collections mapped to JSON arrays
-  - Maps mapped to JSON object (keys forced to strings)
-  - Optional attributes - as simple fields
+  - Maps mapped to JSON object (keys always converted to strings)
+  - Optional attributes - as regular fields
 
 But there are couple of ways to customize binding with support for additional custom types or just tweak output.
 
 ### Specify field name
-By default JSON field name is the same as an attribute name of abstract value class,
-however it is very easy to specify field name is marshaled representation.
+By default JSON field name is the same as an attribute name of abstract value class.
+However, it is very easy to specify field name as it should appear in JSON representation.
 Use `value` attribute of `org.immutables.annotation.GenerateMarshaled` annotation placed on attribute accessor.
 
 ```java
@@ -246,7 +246,7 @@ missing field or field with `null` value.
 
 ### Include empty arrays
 
-By default, empty `List` and `Set` attributes are being omited from JSON.
+By default, empty `List` and `Set` attributes are being omitted from JSON.
 This generally help to keep JSON cleaner and slightly reduce its size.
 When you do want to force output of empty collections using empty JSON array`null` value. Use `forceEmpty = true`
 of `org.immutables.annotation.GenerateMarshaled` annotation placed on attribute accessor.
@@ -306,7 +306,7 @@ of object with `@GenerateImmutable` and `@GenerateMarshaler` annotations. Our un
 static routines with special signatures and use java compiler to resolve most specific overload.
 
 ```java
-// Signature to unmarshal instance of T
+// Method signature to unmarshal instance of T
 public static T unmarshal(
     JsonParser parser,
     T nullInstance, // allway will be called with null, parameter exists only for overload resolution
@@ -314,7 +314,7 @@ public static T unmarshal(
   T t = ...// take parser and extract value of T, leave parser on last token of a read value
   return t;
 }
-// Signature to marshal instance of T
+// Method signature to marshal instance of T
 public static void marshal(
     JsonGenerator generator,
     T instance) throws IOException {
