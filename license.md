@@ -21,7 +21,7 @@ All source files under _Immutables_ are subject for the following notice
 
 ```java
 /*
-    Copyright 2013 Immutables.org authors
+    Copyright 2013-2014 Immutables.org authors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
