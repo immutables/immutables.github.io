@@ -28,8 +28,8 @@ Optional<Item> modifiedItem = items.findById(1)
     .andModifyFirst() // findAndModify
     .addValues(1) // $addToSet
     .setComment("present") // $set
-    .returnNew()
-    .update() // returns ListenableFuture
+    .returningNew()
+    .update() // returns future
     .getUnchecked();
 
 ```
