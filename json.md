@@ -34,6 +34,7 @@ Usage
 In addition to dependencies that are listed in [getting started guide](/gettingstarted.html) you need to add
 redistributable runtime library
 
+<a name="dependencies"></a>
 - [org.immutables:common:{{v}}]({{ depUri }}|common|{{ v }}|jar)
   + Compile and runtime utilities used during marshaling
 
@@ -43,6 +44,7 @@ For quick start you should rather use our _service_ artifact that combines all n
 - [org.immutables:service:{{v}}]({{ depUri }}|service|{{ v }}|jar)
   + All needed transitive runtime dependencies 
 
+Snippet of maven dependencies:
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
@@ -129,7 +131,7 @@ public class TestResource {
 }
 ```
 See your JAX-RS implementation reference on how to install providers, but SPI-based auto-registration should work
-if you just add [org.immutables:annotation]({{ depUri }}|common|{{ v }}|jar) and [org.immutables:common]({{ depUri }}|common|{{ v }}|jar) jars in a classpath of a web application.
+if you just have all [runtime dependencies](#dependencies) in the classpath of a web application.
 
 ### Jackson core marshaling
 
