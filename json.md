@@ -3,7 +3,7 @@ title: 'JSON marshaling reference'
 layout: page
 ---
 
-{% capture v %}0.8-SNAPSHOT{% endcapture %}
+{% capture v %}0.12{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -31,16 +31,27 @@ Usage
 -----
 
 ### Enable marshaling
-In addition to dependencies that are listed in [getting started guide](/gettingstarted.html) you should add
-_org.immutable.common_ library
+In addition to dependencies that are listed in [getting started guide](/gettingstarted.html) you need to add
+redistributable runtime library
 
 - [org.immutables:common:{{v}}]({{ depUri }}|common|{{ v }}|jar)
   + Compile and runtime utilities used during marshaling
 
+_Common_ artifact specifically excludes any external dependencies (Jackson etc) to be picked manually.
+For quick start you should rather use our _service_ artifact that combines all needed dependencies.
+
+- [org.immutables:service:{{v}}]({{ depUri }}|service|{{ v }}|jar)
+  + All needed transitive runtime dependencies 
+
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>common</artifactId>
+  <artifactId>service</artifactId>
+  <version>{{ v }}</version>
+</dependency>
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>generate-tool</artifactId>
   <version>{{ v }}</version>
 </dependency>
 ```

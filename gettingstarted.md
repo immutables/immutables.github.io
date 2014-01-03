@@ -3,7 +3,7 @@ title: 'Getting started!'
 layout: page
 ---
 
-{% capture v %}0.8-SNAPSHOT{% endcapture %}
+{% capture v %}0.12{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -13,7 +13,7 @@ Java 7 or higher is required to run _Immutables_ annotation processor.
 Add required dependencies for basic immutable object generation:
 
 - [org.immutables:annotation:{{v}}]({{ depUri }}|annotation|{{ v }}|jar)
-  + Compile annotations and Guava as transitive dependency
+  + Compile annotations and Guava as transitive dependency.
 - [org.immutables:generate-tool:{{v}}]({{ depUri }}|generate-tool|{{ v }}|jar)
   + Compile-only annotation processing tool. Declare it in "provided" scope to prevent propagation of this artifact to runtime
 
