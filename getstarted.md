@@ -1,5 +1,5 @@
 ---
-title: 'Getting started!'
+title: 'Get started!'
 layout: page
 ---
 
@@ -18,6 +18,7 @@ Add required dependencies for basic immutable object generation:
   + Compile-only annotation processing tool. Declare it in "provided" scope to prevent propagation of this artifact to runtime
 
 Snippet of maven dependencies:
+
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>

@@ -31,8 +31,7 @@ Usage
 -----
 
 ### Enable marshaling
-In addition to dependencies that are listed in [getting started guide](/gettingstarted.html) you need to add
-redistributable runtime library
+In addition to annotation-processor dependencies, you need to add runtime libraries.
 
 <a name="dependencies"></a>
 - [org.immutables:common:{{v}}]({{ depUri }}|common|{{ v }}|jar)
@@ -45,6 +44,7 @@ For quick start you should rather use our _service_ artifact that combines all n
   + All needed transitive runtime dependencies 
 
 Snippet of maven dependencies:
+
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
