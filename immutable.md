@@ -350,6 +350,48 @@ body should not refer to any other derived or default attribute.
 
 + Unspecified result if initializer method body refers to non-abstract attribute accessor. 
 
+<a name="lazy-attribute"></a>
+### Lazy attributes
+Lazy attributes are initializer methods that computes value lazily once.
+
+To declare lazy attribute, create non-abstract attribute initializer method and annotate it with
+`org.immutables.annotation.GenerateLazy`. Similarly to [derived attributes](#derived-attribute),
+body of the method should compute and return value of an attribute.
+Derived attributes acts much like regular methods, but that computes value on first access,
+but return same memoized value. 
+
+```java
+@GenerateImmutable
+public abstract class Order {
+
+  public abstract List<Item> items();
+
+  @GenerateLazy
+  public int totalCost() {
+    int cost = 0;
+
+    for (Item i : items())
+      count += i.count() * i.price();
+      
+    return cost;
+  }
+}
+
+Order order = ImmutableOrder.builder()
+    .addItems(Item.of("item1", 11, 1))
+    .addItems(Item.of("item2", 22, 2))
+    .build();
+
+// total count will be already computed
+int lazilyComputedCost = order.totalCost();
+```
+
+Unlike to [default](#default-attribute) or [derived](#derived-attributes) attributes,
+body of the lazy attribute accessor method could refer to any attribute.
+That said, restrictions still apply to call only abstract accessors
+from default or derived attributes: calling lazy attribute from them is _not always safe_ and void
+safety of lazy values.
+
 <a name="check-method"></a>
 ### Precondition check method
 One of the core advantages of immutable objects is the fact that an immutable object will be constructed with

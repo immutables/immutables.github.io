@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}0.12{% endcapture %}
+{% capture v %}0.13{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -87,5 +87,3 @@ See [sample generated code](/generated.html) for an example of what kind of code
 
 Even basic immutable class generation has a lot more tricks to show, check out [reference](/immutable.html)!
 
-Demo screencast
---------
