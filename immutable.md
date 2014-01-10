@@ -357,8 +357,8 @@ Lazy attributes are initializer methods that computes value lazily once.
 To declare lazy attribute, create non-abstract attribute initializer method and annotate it with
 `org.immutables.annotation.GenerateLazy`. Similarly to [derived attributes](#derived-attribute),
 body of the method should compute and return value of an attribute.
-Derived attributes acts much like regular methods, but that computes value on first access,
-but return same memoized value. 
+Derived attributes acts much like regular methods, but compute value on first access and subsequently
+return same memoized value. 
 
 ```java
 @GenerateImmutable
@@ -371,7 +371,7 @@ public abstract class Order {
     int cost = 0;
 
     for (Item i : items())
-      count += i.count() * i.price();
+      cost += i.count() * i.price();
       
     return cost;
   }
@@ -382,15 +382,20 @@ Order order = ImmutableOrder.builder()
     .addItems(Item.of("item2", 22, 2))
     .build();
 
-// total count will be already computed
+// total cost will be computed now
 int lazilyComputedCost = order.totalCost();
 ```
 
+Lazy values are thread safe and will be computed once and only once regardless of race condition.
+
 Unlike to [default](#default-attribute) or [derived](#derived-attributes) attributes,
 body of the lazy attribute accessor method could refer to any attribute.
-That said, restrictions still apply to call only abstract accessors
-from default or derived attributes: calling lazy attribute from them is _not always safe_ and void
-safety of lazy values.
+
+That said, restrictions still apply to call only abstract accessors from default or derived attributes.
+Do not refer to lazy values from default or derived attributes to avoid issues.
+Calling lazy attribute from derived or default is _not always safe_,
+it will make no sense as it will made lazy value an eagerly computed, moreover, if lazy value is in turn uses
+in computation one of those default or derived attribute, then it may found it uninitialized.
 
 <a name="check-method"></a>
 ### Precondition check method
