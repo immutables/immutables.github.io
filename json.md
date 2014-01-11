@@ -243,7 +243,7 @@ public abstract class OptionalObject {
   public abstract Optional<String> v1();
   public abstract Optional<String> v2();
 }
-
+...
 // both v1 and v2 attributes are absent, i.e, not specified
 OptionalObject objectWithOptions = ImmutableOptionalObject.builder().build();
 ```
@@ -273,8 +273,8 @@ public abstract class CollectionObject {
   public abstract Set<String> c1();
   public abstract List<String> c2();
 }
-
-// both c1 and c2 collections are empty
+...
+// both c1 and c2 collection attributes are empty
 CollectionObject collectionObject = ImmutableCollectionObject.builder().build();
 ```
 `collectionObject` will be marshaled as
@@ -304,7 +304,7 @@ public abstract class Coordinates {
   public abstract double longitude();
 }
 
-// both c1 and c2 collections are empty
+...
 Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 ```
 `coordinates` will be marshaled as array rather that object
