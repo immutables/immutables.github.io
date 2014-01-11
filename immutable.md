@@ -372,7 +372,7 @@ public abstract class Order {
 
     for (Item i : items())
       cost += i.count() * i.price();
-      
+
     return cost;
   }
 }
@@ -671,8 +671,6 @@ Here mentioned several limitation and some not implemented features.
 - Generated classes are public. As of now, it is not possible to refine visibility of generated classes.
 
 - Default and derived attributes cannot reliably refer to any other default or derived attribute.
-
-- Lazily computed attributes were not implemented yet: lack of interest and some complexity with atomic initialization of lazy value
 
 - Abstract value class could not be parameterized with type variables,
   however it could extend or implement parameterized type when actual types supplied.
