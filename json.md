@@ -55,6 +55,7 @@ Snippet of maven dependencies:
   <groupId>org.immutables</groupId>
   <artifactId>generate-tool</artifactId>
   <version>{{ v }}</version>
+  <scope>provided</scope>
 </dependency>
 ```
 In order to enable marshaling, put `org.immutables.annotation.GenerateMarshaler`
