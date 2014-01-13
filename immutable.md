@@ -358,7 +358,9 @@ To declare lazy attribute, create non-abstract attribute initializer method and 
 `org.immutables.annotation.GenerateLazy`. Similarly to [derived attributes](#derived-attribute),
 body of the method should compute and return value of an attribute.
 Derived attributes acts much like regular methods, but compute value on first access and subsequently
-return same memoized value. 
+return same memoized value.
+
+**Be warned**: _lazy attributes do not take part in equals and hashCode computation!_
 
 ```java
 @GenerateImmutable
