@@ -246,6 +246,7 @@ ImmutableDoItYourselfContainer.builder()
     .build();
 ```
 
+<a name="optional"></a>
 ### Optional attributes
 
 Attributes declared with return type of `com.google.common.base.Optional<T>`

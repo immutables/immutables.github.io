@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}0.13{% endcapture %}
+{% capture v %}0.14{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -35,7 +35,7 @@ Snippet of maven dependencies:
 
 _Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend
 (given annotation processing is not disabled in build tool configuration).
-_Eclipse JDT compiler_ (ECJ) also supports this annotation processor.
+_Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using annotation processor in IDE](/apt.html).
 
 ## Create immutable object
 

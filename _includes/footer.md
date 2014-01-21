@@ -1,13 +1,10 @@
 ## Docs
 
 - [Get started!](/getstarted.html)
-- [Immutable objects reference](/immutable.html)
-- [JSON marshaling reference](/json.html)
-- MongoDB repositories reference (Coming Soon)
-
-## Posts
-{% for post in site.posts limit: 10 %}
-- [{{ post.title }}]({{ post.url }}){% endfor %}
+- [Immutable objects guide](/immutable.html)
+- [JSON marshaling guide](/json.html)
+- [MongoDB repositories guide](/mongo.html)
+- [Using annotation processor in IDE](/apt.html)
 
 ## Get involved
 

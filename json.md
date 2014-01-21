@@ -1,9 +1,9 @@
 ---
-title: 'JSON marshaling reference'
+title: 'JSON marshaling guide'
 layout: page
 ---
 
-{% capture v %}0.13{% endcapture %}
+{% capture v %}0.14{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview

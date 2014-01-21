@@ -13,7 +13,7 @@ public abstract class Item {
 ```
 ```java
 // Instantiate generated repository
-ItemRepository items = ItemRepository.create(
+ItemRepository items = new ItemRepository(
     RepositorySetup.forUri("mongodb://localhost/test"));
 
 // Insert async
