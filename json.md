@@ -1,5 +1,5 @@
 ---
-title: 'JSON marshaling guide'
+title: 'JSON marshaling'
 layout: page
 ---
 

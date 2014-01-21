@@ -1,5 +1,5 @@
 ---
-title: 'MongoDB repository guide'
+title: 'MongoDB repositories'
 layout: page
 ---
 

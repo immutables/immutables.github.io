@@ -1,9 +1,9 @@
 ## Docs
 
 - [Get started!](/getstarted.html)
-- [Immutable objects guide](/immutable.html)
-- [JSON marshaling guide](/json.html)
-- [MongoDB repositories guide](/mongo.html)
+- [Immutable objects](/immutable.html)
+- [JSON marshaling](/json.html)
+- [MongoDB repositories](/mongo.html)
 - [Using annotation processor in IDE](/apt.html)
 
 ## Get involved

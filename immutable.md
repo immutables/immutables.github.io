@@ -1,5 +1,5 @@
 ---
-title: 'Immutable objects reference'
+title: 'Immutable objects'
 layout: page
 ---
 
