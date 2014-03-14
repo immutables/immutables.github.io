@@ -138,12 +138,12 @@ interface WeaponBuilder {
 
 @GenerateImmutable
 public abstract class Railgun implements Weapon {
-  public abstract class Builder implements WeaponBuilder {}
+  public abstract static class Builder implements WeaponBuilder {}
 }
 
 @GenerateImmutable
 public abstract class RocketLauncher implements Weapon {
-  public abstract class Builder implements WeaponBuilder {}
+  public abstract static class Builder implements WeaponBuilder {}
 }
 
 class Builders {

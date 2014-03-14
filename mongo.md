@@ -275,6 +275,9 @@ posts.findById(10).fetchFirst();
 posts.find().fetchAll();
 ```
 
+Note that `findById` method might be named differently if your document has it attribute with name different than `id`
+in Java.
+
 ### Excluding output fields
 MongoDB has a feature to return a subset of fields in results. In order to preserve consistency of immutable
 document objects created during unmarshaling, repository only allows to exclude optional fields such

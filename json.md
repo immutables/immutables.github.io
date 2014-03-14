@@ -16,8 +16,8 @@ parsers and generators makes it possible to use various additional textual and b
 [BSON](https://github.com/michel-kraemer/bson4jackson),
 [YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
 
-We _do not use_ [ObjectMapper](https://github.com/FasterXML/jackson-databind) and bean/POJO mapping facilities.
-_Immutables_ provides an alternative binding based on straightforward code generation.
+We _do not use_ [ObjectMapper](https://github.com/FasterXML/jackson-databind) — the bean/POJO mapping facilities.
+_Immutables_ provides an alternative bindings based on straightforward code generation.
 
 * Clean JSON representation without any synthetic fields and quite flexible ways to map immutable object graphs
 * Use of code-generation and mostly compile-time overload resolution to create high-performance binding
