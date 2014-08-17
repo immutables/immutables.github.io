@@ -48,7 +48,8 @@ or even reconstruct full system state at some point in time.
 For that kind of systems we just made writing immutable objects a whole lot easier.
 
 * Read "Item 15: Minimize mutability" [Effective Java, Second Edition](http://www.amazon.com/Effective-Java-Edition-Joshua-Bloch/dp/0321356683)
-  book for classic summary on immutability
+  book for classic summary on immutability.
+* See Google's attempt on this with [AutoValue](https://docs.google.com/presentation/d/14u_h-lMn7f1rXE1nDiLX0azS3IkgjGl5uxp5jGJ75RE).
 * Watch ["Power Use of Value Objects" presentation](http://www.infoq.com/presentations/Value-Objects-Dan-Bergh-Johnsson)
   for examples of how useful value objects are.
 * Watch ["Simple made easy" presentation](http://www.infoq.com/presentations/Simple-Made-Easy)
@@ -224,13 +225,14 @@ This behavior could be altered in some ways, for example, see [Precondition chec
 + for set or list attribute named `Foo` where elements are of type `T`
   - `addFoo(T)`
   - `addAllFoo(Iterable<? extends T>)`
-  - `clearFoo()`
   
 + for map attribute named `Bar` where keys are of type `K` and values of type `V`
   - `putBar(K, V)`
   - `putBar(Map.Entry<? extends K, ? extends V>)`
   - `putAllBar(Map<? extends K, ? extends K>)`
-  - `clearBar()`
+  
+Since version 0.16 we no longer generate clear methods on builders, so `clearFoo()` or `clearBar()` would not be generated
+for collection and map attributes. To reset content of collection or map use `with` copy methods.
   
 Someone may ask: why other kinds of containers is not supported in the same way,
 for example `java.lang.Iterable`, `java.util.Collection` or `java.util.NavigableSet`?

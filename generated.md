@@ -34,10 +34,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.primitives.Longs;
 import javax.annotation.Generated;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.annotation.concurrent.Immutable;
 import javax.annotation.concurrent.NotThreadSafe;
+import javax.annotation.meta.When;
 
 /**
  * Immutable implementation of {@link ValueObject}.
@@ -68,21 +70,106 @@ public final class ImmutableValueObject
     this.comment = builder.comment;
   }
 
+  private ImmutableValueObject(
+      @Nonnull(when = When.NEVER)
+      Void internalCopyContructorDisambiguation, 
+      long id, String name, ImmutableList<Number> numbers, Optional<String> comment) {
+    this.id = id;
+    this.name = name;
+    this.numbers = numbers;
+    this.comment = comment;
+  }
+    
+  /**
+   * Copy current immutable object by setting value for {@link ValueObject#id()}.
+   * @param id value for id, non-null
+   * @return modified copy of the {@code this} object
+   */
+  public ImmutableValueObject withId(long id) {
+    long idModifiedValue = id;
+    return checkPreconditions(new ImmutableValueObject(
+        (Void) null, 
+        idModifiedValue, 
+        this.name, 
+        this.numbers, 
+        this.comment));
+  }
+    
+  /**
+   * Copy current immutable object by setting value for {@link ValueObject#name()}.
+   * @param name value for name, non-null
+   * @return modified copy of the {@code this} object
+   */
+  public ImmutableValueObject withName(String name) {
+    String nameModifiedValue = Preconditions.checkNotNull(name);
+    return checkPreconditions(new ImmutableValueObject(
+        (Void) null, 
+        this.id, 
+        nameModifiedValue, 
+        this.numbers, 
+        this.comment));
+  }
+  
+  /**
+   * Copy current immutable object with elements that replace content of {@link ValueObject#numbers()}.
+   * @param numbersElements iterable of numbers elements to add
+   * @return modified copy of the {@code this} object
+   */
+  public ImmutableValueObject withNumbers(Iterable<? extends Number> numbersElements) {
+    ImmutableList<Number> numbersModifiedValue = ImmutableList.copyOf(numbersElements);
+    return checkPreconditions(new ImmutableValueObject(
+        (Void) null, 
+        this.id, 
+        this.name, 
+        numbersModifiedValue, 
+        this.comment));
+  }
+  
+  /**
+   * Copy current immutable object by setting present value for optional {@link ValueObject#comment()}.
+   * @param comment value for comment, non-null
+   * @return modified copy of the {@code this} object
+   */
+  public ImmutableValueObject withComment(String comment) {
+    Optional<String> commentModifiedValue = Optional.of(comment);
+    return checkPreconditions(new ImmutableValueObject(
+        (Void) null, 
+        this.id, 
+        this.name, 
+        this.numbers, 
+        commentModifiedValue));
+  }
+  
+  /**
+   * Copy current immutable object by setting optional value for {@link ValueObject#comment()}.
+   * @param comment value for comment, non-null
+   * @return modified copy of the {@code this} object
+   */
+  public ImmutableValueObject withComment(Optional<String> comment) {
+    Optional<String> commentModifiedValue = Preconditions.checkNotNull(comment);
+    return checkPreconditions(new ImmutableValueObject(
+        (Void) null, 
+        this.id, 
+        this.name, 
+        this.numbers, 
+        commentModifiedValue));
+  }
+  
   @Override
   public long id() {
     return id;
   }
-
+  
   @Override
   public String name() {
     return name;
   }
-
+  
   @Override
   public ImmutableList<Number> numbers() {
     return numbers;
   }
-
+  
   @Override
   public Optional<String> comment() {
     return comment;
@@ -204,7 +291,7 @@ public final class ImmutableValueObject
       numbersBuilder.add(numbersElement);
       return this;
     }
-    
+
     /**
      * Adds elements to {@link ValueObject#numbers()} list.
      * @param numbersElements iterable of numbers elements
@@ -212,15 +299,6 @@ public final class ImmutableValueObject
      */
     public Builder addAllNumbers(Iterable<? extends Number> numbersElements) {
       numbersBuilder.addAll(numbersElements);
-      return this;
-    }
-  
-    /**
-     * Clears all previously added elements for {@link ValueObject#numbers()} list.
-     * @return {@code this} builder for chained invocation
-     */
-    public Builder clearNumbers() {
-      numbersBuilder = ImmutableList.builder();
       return this;
     }
   
@@ -235,7 +313,7 @@ public final class ImmutableValueObject
     }
     
     /**
-     * Initializes value for {@link ValueObject#comment()}.
+     * Initializes optional value for {@link ValueObject#comment()}.
      * @param comment value for comment, non-null
      * @return {@code this} builder for chained invocation
      */
