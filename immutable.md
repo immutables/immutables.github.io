@@ -303,7 +303,7 @@ PlayerInfo veteran = ImmutablePlayerInfo.builder()
 PlayerInfo anonymous44 = ImmutablePlayerInfo.of(44);
 
 String name = anonymous44.name(); // Anonymous_44
-``` 
+```
 
 Default attribute method's body should not refer to any other derived or default attribute.
 Otherwise construction will be broken due to unspecified initialization order.
