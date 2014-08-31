@@ -409,10 +409,8 @@ in computation one of those default or derived attribute, then it may found it u
 
 <a name="check-method"></a>
 ### Precondition check method
-One of the core advantages of immutable objects is the fact that an immutable object will be constructed with
-proper attribute values in _consistent state_ and _never changes_ afterwards.
-So often arises a need to check attribute values or combination of attribute values (cross validation)
-for correctness.
+One of the core advantages of immutable objects is the fact that an immutable object will be constructed with proper attribute values in _consistent state_ and _never changes_ afterwards.
+So often arises a need to check attribute values or combination of attribute values (cross validation) for correctness.
 
 Given there's no hand-written constructor in a immutable implementation class,
 you can write `protected` method annotated with `@GenerateCheck` and throw runtime exceptions if precondition failed.
@@ -442,23 +440,23 @@ Precondition check methods runs when immutable object _instantiated and all attr
 but _before returned to caller_. Any instance that failed precondition
 check is unreachable to caller due to runtime exception.
 
-<a name="withers">
+<a name="with-methods"></a>
 ### Wither methods
 
-`with*` methods (withers) allows to change attributes by copying immutable object with new value applied and rest of attributes unchanged.
+`with*` methods (withers) allow to change attributes by copying immutable object with new value applied and rest of attributes unchanged.
 
 ```java
 counter = counter.withValue(counter.value() + 1)
 ```
 
-It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before instead of being rebuilt manually or by immutable object builder. New values will effectively share subgraphs of old values, which is desirable in many cases. By using builders to copy objects (`Builder#copy(instance)`) you don't need to copy it multiple times when a lot of attributes change, on the other hand — collection and map attributes will be rebuilt as new immutable collections even if unchanged (there's feature request [https://github.com/immutables/org.immutables/issues/6](#6) for smarter builders).
+It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by immutable object builder. New values will effectively share subgraphs of old values, which is desirable in many cases. By using builders to copy objects (`Builder#copy(instance)`) you don't need to copy it multiple times when a lot of attributes change, on the other hand — collection and map attributes will be rebuilt as new immutable collections even if unchanged (there's feature request [https://github.com/immutables/org.immutables/issues/6](#6) for smarter builders).
 
 What about collection and map attributes? While it is tempting to have a bunch of methods like `withItemAdded` or `withKeyValuePut`, they might require a lot of variation like _add last_ or _add first_ and will hide the fact of collection rebuilding, which is not always desirable for immutable collections. As of now, there's only simple value replacement for all attributes, but new collection values are guaranteed to be copied as immutable collections if they are not already.
 
 One of the frequently asked questions among developers using recent version of _Immutables_: how do I reset collection content while copying object by builder, `clear*` methods was recently removed from generated builders.
 
-  * First of all, in any case that is more complex than the simplest ones, you should manually reconstruct collections.
-  * Conside using `with*` methods to replace copied collection with other values
+* First of all, in any case that is more complex than the simplest ones, you should manually reconstruct collections.
+* Conside using `with*` methods to replace copied collection with other values
 
 
 ```java
