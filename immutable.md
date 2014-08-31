@@ -231,14 +231,12 @@ This behavior could be altered in some ways, for example, see [Precondition chec
   - `putBar(Map.Entry<? extends K, ? extends V>)`
   - `putAllBar(Map<? extends K, ? extends K>)`
   
-Since version 0.16 we no longer generate clear methods on builders, so `clearFoo()` or `clearBar()` would not be generated
-for collection and map attributes. To reset content of collection or map use `with` copy methods.
+Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To reset content of collection or map use [wither](#with-methods) methods on built instances.
   
 Someone may ask: why other kinds of containers is not supported in the same way,
 for example `java.lang.Iterable`, `java.util.Collection` or `java.util.NavigableSet`?
 That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling.
-The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic support,
-other container types are still usable:
+The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic support, other container types are still usable:
 
 ```java
 @GenerateImmutable
@@ -449,7 +447,7 @@ check is unreachable to caller due to runtime exception.
 counter = counter.withValue(counter.value() + 1)
 ```
 
-It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by immutable object builder. New values will effectively share subgraphs of old values, which is desirable in many cases. By using builders to copy objects (`Builder#copy(instance)`) you don't need to copy it multiple times when a lot of attributes change, on the other hand — collection and map attributes will be rebuilt as new immutable collections even if unchanged (there's feature request [https://github.com/immutables/org.immutables/issues/6](#6) for smarter builders).
+It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by immutable object builder. New values will effectively share subgraphs of old values, which is desirable in many cases. By using builders to copy objects (`Builder#copy(instance)`) you don't need to copy it multiple times when a lot of attributes change, on the other hand — collection and map attributes will be rebuilt as new immutable collections even if unchanged. There's feature request [#6](https://github.com/immutables/org.immutables/issues/6) for smarter builders.
 
 What about collection and map attributes? While it is tempting to have a bunch of methods like `withItemAdded` or `withKeyValuePut`, they might require a lot of variation like _add last_ or _add first_ and will hide the fact of collection rebuilding, which is not always desirable for immutable collections. As of now, there's only simple value replacement for all attributes, but new collection values are guaranteed to be copied as immutable collections if they are not already.
 
