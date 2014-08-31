@@ -402,8 +402,9 @@ body of the lazy attribute accessor method could refer to any attribute.
 That said, restrictions still apply to call only abstract accessors from default or derived attributes.
 Do not refer to lazy values from default or derived attributes to avoid issues.
 Calling lazy attribute from derived or default is _not always safe_,
-it will make no sense as it will made lazy value an eagerly computed, moreover, if lazy value is in turn uses
-in computation one of those default or derived attribute, then it may found it uninitialized.
+it will make no sense as it will made lazy value an eagerly computed, moreover, if lazy value is in turn uses in computation one of those default or derived attribute, then it may found it uninitialized.
+
+Implementation of lazy attributes is very similar to the way scala does this. Currently this implementation strategy suffers from the problem described in [Scala SIP-20](http://docs.scala-lang.org/sips/pending/improved-lazy-val-initialization.html). If you ever reproduce this with _Immutables_ you will be "lucky" in some ways: you need to introduce such cyclic dependency between different immutable objects, which only could happen if you are mixing immutable objects with mutable/static/threadlocal state. 
 
 <a name="check-method"></a>
 ### Precondition check method
