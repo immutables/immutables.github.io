@@ -2,13 +2,12 @@
 ```java
 import org.immutables.annotation.GenerateImmutable;
 
-// Define abstract value class
-
+// Define abstract value type
 @GenerateImmutable
-public abstract class ValueObject {
-  public abstract String name();
-  public abstract List<Integer> counts();
-  public abstract Optional<String> description();
+public interface ValueObject {
+  String name();
+  List<Integer> counts();
+  Optional<String> description();
 }
 ```
 

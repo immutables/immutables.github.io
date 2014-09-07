@@ -3,7 +3,7 @@ title: 'Using annotation processor in IDE'
 layout: page
 ---
 
-{% capture v %}0.16{% endcapture %}
+{% capture v %}0.18{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 --------
 Overview
