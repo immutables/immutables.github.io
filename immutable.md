@@ -722,7 +722,7 @@ public abstract class Hotel {
 ```
 
 ### Opaque containers
-When we need to hide some fields in `toString` in hidden manner, or to handle `hasCode` or `equals` in a very specific manner, it's alway better to get away without ad-hoc features in annotation processor. For example, if you want to mask some confidential data from `toString` method create opaque wrapper for this data, most often you will need it anyway.
+When we need to hide some fields in `toString` in hidden manner, or to handle `hasCode` or `equals` in a very specific manner, it's always better to get away without ad-hoc features in annotation processor. For example, if you want to mask some confidential data from `toString` method create opaque wrapper for this data, most often you will need it anyway.
 
 ```java
 @GenerateImmutable(builder = false)
@@ -743,7 +743,7 @@ interface Value {
 }
 ...
 // toString
-"ImmutableValue{number = 1, confidential=<NON DISCLOSED>}"
+"Value{number = 1, confidential=<NON DISCLOSED>}"
 ```
 
 See also [Auxiliary attributes](#auxiliary)
