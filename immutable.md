@@ -753,11 +753,10 @@ See also [Auxiliary attributes](#auxiliary)
 Limitations
 -----------
 Some features are not implemented due to lack of time or interest,
-while other features are too complex of too specific to noot implement them.
+while other features are too complex or too specific — so it's better
+to not implement them. Power to weight ratio is always considered!
 
 - Default and derived attributes cannot reliably refer to any other default or derived attribute.
-
 - Abstract value class could not be parameterized with type variables,
   however it could extend or implement parameterized type when actual types supplied.
-  
-- _Any other things that Immutables doesn't do_
+- _(...)_
