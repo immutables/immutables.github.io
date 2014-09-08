@@ -590,7 +590,8 @@ Vertex.builder().build();
 ```
 
 ** Possible problems **
-+ Generated files might suffer from name/filename clashing for same named types nested inside different top level classes in the same package
+
++ Generated files might suffer from name/filename clashing for same named types nested inside different top level classes in the same package.
   - Namespacing of generated classes is not provided without `@GenerateNested` annotation
 + Some of our non-core annotations might not work properly for nested classes
 
