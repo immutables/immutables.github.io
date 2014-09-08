@@ -65,7 +65,7 @@ are non-`abstract` methods that have body that computes value,
 thus such accessors require special annotation to distinguish from regular method.
 
 ### Immutable implementation class
-[Generated](/generated.html) `final` `class` that extends manually-written [abstract value class](#abstract-value)
+[Generated](/generated.html) `final class` that extends manually-written [abstract value type](#abstract-value)
 and implements all declared accessor methods as well as supporting fields, methods, constructors and builder class.
 Immutable implementation class implements abstract attribute accessors
 for scalar primitive and object reference types, special support provided for [collection attributes](#collection)
