@@ -727,7 +727,7 @@ When we need to hide some fields in `toString` in hidden manner, or to handle `h
 ```java
 @GenerateImmutable(builder = false)
 abstract class Confidential {
-  @GenerateConstructorArgument
+  @GenerateConstructorParameter
   abstract String value();
   public String toString() { return "<NON DISCLOSED>"; }
 }
