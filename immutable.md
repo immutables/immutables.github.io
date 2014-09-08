@@ -589,7 +589,7 @@ Edge.builder().build();
 Vertex.builder().build();
 ```
 
-** Possible problems **
+**Possible problems**
 
 + Generated files might suffer from name/filename clashing for same named types nested inside different top level classes in the same package.
   - Namespacing of generated classes is not provided without `@GenerateNested` annotation
