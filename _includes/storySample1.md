@@ -3,7 +3,7 @@
 // Add annotation to generate marshaler
 @GenerateImmutable
 @GenerateMarshaler
-public abstract class ValueObject {
+public interface ValueObject {
   ...
 }
 ```
@@ -18,9 +18,4 @@ String json = Marshaling.toJson(valueObject);
   "counts" : [ 1, 2 ],
   "description" : "present"
 }
-```
-
-```java
-ValueObject object =
-    Marshaling.fromJson(json, ValueObject.class);
 ```

@@ -146,10 +146,10 @@ public abstract class EventRecord {
 ```
 
 ----
-NOTE
+BSON/JSON documents
 ----
-_THIS REFERENCE IS NOT VERY DETAILED SHORT, PLEASE ADDITIONALY REFER TO JAVADOCS OF GENERATED CLASSES AND METHODS_ 
-_CONSULT WITH [JSON GUIDE](json.html) AS EVERYTHING FROM THERE APPLIES TO MAP DOCUMENTS_
+
+Large portion of things needed to know to create MongoDB documents described in [JSON guide](json.html)
   
 ----------
 Operations
