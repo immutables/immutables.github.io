@@ -3,7 +3,7 @@ title: 'Using annotation processor in IDE'
 layout: page
 ---
 
-{% capture v %}0.18{% endcapture %}
+{% capture v %}1.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 --------
 Overview
@@ -20,7 +20,7 @@ said there are some quirks that may prevent this functionality to function prope
 
 Annotation processor that is to be plugged into IDE was built as single jar without external dependencies.
 
-- [org.immutables:generate-tool:{{v}}]({{ depUri }}|generate-tool|{{ v }}|jar)
+- [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
 
 -------
 Eclipse

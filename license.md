@@ -3,21 +3,9 @@ title: 'License details'
 layout: page
 ---
 
-In terms of licensing _org.immutable_ has following relevant parts
-
-- Compile annotations and optional runtime libraries
-  +  Covered under terms of [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-- Compile-only annotation processing tool
-  + Contains software developed by _Immutables_ project
-      * Covered under terms of [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-  + Embedded Mozilla Rhino JavaScript engine
-      * Covered under terms of [Mozilla Public License, Version 2.0](http://www.mozilla.org/MPL/2.0/index.txt)
-- Code generated during automated build process by annotation processor
-  + Temporary machine-generated code covered under the same terms as files with manually written annotated classes from which they are derived from.
+Immutables toolkit and all required dependencies are covered under[The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 <hr>
-
-All source files under _Immutables_ are subject for the following notice
 
 ```java
 /*

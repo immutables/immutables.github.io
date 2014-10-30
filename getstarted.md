@@ -3,18 +3,21 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}0.18{% endcapture %}
+{% capture v %}1.0{% endcapture %}
+{% capture g %}18.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
 
 Java 7 or higher is required to run _Immutables_ annotation processor.
+Guava v{{g}} or higher is required and included as a transitive dependencies. Be aware of possible
+version conficts!
 
 Add required dependencies for basic immutable object generation:
 
-- [org.immutables:annotation:{{v}}]({{ depUri }}|annotation|{{ v }}|jar)
-  + Compile annotations and Guava as transitive dependency.
-- [org.immutables:generate-tool:{{v}}]({{ depUri }}|generate-tool|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}|annotation|{{ v }}|jar)
+  + Compile annotations and Guava v{{g}} as transitive dependency.
+- [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
   + Compile-only annotation processing tool. Declare it in "provided" scope to prevent propagation of this artifact to runtime
 
 Snippet of maven dependencies:
@@ -22,19 +25,19 @@ Snippet of maven dependencies:
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>annotation</artifactId>
+  <artifactId>value</artifactId>
   <version>{{ v }}</version>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>generate-tool</artifactId>
+  <artifactId>value-standalone</artifactId>
   <version>{{ v }}</version>
   <scope>provided</scope>
+  <optional>true</optional>
 </dependency>
 ```
 
-_Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend
-(given annotation processing is not disabled in build tool configuration).
+_Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend (given annotation processing is not disabled in build tool configuration).
 _Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using annotation processor in IDE](/apt.html).
 
 ## Create immutable object
@@ -46,9 +49,9 @@ package info.sample;
 
 import java.util.List;
 import java.util.Set;
-import org.immutables.annotation.GenerateImmutable;
+import org.immutables.value.Value.Immutable;
 
-@GenerateImmutable
+@Value.Immutable
 public abstract class MyValue {
   public abstract int number();
   public abstract String string();
@@ -72,7 +75,7 @@ public class MyValueMain {
         .number(2)
         .build();
 
-    // MyValue{number=2, string=, ints=[1], longs=[]}
+    // MyValue{number=2, string=string, ints=[1], longs=[]}
 
     int number = value.number();
     // 2

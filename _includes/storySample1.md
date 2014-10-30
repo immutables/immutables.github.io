@@ -1,8 +1,8 @@
 
 ```java
 // Add annotation to generate marshaler
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public interface ValueObject {
   ...
 }

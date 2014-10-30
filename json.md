@@ -3,7 +3,7 @@ title: 'JSON marshaling'
 layout: page
 ---
 
-{% capture v %}0.18{% endcapture %}
+{% capture v %}1.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -14,14 +14,16 @@ JSON is a simple and flexible format, and underlying [Jackson](http://wiki.faste
 parsers and generators makes it possible to use various additional textual and binary formats:
 [Smile](https://github.com/FasterXML/jackson-dataformat-smile),
 [BSON](https://github.com/michel-kraemer/bson4jackson),
+[CBOR](https://github.com/FasterXML/jackson-dataformat-cbor),
 [YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
+
+* Clean JSON representation without any synthetic fields and quite flexible ways to map immutable object graphs, also supporting polymorphic unmarshaling by structure
+* Use of code-generation and mostly compile-time overload resolution to create high-performance binding
+* By using _Jackson core API_ we gain high-performance and flexibility to switch "dataformat" adapters
 
 We _do not use_ [ObjectMapper](https://github.com/FasterXML/jackson-databind) — the bean/POJO mapping facilities.
 _Immutables_ provides an alternative bindings based on straightforward code generation.
-
-* Clean JSON representation without any synthetic fields and quite flexible ways to map immutable object graphs
-* Use of code-generation and mostly compile-time overload resolution to create high-performance binding
-* By using _Jackson core API_ we gain high-performance and flexibility to switch "dataformat" adapters
+However, you can integrate with POJO/Object mapper by using additional annotation @[Jackson.Mapped](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Jackson.java).
 
 Additional advantages arise from how _Immutables_ facilities work together, specifically,
 very convenient _MongoDB_ repositories are built on top of JSON document marshaling and BSON dataformat.
@@ -39,9 +41,9 @@ In addition to annotation-processor dependencies, you need to add runtime librar
   + Compile and runtime utilities used during marshaling
 
 _Common_ artifact specifically excludes any external dependencies (Jackson etc) to be picked manually.
-For quick start you should rather use our _service_ artifact that combines all needed dependencies.
+For quick start you should rather use _quickstart_ artifact that combines all needed dependencies.
 
-- [org.immutables:service:{{v}}]({{ depUri }}|service|{{ v }}|jar)
+- [org.immutables:quickstart:{{v}}]({{ depUri }}|service|{{ v }}|jar)
   + All needed transitive runtime dependencies 
 
 Snippet of maven dependencies:
@@ -49,22 +51,23 @@ Snippet of maven dependencies:
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>service</artifactId>
+  <artifactId>quickstart</artifactId>
   <version>{{ v }}</version>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>generate-tool</artifactId>
+  <artifactId>value-standalone</artifactId>
   <version>{{ v }}</version>
   <scope>provided</scope>
+  <optional>true</optional>
 </dependency>
 ```
-In order to enable marshaling, put `org.immutables.annotation.GenerateMarshaler`
-annotation on a abstract value class alongside with `org.immutables.annotation.GenerateImmutable` annotation.
+In order to enable marshaling, put `org.immutables.value.Json.Marshaled`
+annotation on a abstract value class alongside with `org.immutables.value.Value.Immutable` annotation.
 
 ```java
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class ValueObject {
   public abstract String name();
   public abstract List<Integer> numbers();
@@ -73,9 +76,8 @@ public abstract class ValueObject {
 ```
 This will generate `ValueObjectMarshaler` marshaler class in the same package.
 
-There's convenient static methods on class `org.immutables.common.marshal.Marshaling`
+There're convenient static methods on class `org.immutables.common.marshal.Marshaling`
 for marshaling immutable objects back and forth to standard textual JSON.
-While not particularly suited for production, but are fine for simple usage and evaluation.
 
 ```java
 ValueObject valueObject = ImmutableValueObject.builder()
@@ -105,9 +107,7 @@ Marshaling.fromJson(valueObjectJson, ValueObject.class);
   - `IOException`s for input output errors and JSON syntax problems
   - `RuntimeException`s during unmarshaling in case of missing required attributes or JSON structure do not match attribute type
 
-+ If certain types of attributes do not support marshaling
-  - Will fail to compile, `marshal` method with proper overload will not be found
-  - In some cases, will be marshaled as `toString`
++ If certain types of attributes do not support marshaling — it will be marshaled as `toString`
 
 ### JAX-RS marshaling provider
 
@@ -132,8 +132,7 @@ public class TestResource {
   ...
 }
 ```
-See your JAX-RS implementation reference on how to install providers, but SPI-based auto-registration should work
-if you just have all [runtime dependencies](#dependencies) in the classpath of a web application.
+See your JAX-RS implementation reference on how to install providers, but SPI-based auto-registration should work if you just have all [runtime dependencies](#dependencies) in the classpath of a web application.
 
 ### Jackson core marshaling
 
@@ -158,26 +157,24 @@ try (JsonGenerator generator = jsonFactory.createGenerator(writer)) {
 String json = writer.toString()
 
 try (JsonParser parser = jsonFactory.createParser(json)) {
-  parser.nextToken(); // required before calling unmarshal
   marshaler.unmarshalInstance(parser);
 }
 ```
 
-To obtain marshaler reflectively if type of abstract value class will be known only in runtime,
+To obtain marshaler if type of abstract value class will be known only in runtime,
 use `Marshaling.marshalerFor` method.
 
 ```java
 Class<?> expectedType = ...
 Marshaler<?> marshaler = Marshaling.marshalerFor(expectedType);
 ```
-For a nice examples see the source code for `org.immutables.common.marshal.Marshaling` class.
 
 **Possible problems**
 
 + Parsing or generation problems
   - `IOException`s for input output errors and JSON syntax problems
   - `RuntimeException`s during unmarshaling in case of missing required attributes or JSON structure do not match attribute type
-  - `ClassNotFoundException` if marshaler could not be found reflectively
+  - Autogenerated entries in `/META-INF/services/*` may end up corrupted or missing due to jar repackaging or custom build processes, this may cause problems while locating marshalers for types.
 
 ----------------
 Mapping features
@@ -189,7 +186,7 @@ Automatically generated bindings are straightforward and generally useful withou
 #### Supported attribute types
 
 * Java primitives, Strings, Enums — work as built-in types
-* Nested documents - abstract value classes that are also annotated with `@GenerateMarshaler`
+* Nested documents - abstract value classes that are also annotated with `@Json.Marshaled`
 * Lists, Sets, Maps and Optional of the above types
   - Collections mapped to JSON arrays
   - Maps mapped to JSON object (keys always converted to strings)
@@ -200,15 +197,15 @@ But there are couple of ways to customize binding with support for additional cu
 ### Specify field name
 By default JSON field name is the same as an attribute name of abstract value class.
 However, it is very easy to specify field name as it should appear in JSON representation.
-Use `value` attribute of `org.immutables.annotation.GenerateMarshaled` annotation placed on attribute accessor.
+Use `value` attribute of `org.immutables.value.Json.Named` annotation placed on attribute accessor.
 
 ```java
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class ValueObject {
-  @GenerateMarshaled("_id")
+  @Json.Named("_id")
   public abstract long id();
-  @GenerateMarshaled("name")
+  @Json.Named("name")
   public abstract String namedAs();
   public abstract int otherAttribute();
 }
@@ -233,14 +230,14 @@ ValueObject valueObject = ImmutableValueObject.builder()
 
 By default, absent values of `com.google.common.base.Optional` are being omitted from JSON document.
 This generally help to keep JSON cleaner and reduce its size if there are a lot of optional attributes.
-When you do want to force output of absent attribute using `null` value, use `forceEmpty = true`
-of `org.immutables.annotation.GenerateMarshaled` annotation placed on attribute accessor.
+When you do want to force output of absent attribute using `null` value, use `@Json.ForceEmpty`
+annotation placed on attribute accessor.
 
 ```java
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class OptionalObject {
-  @GenerateMarshaled(forceEmpty = true)
+  @Json.ForceEmpty
   public abstract Optional<String> v1();
   public abstract Optional<String> v2();
 }
@@ -256,21 +253,20 @@ OptionalObject objectWithOptions = ImmutableOptionalObject.builder().build();
 }
 ```
 
-`forceEmpty` used for marshaling, but optional attributes could be unmarshaled from JSON representation either way:
+Optional attributes could be unmarshaled from JSON representation either way:
 missing field or field with `null` value.
 
 ### Include empty arrays
 
 By default, empty `List` and `Set` attributes are being omitted from JSON.
 This generally help to keep JSON cleaner and slightly reduce its size.
-When you do want to force output of empty collections using empty JSON array`null` value. Use `forceEmpty = true`
-of `org.immutables.annotation.GenerateMarshaled` annotation placed on attribute accessor.
+When you do want to force output of empty collections using empty JSON array `null` value. Use `@Json.ForceEmpty` annotation placed on attribute accessor.
 
 ```java
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class CollectionObject {
-  @GenerateMarshaled(forceEmpty = true)
+  @Json.Named(forceEmpty = true)
   public abstract Set<String> c1();
   public abstract List<String> c2();
 }
@@ -285,8 +281,11 @@ CollectionObject collectionObject = ImmutableCollectionObject.builder().build();
   "c1": []
 }
 ```
-`forceEmpty` used for marshaling, but collection attributes could be unmarshaled from JSON representation either way:
+Collection attributes could be unmarshaled from JSON representation either way:
 missing field or field with empty array.
+
+### Ignoring attributes.
+Collection, optional and default attributes could be ignored during marshaling by using `@Json.Ignore` annotation.
 
 ### Tuples of constructor arguments
 One of the interesting features of _Immutables_ JSON marshaling is the ability to map tuples (triples and so on)
@@ -296,12 +295,12 @@ as array of values, consider, for example, dimensional coordinates or RGB colors
 In order to marshal object as tuple, you need to annotate [constructor](/immutable.html#constructor) arguments and disable generation of [builder](/immutable.html#builder).
 
 ```java
-@GenerateImmutable(builder = false)
-@GenerateMarshaler
+@Value.Immutable(builder = false)
+@Json.Marshaled
 public abstract class Coordinates {
-  @GenerateConstructorParameter(order = 0)
+  @Value.Parameter
   public abstract double latitude();
-  @GenerateConstructorParameter(order = 1)
+  @Value.Parameter
   public abstract double longitude();
 }
 
@@ -317,7 +316,7 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 ### Custom types
 
 Sometimes there is a need to marshal/unmarshal some custom-made or third-party immutable objects as part
-of object with `@GenerateImmutable` and `@GenerateMarshaler` annotations. Our unique approach it to use
+of object with `@Value.Immutable` and `@Json.Marshaled` annotations. Our unique approach it to use
 static routines with special signatures and use java compiler to resolve most specific overload.
 
 ```java
@@ -338,22 +337,23 @@ public static void marshal(
 ```
 
 Put static methods into a public class, lets name it `MyRoutines` for example.
-Then reference classes with marshaling methods using `importRoutines` attribute on `@GenerateMarshaler` annotation.
+Then reference classes with marshaling methods using `@Json.Import` annotation.
 
 ```java
-@GenerateMarshaler(importRoutines={ MyRoutines.class })
+@Json.Import({ MyRoutines.class })
+@Json.Marshaled
 public abstract class MyDocument {
   public abstract T customTypeAttribute();
 }
 ```
 
 Such classes as `MyRoutines` may contain methods to marshal many different custom type, thus serving a "marshaling library".
-You may share `importRoutines` definition across all marshaled documents in a package if you put
-`@GenerateMarshaler` annotation on a package declaration using special `package-info.java` file in a package.
+You may share imported definition across all marshaled documents in a package if you put
+`@Json.Import` annotation on a package declaration using special `package-info.java` file in a package.
 
 ```java
 //package-info.java
-@org.immutables.annotation.GenerateMarshaler(importRoutines = {
+@org.immutables.value.Json.Import({
     my.pack.util.MyRoutines.class,
     my.pack.util.MyOtherRoutines.class
 })
@@ -367,32 +367,32 @@ Be sure to verify that any static marshaling routines could be correctly referen
 Another interesting features of _Immutables_ JSON marshaling is the ability to map abstract type to one of
 it's subclasses by structure (not by "discriminator" field).
 
-Define common supertype class and it's subclasses, then use `org.immutables.annotation.GenerateMarshaledSubclasses`
+Define common supertype class and it's subclasses, then use `org.immutables.value.Json.Subclasses`
 annotation to list expected superclasses. Then you can use supertype as attribute type in the document,
 as plain reference or as list and set of sypertype.
 
 ```java
-@GenerateMarshaledSubclasses({
+@Json.Subclasses({
     InterestingValue.class,
     RelevantValue.class
 })
 public abstract class AbstractValue {}
 ...
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class InterestingValue extends AbstractValue {
   public abstract int number();
 }
 ...
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class RelevantValue extends AbstractValue {
   public abstract String string();
 }
 ...
 // This is host document, which could contain list of value
-@GenerateImmutable
-@GenerateMarshaler
+@Value.Immutable
+@Json.Marshaled
 public abstract class HostDocument {
   public abstract List<AbstractValue> value();
 }

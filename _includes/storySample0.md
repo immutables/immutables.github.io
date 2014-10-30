@@ -1,9 +1,9 @@
 
 ```java
-import org.immutables.annotation.GenerateImmutable;
+import org.immutables.value.Value.Immutable;
 
 // Define abstract value type
-@GenerateImmutable
+@Value.Immutable
 public interface ValueObject {
   String name();
   List<Integer> counts();

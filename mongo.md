@@ -3,7 +3,7 @@ title: 'MongoDB repositories'
 layout: page
 ---
 
-{% capture v %}0.18{% endcapture %}
+{% capture v %}1.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -31,6 +31,9 @@ very good [bson4jackson](https://github.com/michel-kraemer/bson4jackson) data-fo
 Usage
 -----
 
+### Note
+Current release _works only_ with versions `2.11.X` of MongoDB Java driver. It will be fixed soon to be able to upgrade to a newer driver. Sorry for inconvenience.
+
 ### Dependencies
 In addition to annotation-processor dependencies, you need to add runtime libraries.
 
@@ -40,9 +43,9 @@ In addition to annotation-processor dependencies, you need to add runtime librar
   + Compile and runtime utilities used during marshaling
 
 _Common_ artifact specifically excludes any external dependencies (Jackson and MongoDB etc) to be picked manually.
-For quick start you should rather use our _service_ artifact that combines all needed dependencies.
+For quick start you should rather use _quickstart_ artifact that combines all needed dependencies.
 
-- [org.immutables:service:{{v}}]({{ depUri }}|service|{{ v }}|jar)
+- [org.immutables:quickstart:{{v}}]({{ depUri }}|service|{{ v }}|jar)
   + All needed transitive runtime dependencies 
 
 Snippet of maven dependencies:
@@ -50,22 +53,23 @@ Snippet of maven dependencies:
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>service</artifactId>
+  <artifactId>quickstart</artifactId>
   <version>{{ v }}</version>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
-  <artifactId>generate-tool</artifactId>
+  <artifactId>value-standalone</artifactId>
   <version>{{ v }}</version>
   <scope>provided</scope>
+  <optional>true</optional>
 </dependency>
 ```
 
 ### Enable repository generation
 
-In order to enable repository generation, put `org.immutables.annotation.GenerateRepository`
-annotation on a abstract value class alongside with `org.immutables.annotation.GenerateImmutable` annotation.
-Annotation `org.immutables.annotation.GenerateMarshaled` is implied and is optional in presence of `GenerateRepository`.
+In order to enable repository generation, put `org.immutables.value.Mongo.Repository`
+annotation on a abstract value class alongside with `org.immutables.value.Value.Immutable` annotation.
+Annotation `org.immutables.value.Json.Named` is implied and is optional in presence of `Mongo.Repository`.
 Repository which accesses collection of documents will be generated 
 as a class with `Repository` suffix in the same package.
 
@@ -73,8 +77,8 @@ By default mapped collection name is derived from abstract value class name: for
 name will be `userDocument`. However, name is customizable using `value` annotation attribute.
 
 ```java
-@GenerateImmutable
-@GenerateRepository("user")
+@Value.Immutable
+@Mongo.Repository("user")
 public abstract class UserDocument {
   ...
 }
@@ -115,17 +119,17 @@ Test database on a default port on a local machine: just launch `mongod` and get
 Important thing is that it is **highy** recommended to have explicit `_id` field declared as attribute.
 
 ```java
-@GenerateImmutable
-@GenerateRepository("user")
+@Value.Immutable
+@Mongo.Repository("user")
 public abstract class UserDocument {
-  @GenerateMarshaled("_id")
+  @Json.Named("_id")
   public abstract int id();
   ...
 }
 ```
 
 Identifier attribute can be of any type that is marshaled to a valid BSON type that could be used as `_id` field in MongoDB.
-Java attribute name is irrelevant as long as it will be generated marshaled as `_id` (`@GenerateMarshaled("_id")`).
+Java attribute name is irrelevant as long as it will be generated marshaled as `_id` (`@Json.Named("_id")`).
 
 In some cases you may need to use special type `ObjectID` for `_id` fields. In order to do this,
 _Immutables_ provides wrapper type `org.immutables.common.repository.Id`. Use static factory methods of `Id` class
@@ -133,11 +137,11 @@ to construct instances that corresponds to MongoDB' `ObjectID`.
 Here's example of auto-generated identifier:
 
 ```java
-@GenerateImmutable
-@GenerateRepository("events")
+@Value.Immutable
+@Mongo.Repository("events")
 public abstract class EventRecord {
-  @GenerateMarshaled("_id")
-  @GenerateDefault
+  @Json.Named("_id")
+  @Value.Default
   public Id id() {
     return Id.generate();
   }
@@ -158,14 +162,14 @@ Operations
 #### Sample document repository
 
 ```java
-@GenerateImmutable
-@GenerateRepository("posts")
+@Value.Immutable
+@Mongo.Repository("posts")
 public abstract class PostDocument {
-  @GenerateMarshaled("_id")
+  @Json.Named("_id")
   public abstract long id();
   public abstract String content();
   public abstract List<Integer> ratings();
-  @GenerateDefault
+  @Value.Default
   public int version() {
     return 0;
   }

@@ -1,10 +1,10 @@
 
 ```java
 // Define repository for collection "items"
-@GenerateImmutable
-@GenerateRepository("items")
+@Value.Immutable
+@Mongo.Repository("items")
 public abstract class Item {
-  @GenerateMarshaled("_id")
+  @Json.Named("_id")
   public abstract long id();
   public abstract String name();
   public abstract Set<Integer> values();
