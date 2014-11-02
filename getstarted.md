@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}1.0{% endcapture %}
+{% capture v %}1.0.1{% endcapture %}
 {% capture g %}18.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
@@ -15,7 +15,7 @@ version conficts!
 
 Add required dependencies for basic immutable object generation:
 
-- [org.immutables:value:{{v}}]({{ depUri }}|annotation|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
   + Compile annotations and Guava v{{g}} as transitive dependency.
 - [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
   + Compile-only annotation processing tool. Declare it in "provided" scope to prevent propagation of this artifact to runtime

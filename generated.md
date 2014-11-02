@@ -44,7 +44,7 @@ import javax.annotation.concurrent.NotThreadSafe;
  * Use static factory methods to create instances: {@code of()} or
  * {@code builder()}.
  */
-@SuppressWarnings({"all", "unchecked"})
+@SuppressWarnings("all")
 @ParametersAreNonnullByDefault
 @Generated({"Immutables.generator", "ValueObject"})
 @Immutable

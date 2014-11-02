@@ -3,7 +3,7 @@ title: 'JSON marshaling'
 layout: page
 ---
 
-{% capture v %}1.0{% endcapture %}
+{% capture v %}1.0.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -43,7 +43,7 @@ In addition to annotation-processor dependencies, you need to add runtime librar
 _Common_ artifact specifically excludes any external dependencies (Jackson etc) to be picked manually.
 For quick start you should rather use _quickstart_ artifact that combines all needed dependencies.
 
-- [org.immutables:quickstart:{{v}}]({{ depUri }}|service|{{ v }}|jar)
+- [org.immutables:quickstart:{{v}}]({{ depUri }}|quickstart|{{ v }}|jar)
   + All needed transitive runtime dependencies 
 
 Snippet of maven dependencies:
