@@ -535,7 +535,7 @@ and `hashCode` correctly and only if you a know what you are doing.
 Annotations types could also be annotated as `@Value.Immutable`, immutable annotation implementation will be generated, which behave accordingly to the specification. You could expect array and [default attributes](#default-attribute) and all other features will work as for regular immutable objects.
 
 ```java
-@Value.Nested
+@Value.Immutable
 public @inteface MyAnnotation {
   String[] value();
   boolean enable() default true;
