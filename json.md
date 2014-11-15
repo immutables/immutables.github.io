@@ -266,7 +266,7 @@ When you do want to force output of empty collections using empty JSON array `nu
 @Value.Immutable
 @Json.Marshaled
 public abstract class CollectionObject {
-  @Json.Named(forceEmpty = true)
+  @Json.ForceEmpty
   public abstract Set<String> c1();
   public abstract List<String> c2();
 }
