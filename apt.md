@@ -34,7 +34,7 @@ Enable JDT/APT autoconfiguration from Maven dependencies globally or per project
 <img src="https://developer.jboss.org/servlet/JiveServlet/downloadImage/38-4947-18599/620-226/m2e-apt-prefs.png"><br>
 _(Picture linked from [developer.jboss.org](https://developer.jboss.org/en/tools/blog/2012/05/20/annotation-processing-support-in-m2e-or-m2e-apt-100-is-out))_
 
-After this on each m2e Maven project import/reimport, annotation processors will be configured from classpath.
+After this on each m2e Maven project import/update, annotation processors will be configured from classpath.
 
 - [jbosstools/m2e-apt project page](https://github.com/jbosstools/m2e-apt)
 
@@ -63,6 +63,6 @@ _Preferences_ > _Project Settings_ > _Compiler_ > _Annotation Processors_.
 Obtain annotation processors from project classpath and specify output directories.
 
 <img src="http://restx.io/images/docs/idea-annotation-processor-preferences.png"><br>
-_(Picture linked from http://restx.io documentation)_
+_(Picture linked from [restx.io](http://restx.io) documentation)_
 
 After you do this, classes will be generated on each project build, sources will appear and will be visible to search, autocompletion and so on.
