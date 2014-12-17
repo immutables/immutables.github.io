@@ -40,8 +40,9 @@ In addition to annotation-processor dependencies, you need to add runtime librar
 - [org.immutables:common:{{v}}]({{ depUri }}|common|{{ v }}|jar)
   + Compile and runtime utilities used during marshaling
 
-_Common_ artifact specifically excludes any external dependencies (Jackson etc) to be picked manually.
-For quick start you should rather use _quickstart_ artifact that combines all needed dependencies.
+_Common_ artifact does not bring any transitive dependencies, so required Jackson libraries (`jackson-core`, `jackson-databind` etc) should be added manually.
+
+For quick start you should rather use _quickstart_ artifact that combines all needed dependencies with some extra. But it is a good idea to swicth to `common` artifact later and pick minimal explicit set of dependencies for you projects.
 
 - [org.immutables:quickstart:{{v}}]({{ depUri }}|quickstart|{{ v }}|jar)
   + All needed transitive runtime dependencies 

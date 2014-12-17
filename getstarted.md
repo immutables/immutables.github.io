@@ -15,10 +15,12 @@ version conficts!
 
 Add required dependencies for basic immutable object generation:
 
+- [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
+  + Compile-only annotation processing tool. All in one artifact: annotations, processor with repackaged embedded depencies. Declare it in "provided" scope to prevent propagation of this artifact to runtime.
+
+In _addition_ to the standalone artifact, annotation API jar with transitive Guava dependency could be added if needed.
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
   + Compile annotations and Guava v{{g}} as transitive dependency.
-- [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
-  + Compile-only annotation processing tool. Declare it in "provided" scope to prevent propagation of this artifact to runtime
 
 Snippet of maven dependencies:
 
