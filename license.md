@@ -1,15 +1,15 @@
 ---
-title: 'License details'
+title: 'License'
 layout: page
 ---
 
-Immutables toolkit and all required dependencies are covered under[The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+Immutables toolkit and all required dependencies are covered under [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 <hr>
 
 ```java
 /*
-    Copyright 2013-2014 Immutables.org authors
+    Copyright 2013-2015 Immutables Authors and Contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

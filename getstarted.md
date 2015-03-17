@@ -3,22 +3,22 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}1.0.1{% endcapture %}
+{% capture v %}2.0{% endcapture %}
 {% capture g %}18.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
 
 Java 7 or higher is required to run _Immutables_ annotation processor.
-Guava v{{g}} or higher is required and included as a transitive dependencies. Be aware of possible
-version conficts!
+Guava v12 or higher is required.
 
 Add required dependencies for basic immutable object generation:
 
 - [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
   + Compile-only annotation processing tool. All in one artifact: annotations, processor with repackaged embedded depencies. Declare it in "provided" scope to prevent propagation of this artifact to runtime.
 
-In _addition_ to the standalone artifact, annotation API jar with transitive Guava dependency could be added if needed.
+In _addition_ to the standalone artifact, annotation API jar (to read javadocs in IDE) with transitive Guava dependency could be added if needed.
+
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
   + Compile annotations and Guava v{{g}} as transitive dependency.
 
@@ -44,21 +44,21 @@ _Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using
 
 ## Create immutable object
 
-Assuming that required dependencies were added, create a public top-level abstract class with abstract accessor methods.
+Assuming that required dependencies were added, create a abstract class with abstract accessor methods. You can do this with interfaces or even annotations (`@interface`)
 
 ```java
 package info.sample;
 
 import java.util.List;
 import java.util.Set;
-import org.immutables.value.Value.Immutable;
+import org.immutables.value.Value;
 
 @Value.Immutable
-public abstract class MyValue {
-  public abstract int number();
-  public abstract String string();
-  public abstract List<Integer> ints();
-  public abstract Set<Long> longs();
+public abstract class FoobarValue {
+  public abstract int foo();
+  public abstract String bar();
+  public abstract List<Integer> buz();
+  public abstract Set<Long> crux();
 }
 ```
 
@@ -69,21 +69,17 @@ package info.sample;
 
 import java.util.List;
 
-public class MyValueMain {
+public class FoobarValueMain {
   public static void main(String... args) {
-    MyValue value = ImmutableMyValue.builder()
-        .addInts(1)
-        .string("string")
-        .number(2)
-        .build();
+    FoobarValue value = ImmutableFoobarValue.builder()
+        .foo(2)
+        .bar("Bar")
+        .addBuz(1, 3, 4)
+        .build(); // FoobarValue{foo=2, bar=Bar, buz=[1, 3, 4], crux={}}
 
-    // MyValue{number=2, string=string, ints=[1], longs=[]}
+    int foo = value.foo(); // 2
 
-    int number = value.number();
-    // 2
-
-    List<Integer> ints = value.ints();
-    // ImmutableList.of(1)
+    List<Integer> buz = value.buz(); // ImmutableList.of(1, 3, 4)
   }
 }
 ```

@@ -60,13 +60,12 @@ and generally builders compensates lack of named and optional constructor argume
 ```java
 // builder methods illustrated
 ImmutableObject.builder()
-    .attribute1(1442)
-    .anotherAttribute(true)
-    .addListAttribute("a")
-    .addListAttribute("b")
-    .addSetAttribute("1", "2")
-    .optionalAttribute("value")
-    .putMapAttribute(key, value)
+    .foo(1442)
+    .bar(true)
+    .addBuz("a")
+    .addBuz("1", "2")
+    .addAllBuz(iterable)
+    .putQux(key, value)
     .build();
 ```
 
@@ -112,10 +111,10 @@ class Builders {
 }
 ```
 
-Explicitly declared "Builder" could specify all needed `extends` or `implements` declarations
-as well as it could have convenience methods that will show up on immutable object builder.
-However, special care should be taken in order to maintain structural compatibility of
+Explicitly declared abstract "Builder" could specify all needed `extends` or `implements` declarations as well as it could have convenience methods that will show up on immutable object builder. However, special care should be taken in order to maintain structural compatibility of
 declared builder supertype and generated builders, otherwise compile error will occur in generated code.
+
+Using "forwarding" factory methods and abstract builder it is possible to hide generated implementation type and it's builder from the API. See [example](#hide-implementation).
 
 <a name="constructor"></a>
 ### Constructor method
@@ -148,7 +147,7 @@ If there's more that one constructor parameter it is advised to put `order` anno
 **Possible problems**
 
 + If not all mandatory attributes are marked as `@Value.Parameter`
-  - Compilation error in the generated code: not all final fields were initialized in constructor
+  - Compilation error: could not generate default value for mandatory field.
 
 <a name="collection"></a>
 ### Array, Collection and Map attributes
@@ -168,8 +167,21 @@ Collection attributes are backed by Guava immutable collections,
 moreover, `java.util.Set` and `java.util.Map` with `enum` keys
 are backed by efficient `EnumSet` and `EnumMap` implementations.
 
-Any container attribute is non mandatory to specify using builder.
-This behavior could be altered in some ways, for example, see [Precondition check method](#check-method)
+In addition, ordered maps and sets are supported for natural and reverse natural ordering
+using `@Value.NaturalOrder` and `@Value.ReverseOrder` annotations correspondingly.
+
++ `java.util.SortedSet<T>`
+
++ `java.util.NavigableSet<T>`
+
++ `java.util.SortedMap<K, V>`
+
++ `java.util.NavigableMap<K, V>`
+
+Without ordering annotation, ordered sets and maps attributes will be generated as regular attributes to support costruction with custom comparators etc.
+
+When building using builder, collection attributes are addition-only and could be left empty.
+You can verify required number of items using [Precondition check method](#check-method)
 
 [Builders](#builder) have special methods to initialize collection attributes:
 
@@ -183,23 +195,21 @@ This behavior could be altered in some ways, for example, see [Precondition chec
   - `putBar(Map.Entry<? extends K, ? extends V>)`
   - `putAllBar(Map<? extends K, ? extends K>)`
   
-Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To reset content of collection or map use [wither](#with-methods) methods on built instances.
+Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To reset content of collection or map use [copy](#copy-methods) methods right after you build instance.
   
 Someone may ask: why other kinds of containers is not supported in the same way,
-for example `java.lang.Iterable`, `java.util.Collection` or `java.util.NavigableSet`?
-That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling. This might change upon request, of course.
+for example `java.lang.Iterable`, `java.util.Collection` or `java.util.Queue`?
+That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling. This might change upon request, of course (and that is what happened with ordered sets and maps which got some support).
 The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic support, other container types are still usable:
 
 ```java
 @Value.Immutable
 public abstract class DoItYourselfContainer {
    public abstract Iterable<String> iterable();
-   public abstract NavigableSet<Integer> sortedSet();
 }
 ...
 ImmutableDoItYourselfContainer.builder()
     .iterable(ImmutableSet.of("a", "b", "c"))
-    .sortedSet(ImmutableSortedSet.of(1, 2, 3, 4))
     .build();
 ```
 
@@ -318,7 +328,8 @@ To declare lazy attribute, create non-abstract attribute initializer method and 
 body of the method should compute and return value of an attribute.
 Derived attributes acts much like regular methods, but compute value on first access and subsequently return the same memoized value.
 
-**Be warned**: _lazy attributes do not take part in equals and hashCode computation!_
+**Be warned**: _lazy attributes do not take part in equals and hashCode computation!_ and act
+as [auxiliary](#auxiliary)
 
 ```java
 @Value.Immutable
@@ -358,7 +369,8 @@ Do not refer to lazy values from default or derived attributes to avoid issues.
 Calling lazy attribute from derived or default is _not always safe_,
 it will make no sense as it will made lazy value an eagerly computed, moreover, if lazy value is in turn uses in computation one of those default or derived attribute, then it may found it uninitialized.
 
-Implementation of lazy attributes is very similar to the way scala does this. Currently this implementation strategy suffers from the problem described in [Scala SIP-20](http://docs.scala-lang.org/sips/pending/improved-lazy-val-initialization.html). If you ever reproduce this with _Immutables_, you will be a "lucky" one: cyclic dependency need to be introduced between different immutable objects, which only could happen if you are mixing immutable objects with mutable/static/thread-local state. 
+Implementation of lazy attributes is very similar to the way they implemented in older scala version. Currently this implementation strategy potentially suffers from the problem described in [Scala SIP-20](http://docs.scala-lang.org/sips/pending/improved-lazy-val-initialization.html).
+On the other hand, problem could only happen if you are mixing immutable objects with mutable/static/thread-local state: cyclic dependency need to be introduced between different immutable objects.
 
 <a name="check-method"></a>
 ### Precondition check method
@@ -393,8 +405,8 @@ Precondition check methods runs when immutable object _instantiated and all attr
 but _before returned to caller_. Any instance that failed precondition
 check is unreachable to caller due to runtime exception.
 
-<a name="with-methods"></a>
-### Wither methods
+<a name="copy-methods"></a>
+### Copy methods
 
 `with*` methods (withers) allow to change attributes by copying immutable object with new value applied and rest of attributes unchanged.
 
@@ -404,11 +416,11 @@ counter = counter.withValue(counter.value() + 1)
 
 Cheap refrence equality `==` check added to prevent copy of the same value by returning `this`. Also primitives has the same `==` value check (except for `float` and `double`). Full equality check or other specialized checks considered were omitted to be too heavy and might be expensive on it's own.
 
-It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by immutable object builder. New values will effectively share subgraphs of old values, which is desirable in many cases. 
+Copy methods provide form of copying with structural sharing. It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by builder. New values will effectively share subgraphs of old values, which is desirable in many cases. 
 
-What about collection and map attributes? While it is tempting to have a bunch of methods like `withItemAdded` or `withKeyValuePut`, they might require a lot of variation like _add last_ or _add first_ and will hide the fact of collection rebuilding, which is not always desirable for immutable collections. As of now, there's only simple value replacement for all attributes, but new collection values are guaranteed to be copied as immutable collections if they are not already.
+What about collection and map attributes? While it is tempting to have a bunch of methods like `withItemAdded` or `withKeyValuePut`, they might require a lot of variation like _add last_ or _add first_ and will hide the fact of collection rebuilding or rehashing, which is not always desirable for immutable collections. As of now, there's only simple value replacement for all kinds of attributes, but new collection values are guaranteed to be copied as immutable if they are not already.
 
-One of the frequently asked questions among developers using recent version of _Immutables_: how do I reset collection content while copying object by builder, `clear*` methods was recently removed from generated builders.
+One of the frequently asked questions among developers using recent versions of _Immutables_: how do I reset collection content while copying object by builder, `clear*` methods were removed from builders some time ago.
 
 * First of all, in any case that is more complex than the simplest ones, you should manually reconstruct collections.
 * Conside using `with*` methods to replace copied collection with other values
@@ -421,8 +433,8 @@ Value changedValue =
         .withValues(ImmutableList.of("Only new value")) // replacing any copied collection
 ```
 
-Withers are generated by default and to use them you need get reference to immutable implementation class instance, rather than up-casted abstract value type reference.
-Use `@Value.Immutable(withers = false)` annotation parameter to _disable_ generation of wither methods.
+Copy methods are generated by default and to use them you need get reference to immutable implementation class instance, rather than up-casted abstract value type reference.
+Use `@Value.Immutable(copy = false)` annotation parameter to _disable_ generation of copy methods.
 
 ### Singleton instances
 
@@ -458,7 +470,7 @@ and _only one_ instance of particular immutable type, following recipe will do:
 ```java
 @Value.Immutable(singleton = true, builder = false)
 public abstract class Singleton {
-  // Limit constructor accessibility to a package
+  // Limit constructor accessibility to a package if needed
   Singleton() {}
 }
 
@@ -469,7 +481,7 @@ Singleton singleInstance = ImmutableSingleton.of();
 **Possible problems**
 
 + If abstract value type contains mandatory attributes
-  - Compilation error for the generated code: all final fields should be initialized in constructor
+  - Compilation error: could not generate default value for mandatory field.
 
 <a name="interning"></a>
 ### Instance interning
@@ -547,20 +559,22 @@ ImmutableMyAnnotation.builder()
   .build();
 ```
 
+If annotations reside in different library or package, you still can generate implementation and builder using [Include](#include) annotation.
+
 <a name="nesting"></a>
 ### Flexible nesting
-When model messages and documents, you usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class, and we need to be able to generate immutable subclasses for nested static inner classes or interfaces. Despite some of our advanced generators may not fully work with interfaces or nested classes, core immutable generation fully supports nested abstract value types.
+When model messages and documents, you usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class, and we need to be able to generate immutable subclasses for nested static inner classes or interfaces.
 
-You may use `@Value.Nested` annotation on top level class to generate special "namespaced" implementation classes for directly nested abstract value types.
+Use `@Value.Nested` annotation on top level class to provide namespacing for implementation classes, generated out of nested abstract value types. This could be used as a matter of style or to avoid name clashes of immutable implementation classes which otherwise would be generated as top level classes in the same package.
 
-* Have simple names without prefixes
+* Namespaced implementation have simple names without prefixes
 * Could be star-imported for clutter-free usage.
 
 ```java
 @Value.Nested
 class GraphPrimitives {
   @Value.Immutable
-  interace Vertex {}
+  interface Vertex {}
   @Value.Immutable
   static class Edge {}
 }
@@ -571,20 +585,21 @@ Edge.builder().build();
 Vertex.builder().build();
 ```
 
-**Possible problems**
-
-+ Generated files might suffer from name/filename clashing for same named types nested inside different top level classes in the same package.
-  - Namespacing of generated classes is not provided without `@Value.Nested` annotation
-+ Some of our non-core annotations might not work properly for nested classes
-
-### Generate getters
-For interoperability tasks there's annotation to generate bean-style getters for annotated abstract value type.
-See [@Value.Getters](https://github.com/immutables/org.immutables/blob/master/value/src/org/immutables/value/Value.java)
-
 <a name="auxiliary"></a>
 ### Auxiliary attributes
 There's annotation that excludes annotated attribute from generated `equals`, `hashCode` and `toString` methods.
-See [@Value.Auxiliary](https://github.com/immutables/org.immutables/blob/master/value/src/org/immutables/value/Value.java)
+
+`@Value.Auxiliary` attributes will be stored and will be accessible, but are excluded from `equals`, `hashCode` and `toString` method implementations. [Lazy](#lazy-attribute) attributes are always act as _auxiliary_.
+
+```java
+@Value.Immutable(intern = true)
+interface TypeDescriptor {
+  // Instances are interned only by qualified name
+  String qualifiedName();
+  @Value.Auxiliary
+  TypeElement element();
+} 
+```
 
 --------
 Patterns
@@ -625,7 +640,35 @@ public abstract class Point {
 }
 ```
 
-You may also want to use forwarding factory method to hide implementation class from a surface of abstract value type API. In example above, notice how usage of `ImmutablePoint` is not leaking through `Point`'s public interface. 
+You may also want to use forwarding factory method to hide implementation class from a surface of abstract value type API. In example above, notice how usage of `ImmutablePoint` is not leaking through `Point`'s public interface.
+
+<a name="hide-implementation">
+It's also possible to hide generated builder implementation in the same manner using nested abstract [Builder](#builder). While it adds up to verbosity, but implementation is not exposed as an API:
+
+```java
+@Value.Immutable
+public abstract class Point {
+  @Value.Parameter
+  public abstract double x();
+  @Value.Parameter
+  public abstract double y();
+
+  public static Point of(double x, double y) {
+    return ImmutablePoint.of(x, y);
+  }
+
+  public static Builder builder() {
+    return ImmutablePoint.builder();
+  }
+  // Signatures of abstract methods should match to be overriden by implementation
+  public abstract static class Builder {
+    public abstract Builder x(double x);
+    public abstract Builder y(double y);
+    public abstract Point build();
+  }
+}
+```
+
 
 <a name="smart-data"></a>
 ### Smart data
@@ -657,16 +700,14 @@ public abstract class OriginDestination {
 ```
 Go ahead! Enrich value objects with methods that compute values — push computation complexity to the right place!
 
-### Protected attributes
-Particular attributes may become redundant from standpoint of public interface of abstract value class,
-`protected` visibility may help to hide attribute from API consumers, however it is still be exposed on builders and as
-constructor parameters.
+### Non-public attributes
+Particular attributes may become redundant from standpoint of public interface of abstract value class, lowering visibility may help to hide attribute from API consumers, however it is still be exposed as `public` on builders and as constructor parameters.
 
 ```java
 @Value.Immutable
 public abstract class Name {
   @Value.Parameter
-  protected abstract String value(); 
+  abstract String value(); 
   
   public String toString() {
     return value();

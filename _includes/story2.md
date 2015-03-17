@@ -1,4 +1,3 @@
-MongoDB repositories
---------------------
-Standing on shoulders of JSON/BSON marshalers we could generate state of art repositories for accessing _MongoDB_ collections.
-Expressive type-safe API, concurrency and premium performance make 'em a viable solution.
+Integrate
+---------
+Use _Immutables_ in real life programming with _Jackson_, _JAX-RS_, _JDBI_, _MongoDB_ and other tools to transfer, transform and store data. Expressive type-safe APIs, concurrency and premium performance included!

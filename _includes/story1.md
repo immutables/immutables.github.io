@@ -1,7 +1,6 @@
-JSON marshaling
----------------
-Immutable objects serve well to transfer data. Generate marshalers that flexibly map immutable object graphs to a clean JSON representation.
-Underlying [Jackson](http://wiki.fasterxml.com/JacksonHome)
-parsers and generators makes it possible to use textual JSON,
-as well as [Smile](http://wiki.fasterxml.com/SmileFormatSpec)
-or [BSON](http://www.michel-kraemer.com/binary-json-with-bson4jackson) binary formats
+Customize
+---------
+Immutables could be tailored to your style and coding conventions. Whether accessors should have `get` prefix, or if prefer having `with`, `set` on builders and `Impl` on implementations: create own style annotation and apply it on a classes or whole packages.
+
+_Immutables_ toolkit is so flexible that allows you to create implementations and builders of types from other packages and libraries or even create builders to invoke static methods!
+
