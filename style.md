@@ -30,7 +30,7 @@ Style could be attached to:
 + Package, where it will affect all classes in the package
   * It will also affect nested packages unless overriden
 + Top level type, where it will affect this and nested value types
-+ Nested value type if this not contradicts top-level style in case of [enclosing](#nesting) class.
++ Nested value type if this does not contradict top-level style in case of [enclosing](#nesting) class.
 + To an annotation, which in turn will serve as style annotation, applicable for types and packages.
 
 `@Value.Style` as inline style will win over meta-annotation style.
@@ -52,6 +52,7 @@ import java.lang.annotation.Target;
     typeAbstract = {"Abstract*"}, // 'Abstract' prefix will be detected and trimmed
     typeImmutable = "*", // No prefix or suffix for generated immutable type
     builder = "new", // construct builder using 'new' instead of factory method
+    build = "create", // rename 'build' method on builder to 'create'
     visibility = ImplementationVisibility.PUBLIC, // Generated class will be always public
     defaults = @Value.Immutable(copy = false)) // Disable copy methods by default
 public @interface MyStyle {}
@@ -69,7 +70,7 @@ interface AbstractItem {
 Item item = new Item.Builder()
   .setId(1)
   .setEnabled(true)
-  .build();
+  .create();
 ```
 
 There are really cool thing you can do to match style to your convetions and preferences!

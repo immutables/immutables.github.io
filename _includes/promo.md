@@ -25,7 +25,7 @@ Lazy, derived and optional attributes. Comprehenvise support for collections as 
 #### Clean code
 
 _Immutables_ has much higher standards for code readability then other generators.
-Generated APIs are carefully tuned for the best power-to-weight ratio. Implementation code is clear, efficient, and have corresponding javadocs. [Take a look](/generated.html)
+Generated APIs are carefully tuned for the best power-to-weight ratio. No ugly named identifiers. Implementation code is clear, efficient, and have corresponding javadocs. [Take a look](/generated.html)
 </section>
 
 <section class="feature">
