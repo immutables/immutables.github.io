@@ -1,7 +1,6 @@
 
 ```java
 import org.immutables.value.Value;
-
 // Define abstract value type
 @Value.Immutable
 public interface ValueObject {
@@ -15,11 +14,9 @@ public interface ValueObject {
 // Use generated immutable implementation
 ValueObject valueObject =
     ImmutableValueObject.builder()
-        .name("Nameless")
-        .description("present")
+        .name("My value")
         .addCounts(1)
         .addCounts(2)
         .build();
-
-valueObject = valueObject.withName("Named");
 ```
+

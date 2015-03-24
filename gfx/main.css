@@ -11,7 +11,24 @@ header.jumbotron {
 
 .jumbotron {
   margin-bottom: 0;
-  font-size: 19px;
+  font-size: 20px;
+}
+
+header.jumbotron {
+  padding-bottom: 30px;
+  padding-top: 30px;
+}
+
+header.jumbotron a.pull-right {
+  line-height: 48px;
+}
+
+.jumbotron a {
+  font-weight: 200;
+}
+
+.jumbotron li {
+  font-weight: 200;
 }
 
 section.jumbotron {
@@ -34,7 +51,7 @@ section.jumbotron {
 }
 
 .toc-h3 {
-  margin-left: 10px;
+  margin-left: 1.5em;
   font-size: 10pt;
 }
 
@@ -45,7 +62,7 @@ h2, h3 {
 aside {
   padding-top: 5px;
   padding-bottom: 5px;
-  background-color: #e7eef3;
+  background-color: #e2e9ed;
 }
 aside > ul {
   margin: 0;
@@ -54,7 +71,8 @@ aside > ul {
 .illustration,
 .documentation .highlight {
   margin: auto;
-  background-color: #384145;
+/*  background-color: #384145;*/
+  background-color: #3D4447;
   padding-top: 10px;
   padding-bottom: 10px;
   border-top: 1px solid #444;
@@ -78,12 +96,17 @@ body, header, section {
 body {
   font-size: 18px;
 }
+body.page {
+  font-size: 16px;
+}
 
 footer.jumbotron {
   margin-top: 20px;
   margin-bottom: 0;
   color: #3d4e58;
+  padding-top: 0px;
   padding-bottom: 100px;
+  font-size: 18px;
 }
 
 footer.jumbotron a {
@@ -96,13 +119,41 @@ footer.jumbotron ul {
 }
 
 footer.jumbotron li {
-  line-height: 1.5em;
+  line-height: 1.2em;
 }
 
 header {
   overflow: hidden;
 }
 
+section.promo {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+section.promo p {
+  /* to hide paragraphs from markdown around section.feature */
+  display: none;
+  float: left;
+}
+
+section.promo section.feature p {
+  display: block;
+  font-size: 15px;
+}
+
+section.feature {
+  margin-right: 1.5em;
+  float: left;
+}
+
+section.feature span.label {
+  float: right;
+  font-weight: normal;
+  font-size: 14px;
+  margin-top: .6em;
+  margin-right: .6em;
+  cursor: help;
+}
 
 section.documentation > span {
   margin: 0 !important;
@@ -128,11 +179,21 @@ section.documentation > .highlight {
   margin: 20px 0;
 }
 
+@media (max-width: 768px) {
+  .jumbotron p {
+    font-size: 16px;  
+  }
+}
+
 @media (min-width: 768px) {
   aside > ul,
   section.documentation > *,
   section.documentation > .highlight > pre {
     max-width: 750px;
+  }
+  section.feature {
+    width: 330px;
+    min-height: 180px;
   }
 }
 
@@ -142,6 +203,10 @@ section.documentation > .highlight {
   section.documentation > .highlight > pre {
     max-width: 970px;
   }
+  section.feature {
+    width: 280px;
+    min-height: 180px;
+  }
 }
 
 @media (min-width: 1200px) {
@@ -149,6 +214,10 @@ section.documentation > .highlight {
   section.documentation > *,
   section.documentation > .highlight > pre {
     max-width: 1170px;
+  }
+  section.feature {
+    width: 255px;
+    min-height: 210px;
   }
 }
 

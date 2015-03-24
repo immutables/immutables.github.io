@@ -1,3 +1,2 @@
-Embrace immutability to tackle complexity and concurrency challenges.
-Use annotation processor to easily create simple and consistent value objects.
-It's like immutable collections but for regular value objects.
+We use immutable objects all the time. We created Java annotation processors to generate simple, safe and consistent value objects. Do not repeat yourself, try Immutables, the most full-featured
+and mature tool in this field!

@@ -4,7 +4,8 @@
   <meta charset='utf-8'>
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
   <link rel="stylesheet" href="/gfx/main.css">
   <link rel="stylesheet" href="/gfx/code.css">
   <title>{{ page.title }}</title>
@@ -18,7 +19,7 @@ ga('create', 'UA-47068974-1', 'auto');
 ga('send', 'pageview');
 </script>
 </head>
-<body>
+<body class="page">
 <header>
   <div class="container">
     <a href="/">Immutables.org</a> &larr;
@@ -30,10 +31,6 @@ ga('send', 'pageview');
 <section class="documentation">
   {{ content }}
 
-  <hr>
-  <section class="disqus">
-  {% include disqus.html %}
-  </section>
 </section>
 <footer class="jumbotron">
   <div class="container">

@@ -14,7 +14,27 @@ layout: default
   </div>
 </header>
 
+<section class="illustration sample0 clearfix">
+  <div class="container clearfix">
+    {% capture storySample0 %}{% include storySample0.md %}{% endcapture %}
+    {{ storySample0 | markdownify }}
+  </div>
+  <div class="container clearfix">
+    {% capture storySample1 %}{% include storySample1.md %}{% endcapture %}
+    {{ storySample1 | markdownify }}
+  </div>
+</section>
+
+<section class="promo jumbotron">
+  <div class="container clearfix">
+    {% capture promo %}{% include promo.md %}{% endcapture %}
+    {{ promo | markdownify }}
+    <br>
+  </div>
+</section>
+
 <div class="text-center container">
+  <hr>
   <strong>Features:</strong>
   <span class="badge alert-success">Classes, Interfaces and Annotations</span>
   <span class="badge alert-success">Builders</span>
@@ -29,55 +49,12 @@ layout: default
   <span class="badge alert-success">Singleton values</span>
   <span class="badge alert-success">Instance interning</span>
   <span class="badge alert-success">hashCode precomputing</span>
-  <span class="badge alert-success">JSON marshaling</span>
-  <span class="badge alert-success">Jackson integration</span>
+  <span class="badge alert-success">JSON serialization</span>
   <span class="badge alert-success">JAX-RS integration</span>
   <span class="badge alert-success">MongoDB integration</span>
-  <span class="badge alert-success">JDBI integration</span>
   <span class="badge alert-info">and even more...</span>
   <br>
-  <br>
 </div>
-
-<section class="illustration sample0 clearfix">
-  <div class="container clearfix">
-    {% capture storySample0 %}{% include storySample0.md %}{% endcapture %}
-    {{ storySample0 | markdownify }}
-  </div>
-</section>
-
-<section class="jumbotron">
-  <div class="container">
-    {% capture story1 %}{% include story1.md %}{% endcapture %}{{ story1 | markdownify }}
-  </div>
-</section>
-
-<section class="illustration">
-  <div class="container clearfix">
-    {% capture storySample1 %}{% include storySample1.md %}{% endcapture %}
-    {{ storySample1 | markdownify }}
-  </div>
-</section>
-
-<section class="jumbotron">
-  <div class="container">
-    {% capture story2 %}{% include story2.md %}{% endcapture %}{{ story2 | markdownify }}
-    <a href="/json.html" class="btn btn-default btn-lg">JSON guide...</a>
-    <a href="/mongo.html" class="btn btn-default btn-lg">MongoDB guide...</a>
-  </div>
-</section>
-
-<section class="illustration sample2 clearfix">
-  <div class="container clearfix">
-    {% capture storySample2 %}{% include storySample2.md %}{% endcapture %}
-    {{ storySample2 | markdownify }}
-  </div>
-</section>
-
-<section class="jumbotron">
-  <div class="container">
-  </div>
-</section>
 
 <footer class="jumbotron">
   <div class="container">

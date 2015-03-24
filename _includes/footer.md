@@ -1,20 +1,17 @@
-## Docs
+## Guides
 
 - [Get started!](/getstarted.html)
 - [Introduction](/intro.html)
 - [Immutable objects](/immutable.html)
-- [JSON marshaling](/json.html)
+- [Factory builders](/factory.html)
+- [JSON guide](/json.html)
 - [MongoDB repositories](/mongo.html)
 - [Using annotation processor in IDE](/apt.html)
 
-## Posts
-{% for post in site.posts limit: 10 %}
-- [{{ post.title }}]({{ post.url }}){% endfor %}
-
 ## Get involved
 
-* Clone source repository, contribute bug reports and fixes on [GitHub immutables/org.immutables](https://github.com/immutables/immutables)
+* Clone source repository, contribute bug reports and fixes on [GitHub immutables/immutables](https://github.com/immutables/immutables)
 * News and announcements on twitter [@ImmutablesOrg](https://twitter.com/ImmutablesOrg)
 * Ask questions or give feedback and ideas using mailing group [immutables at googlegroups.com](https://groups.google.com/forum/#!forum/immutables)
 
-[License details](/license.html)
+[Apache License 2.0](/license.html)

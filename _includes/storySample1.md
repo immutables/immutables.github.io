@@ -1,21 +1,20 @@
-
 ```java
-// Add annotation to generate marshaler
+// Or you can configure different @Value.Style
 @Value.Immutable
-@Json.Marshaled
-public interface ValueObject {
-  ...
+abstract class AbstractItem {
+  abstract String getName();
+  abstract Set<String> getTags();
+  abstract Optional<String> getDescription();
 }
 ```
 
 ```java
-String json = Marshaling.toJson(valueObject);
-...
-```
-```js
-{
-  "name" : "Nameless",
-  "counts" : [ 1, 2 ],
-  "description" : "present"
-}
+// Use generated value object
+Item namelessItem = Item.builder()
+    .setName("Nameless")
+    .addTags("important", "relevant")
+    .setDescription("Description provided")
+    .build();
+
+Item namedValue = namelessItem.withName("Named");
 ```

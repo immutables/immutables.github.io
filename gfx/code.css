@@ -5,7 +5,8 @@
   border: none;
   border-radius: inherit;
   text-align: left;
-  color: #DDD;
+  color: #dddddd;
+  line-height: 1.3em;
 }
 
 .highlight .kn,
@@ -54,5 +55,7 @@
 .illustration .highlight,
 .highlight pre code {
   font-size: 14px;
-  font-family: "Liberation Mono", "Consolas", monospace;/* "Inconsolata", */
+  /*font-family: "Courier", "Courier New", monospace;*/
+  font-family: "Inconsolata", "Liberation Mono", "Consolas", monospace;
+  /*font-family: "Liberation Mono", "Consolas", monospace;*//* "Inconsolata", */
 }
