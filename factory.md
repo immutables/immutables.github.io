@@ -3,7 +3,7 @@ title: 'Factory builders'
 layout: page
 ---
 
-{% capture v %}2.0{% endcapture %}
+{% capture v %}2.0.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -16,6 +16,9 @@ This guide is incomplete yet, please refere to
 
 + See JavaDocs [org.immutables.builder.Builder](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java)
 
+Compile dependencies:
+- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+- [org.immutables:builder:{{v}}]({{ depUri }}|builder|{{ v }}|jar)
 
 ```xml
 <dependency>

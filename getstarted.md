@@ -3,8 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}2.0{% endcapture %}
-{% capture g %}18.0{% endcapture %}
+{% capture v %}2.0.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites

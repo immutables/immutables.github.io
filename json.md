@@ -3,7 +3,7 @@ title: 'JSON marshaling'
 layout: page
 ---
 
-{% capture v %}2.0{% endcapture %}
+{% capture v %}2.0.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -103,6 +103,9 @@ Gson
 ----
 
 ### Dependencies
+
+- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+- [org.immutables:gson:{{v}}]({{ depUri }}|gson|{{ v }}|jar)
 
 Gson integration require `com.google.gson:gson` compile and runtime module.
 `org.immutables:gson` module contains compile time annotation to generate `TypeAdapter` factories.

@@ -31,7 +31,7 @@ Style could be attached to:
   * It will also affect nested packages unless overriden
 + Top level type, where it will affect this and nested value types
 + Nested value type if this does not contradict top-level style in case of [enclosing](#nesting) class.
-+ To an annotation, which in turn will serve as style annotation, applicable for types and packages.
++ Annotation, which in turn will serve as style meta-annotation to annotate types and packages.
 
 `@Value.Style` as inline style will win over meta-annotation style.
 
@@ -93,7 +93,7 @@ then just one of them will be picked, should not rely on any order here
 
 <a name="nesting"></a>
 ### Enclosing type
-When model messages and documents, you usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class. Immutables is, of course, able to generate immutable subclasses for nested static inner classes or interfaces.
+When model messages and documents, we usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class. Immutables is, of course, able to generate immutable subclasses for nested static inner classes or interfaces.
 
 Use `@Value.Enclosing` annotation on top level class to provide namespacing for implementation classes, generated out of nested abstract value types. This could be used as a matter of preference or to avoid name clashes of immutable implementation classes which otherwise would be generated as top level classes in the same package.
 
