@@ -13,7 +13,7 @@ Java 7 or higher is required to run _Immutables_ annotation processor.
 
 Add required dependencies for basic immutable object generation:
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
   + Compile-only annotation processing tool. All in one artifact: annotations, processor with repackaged embedded depencies.
 
 Snippet of maven dependencies:

@@ -71,7 +71,7 @@ _You can customize class names to have other prefixes than `Immutable*` or don't
 
 Abstract value types might be nested inside other types, classes should be `static` if declared as inner class (interfaces and annotations are implicitly static if nested).
 
-But you are not limited to classes that you control. You can generate immutable implementation classes from the abstract types in other packages. `@Value.Include()` annotation could be used on types and packages. This is most usefull when you want to generate implementation of annotations to use with DI libraries like _Guice_. Inclusion could be used in combination with [`@Value.Enclosing`](/immutable.html#nesting)
+But you are not limited to classes that you control. You can generate immutable implementation classes from the abstract types in other packages. `@Value.Include()` annotation could be used on types and packages. This is most usefull when you want to generate implementation of annotations to use with DI libraries like _Guice_. Inclusion could be used in combination with [`@Value.Enclosing`](/style.html#nesting)
 
 ```java
 package my.package;
@@ -474,6 +474,7 @@ body of the method should compute and return value of an attribute.
 Derived attributes acts much like regular methods, but compute value on first access and subsequently return the same memoized value.
 
 **Things to be aware of**
+
 + lazy attributes do not take part in equals and hashCode computation! and act as [auxiliary](#auxiliary)
 
 ```java
@@ -728,7 +729,7 @@ Basic java binary serialization is supported in a following way to:
 * Copy `serialVersionUID` from abstract value type to immutable implementation type
 * Generate `readResolve` method implementation to preserve [singleton](#singleton) and [interned](#interning) instances.
 
-For other serialation options see [JSON](/json.html) guide.
+For other serialization options see [JSON](/json.html) guide.
 
 --------
 Patterns
