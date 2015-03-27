@@ -731,6 +731,49 @@ Basic java binary serialization is supported in a following way to:
 
 For other serialization options see [JSON](/json.html) guide.
 
+<a name="generics"></a>
+### Generics (not) supported
+_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However this is still not a clear if we should support this, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/html#gson) serialization etc. Annotation processing provide very limited tools to analyse types: if you want to get beyond simplest cases then complex type variable resolution should be programmed, including handing of intersection types, lower and upper bounds etc.
+
+Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. To not confuse any more, here's example of what's possible with _Immutables_:
+
+```java
+
+interface TreeElement<T> {}
+
+interface Node<T> extends TreeElement<T> {
+  List<TreeElement<T>> elements();
+}
+
+interface Leaf<T> extends TreeElement<T> {
+  T value();
+}
+
+@Value.Immutable
+interface StringNode extends Node<String> {}
+
+@Value.Immutable
+interface StringLeaf extends Leaf<String> {}
+
+TreeElement<String> tree =
+    ImmutableStringNode.builder()
+        .addElements(ImmutableStringLeaf.builder()
+            .value("A")
+            .build())
+        .addElements(ImmutableStringLeaf.builder()
+            .value("B")
+            .build())
+        .addElements(ImmutableStringNode.builder()
+            .addElements(
+                ImmutableStringLeaf.builder()
+                    .value("C")
+                    .build())
+            .build())
+        .build();
+```
+
+You can notice that inherited attributes are being generated with correct type variable substitution. While not perfect it still very useful, and in some cases even better that fully-erased generic types.
+
 --------
 Patterns
 --------
