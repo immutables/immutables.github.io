@@ -10,8 +10,6 @@ Overview
 --------
 Do not repeat yourself writing builders for your APIs, with all that overhead of fluent structure and checking. Generate builders for static factory methods as easily as you would generate builders for [immutable values](/immutable.html). Factory builders are some form of partial function application, supplying named parameters one by one and invoking function in the end. But if you need builder doing processing along the way while values are being collected, then, probably, stucture of factory builders will not suit your case.
 
-Use `@org.immutables.builder.Builder.Factory` annotation on factory methods
-
 + In addition to this guide, see JavaDocs of [org.immutables.builder.Builder](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java)
 
 Compile dependencies:
@@ -35,7 +33,7 @@ Compile dependencies:
 
 ### Factory
 
-Place `@org.immutables.builder.Builder.Factory` annotation on static factory method to generate builder. By default (when not customizing [styles](/style.html)), name of builder and it's visibility modifier is derived from the annotated static factory methods. Build method invokes static factory methods and returns value. Just like when using builders for immutable objects, builders for factory methods take care of parameter null-checking, conversion to immutable collection and verifying that all attributes are set.
+Place `@org.immutables.builder.Builder.Factory` annotation on static factory method to generate builder in the same package. 
 
 ```java
 @Builder.Factory
@@ -44,14 +42,15 @@ public static int sum(int a, int b) {
 }
 
 ...
-
 int sumOf1and2 = new SumBuilder()
     .a(1)
     .b(2)
     .build();
 ```
 
-Use `@Value.Style(newBuilder)` to customize name of a builder constuctor. By default `newBuilder = "new"`, so factory builder generated having plain constructor. You might change it to something else to have static factory method to produce builder.
+By default (when not customizing [styles](/style.html)), name of builder and it's visibility modifier is derived from the annotated static factory methods. Build method invokes static factory methods and returns value. Just like when using builders for immutable objects, builders for factory methods take care of parameter null-checking, conversion to immutable collection and verifying that all attributes are set.
+
+Use `@Value.Style(newBuilder)` naming template to customize name of a builder constuctor. By default `newBuilder = "new"`, so factory builder generated having plain constructor. You might change it to something else to have static factory method to produce builder.
 
 ```java
 @Value.Style(newBuilder = "newBuilder")
@@ -61,7 +60,6 @@ public static int sum(int a, int b) {
 }
 
 ...
-
 int sumOf1and2 = SumBuilder.newBuilder()
     .a(1)
     .b(2)
@@ -90,7 +88,7 @@ public static int sum(Optional<Integer> a, Optional<Integer> b) {
 
 ### Parameters
 
-Sometimes you might want to have some parameter to be main parameters of the builder, required as parameters of builder contructor. Annotate parameter with `@Builder.Parameter` to archive this. Generated builder will accept such parameters via constuctor and not by initialization methods.
+Sometimes you might want to have some factory parameters to be turned into parameters of builder's contructor. Annotate parameter with `@Builder.Parameter` to achieve this. Generated builder will accept such parameters via constuctor and not by initialization methods.
 
 ```java
 @Builder.Factory

@@ -121,15 +121,13 @@ Optionally, `org.immutables:gson` module could also be used at runtime to enable
   <artifactId>gson</artifactId>
   <version>{{ v }}</version>
   <!-- If you don't need runtime capabilities - make it compile-only
-  <scope>provided</scope>
-  <optional>true</optional>-->
+  <scope>provided</scope>-->
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
   <version>{{ v }}</version>
   <scope>provided</scope>
-  <optional>true</optional>
 </dependency>
 ```
 

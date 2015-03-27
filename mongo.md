@@ -94,7 +94,6 @@ Snippet of maven dependencies:
   <artifactId>value</artifactId>
   <version>{{ v }}</version>
   <scope>provided</scope>
-  <optional>true</optional>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
