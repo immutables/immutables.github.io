@@ -738,6 +738,9 @@ _Immutables_ do not support type parameters in the sense that you cannot add typ
 Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. To not confuse any more, here's example of what's possible with _Immutables_:
 
 ```java
+// WARNING, THIS EXAMPLE CURRENTLY WORKS ONLY USING ECJ (ECLIPSE) COMPILER
+// JAVAC HAVE PROBLEM WITH List<TreeElement<T>>.
+
 interface TreeElement<T> {}
 
 interface Node<T> extends TreeElement<T> {
