@@ -4,7 +4,8 @@
 - [Introduction](/intro.html)
 - [Immutable objects](/immutable.html)
 - [Factory builders](/factory.html)
-- [JSON guide](/json.html)
+- [Style customization](/style.html)
+- [JSON serialization](/json.html)
 - [MongoDB repositories](/mongo.html)
 - [Using annotation processor in IDE](/apt.html)
 
