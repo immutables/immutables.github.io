@@ -738,7 +738,6 @@ _Immutables_ do not support type parameters in the sense that you cannot add typ
 Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. To not confuse any more, here's example of what's possible with _Immutables_:
 
 ```java
-
 interface TreeElement<T> {}
 
 interface Node<T> extends TreeElement<T> {
@@ -746,7 +745,7 @@ interface Node<T> extends TreeElement<T> {
 }
 
 interface Leaf<T> extends TreeElement<T> {
-  T value();
+  @Value.Parameter T value();
 }
 
 @Value.Immutable
@@ -757,18 +756,13 @@ interface StringLeaf extends Leaf<String> {}
 
 TreeElement<String> tree =
     ImmutableStringNode.builder()
-        .addElements(ImmutableStringLeaf.builder()
-            .value("A")
-            .build())
-        .addElements(ImmutableStringLeaf.builder()
-            .value("B")
-            .build())
-        .addElements(ImmutableStringNode.builder()
-            .addElements(
-                ImmutableStringLeaf.builder()
-                    .value("C")
-                    .build())
-            .build())
+        .addElements(ImmutableStringLeaf.of("A"))
+        .addElements(ImmutableStringLeaf.of("B"))
+        .addElements(
+            ImmutableStringNode.builder()
+                .addElements(ImmutableStringLeaf.of("C"))
+                .addElements(ImmutableStringLeaf.of("D"))
+                .build())
         .build();
 ```
 
