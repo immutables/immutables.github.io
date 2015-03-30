@@ -4,7 +4,7 @@ layout: page
 ---
 
 ## Overview
-In addition to feature annotations, which are used for specific features, you can customize what and how need to be generated for immutable value. The "what" is defined by using attributes of `@org.immutables.value.Value.Immutable` annotation. The "how" is defined using styles defined by `@org.immutables.value.Value.Style` annotation.
+In addition to feature annotations, which are used for specific features, you can customize what and how need to be generated for immutable value. The "what" is defined by using attributes of `@org.immutables.value.Value.Immutable` annotation. The "how" is defined using styles defined by `@org.immutables.value.Value.Style` annotation. Custom styles is definitely more advanced functionality and the annotation processor cannot verify all consequences of defining.
 
 ## Define style
 
