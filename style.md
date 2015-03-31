@@ -28,14 +28,14 @@ In nutshell, using styles you can:
 Style could be attached to:
 
 + Package, where it will affect all classes in the package
-  * It will also affect nested packages unless overriden
+  * It will also affect nested packages unless overridden
 + Top level type, where it will affect this and nested value types
 + Nested value type if this does not contradict top-level style in case of [enclosing](#nesting) class.
 + Annotation, which in turn will serve as style meta-annotation to annotate types and packages.
 
 `@Value.Style` as inline style will win over meta-annotation style.
 
-It is always recommended to create one or more meta-annotations for your project and code-bases. It will result in a lot less clutter and easier maintenance and upgrades.
+It is recommended to create one or more style meta-annotations for your projects. It will result in a lot less clutter and easier maintenance and upgrades.
 
 ```java
 import org.immutables.value.Value;
@@ -73,7 +73,7 @@ Item item = new Item.Builder()
   .create();
 ```
 
-There are really cool thing you can do to match style to your convetions and preferences!
+There are really cool thing you can do to match style to your conventions and preferences!
 
 The simplest way to apply styles in manner similar to global is to annotate top level package of your project or module.
 
@@ -88,6 +88,7 @@ public com.mycompany.project;
 - When there are couple of conflicting styles mixed on the same level using meta annotation,
 then just one of them will be picked, should not rely on any order here
 - Styles are not merged in any way.
+- Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate or naming become overlapping, containing java keywords.
 
 ## Other customizations
 
