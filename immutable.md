@@ -465,7 +465,7 @@ obj.toString(); // NullAccepted{i1=null, l2=null}
 
 <a name="lazy-attribute"></a>
 ### Lazy attributes
-Lazy attributes are initializer methods that computes value lazily once.
+Lazy attribute is initializer method that computes value lazily only once.
 
 To declare lazy attribute, create non-abstract attribute initializer method and annotate it with
 `org.immutables.value.Value.Lazy`. Similarly to [derived attributes](#derived-attribute),
@@ -520,10 +520,10 @@ On the other hand, problem could only happen if you are mixing immutable objects
 <a name="check-method"></a>
 ### Precondition check method
 One of the core advantages of immutable objects is the fact that an immutable object will be constructed with proper attribute values in _consistent state_ and _never changes_ afterwards.
-So often arises a need to check attribute values or combination of attribute values (cross validation) for correctness.
+Sometimes arises a need to check attribute values or combination of attribute values for correctness (cross validation).
 
 Given there's no hand-written constructor in a immutable implementation class,
-you can write `protected` method annotated with `@Value.Check` and throw runtime exceptions if precondition failed.
+you can write non-private method annotated with `@Value.Check` and throw runtime exception if precondition failed.
 
 ```java
 @Value.Immutable
@@ -552,13 +552,13 @@ check is unreachable to a caller due to runtime exception.
 <a name="copy-methods"></a>
 ### Copy methods
 
-`with*` methods (withers) allow to change attributes by copying immutable object with new value applied and rest of attributes unchanged.
+`with*` methods (withers) allow to change attributes by copying immutable object with new value applied and the rest of attributes unchanged.
 
 ```java
 counter = counter.withValue(counter.value() + 1)
 ```
 
-Cheap refrence equality `==` check added to prevent copy of the same value by returning `this`. Also primitives has the same `==` value check (except for `float` and `double`). Full equality check or other specialized checks considered were omitted to be too heavy and might be expensive on it's own.
+Cheap refrence equality `==` check added to prevent copy of the same value by returning `this`. Also primitives has the same `==` value check (except for `float` and `double`). Full equality check or other specialized checks were omitted: It may be less computationally expensive to create and new copy of value than to check some attribute for deep-equality.
 
 Copy methods provide form of copying with structural sharing. It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by builder. New values will effectively share subgraphs of old values, which is desirable in many cases. 
 
@@ -621,7 +621,7 @@ Singleton singleInstance = ImmutableSingleton.of();
 
 **Things to be aware of**
 
-+ If abstract value type contains mandatory attributes
++ If abstract value type contains mandatory attributes but asked to generate a singleton
   - Compilation error: could not generate default value for mandatory field.
 
 <a name="interning"></a>
@@ -732,7 +732,7 @@ For other serialization options see [JSON](/json.html) guide.
 
 <a name="generics"></a>
 ### Generics (not) supported
-_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However this is still not a clear if we should support this, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
+_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However this it is still not clear if we should support this, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
 
 Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types.
 Here's example of what's possible with _Immutables_:
@@ -768,7 +768,7 @@ TreeElement<String> tree =
         .build();
 ```
 
-You can notice that inherited attributes are being generated with correct type variable substitution. While not perfect it still very useful, and in some cases even better that fully-erased generic types.
+You can notice that inherited attributes are being generated with correct type variable substitution. While not perfect, it's still very useful, and in some cases even better that fully-erased generic types.
 
 --------
 Patterns
