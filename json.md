@@ -355,7 +355,7 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 [37.783333, -122.416667]
 ```
 
-<a href="gson-jackson"></a>
+<a name="gson-jackson"></a>
 ### Gson-Jackson bridge
 
 You can push _Gson_'s performance to it's limits by delegating low-level streaming to _Jackson_. While _Gson_ is pretty optimized in itself, but _Jackson_ is playing "unfair game" by optimizing the whole chain of JSON streaming, including recycling of special buffers, UTF-8 encoding handling, DIY number parsing and formatting etc. This could get as fast as 2x times faster for some workloads.
