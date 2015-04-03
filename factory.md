@@ -13,6 +13,7 @@ Do not repeat yourself writing builders for your APIs, with all that overhead of
 + In addition to this guide, see JavaDocs of [org.immutables.builder.Builder](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java)
 
 Compile dependencies:
+
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
 - [org.immutables:builder:{{v}}]({{ depUri }}|builder|{{ v }}|jar)
 
