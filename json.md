@@ -192,7 +192,7 @@ String json = gson.toJson(ImmutableValueObject.builder()
 
 **Things to be aware of**
 - when type adapters are not registered, Gson will use default reflective serializer, however it will fail to deserialize.
-- There's potential to confuse `com.google.gson.Gson` object with `@org.immutable.gson.Gson` umbrella annotation, but they are usually used in different files.
+- There's potential to confuse `com.google.gson.Gson` object with `@org.immutable.gson.Gson` umbrella annotation, but they are usually not used together in one source file. If it will be huge PITA, then, please, let us know.
 
 ### JAX-RS integration
 
@@ -373,7 +373,13 @@ o.i.s.j.JsonBenchmarks.pojoGsonJackson                avgt        5   935.107 ±
 o.i.s.j.JsonBenchmarks.pojoJackson                    avgt        5   721.767 ±  47.782  us/op
 ```
 
-* JAX-RS provider also integrates Jackson out of the box. Use it as example of how to integrate Gson-Jackson bridge into something else
+Using Gson-Jackson bridge, it is possible use _Gson_ together with various additional textual and binary serialization formats which have JSON-like information structure:
+[Smile](https://github.com/FasterXML/jackson-dataformat-smile),
+[BSON](https://github.com/michel-kraemer/bson4jackson),
+[CBOR](https://github.com/FasterXML/jackson-dataformat-cbor),
+[YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
+
+* JAX-RS provider also integrates Jackson out of the box. Use it as example of how to integrate Gson-Jackson bridge.
 * See class [JsonGeneratorWriter](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonGeneratorWriter.java)
 * See class [JsonParserReader](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonParserReader.java)
 * See sample [benchmark code](https://github.com/immutables/samples/tree/master/json/src/org/immutables/samples/json)
