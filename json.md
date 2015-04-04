@@ -307,7 +307,7 @@ ValueObject valueObject =
 `@Gson.Named` is similar to _Gson_'s `SerializedName` annotation.
 Unfortunately Gson's annotations are only applicable to fields, therefore could not be used on accessor methods.
 
-<a name="field-naming-strategy">
+<a name="field-naming-strategy"></a>
 When running on Oracle JVM, there's an option to enable field naming strategy support.
 Use `@Gson.TypeAdapters(fieldNamingStrategy = true)` to enable generation of code which use field naming strategy. See javadoc for [Gson.TypeAdapters#fieldNamingStrategy](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78)
 
