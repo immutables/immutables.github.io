@@ -453,7 +453,7 @@ o.i.s.j.JsonBenchmarks.pojoGsonJackson                avgt        5   935.107 ±
 o.i.s.j.JsonBenchmarks.pojoJackson                    avgt        5   721.767 ±  47.782  us/op
 ```
 
-Using Gson-Jackson bridge, it is possible use _Gson_ together with various additional textual and binary serialization formats which have JSON-like information structure:
+It is possible use _Gson_ to serialized to and from various additional textual and binary serialization formats supported by _Jackson_:
 [Smile](https://github.com/FasterXML/jackson-dataformat-smile),
 [BSON](https://github.com/michel-kraemer/bson4jackson),
 [CBOR](https://github.com/FasterXML/jackson-dataformat-cbor),
