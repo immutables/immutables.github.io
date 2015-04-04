@@ -18,9 +18,9 @@ JSON is a simple and flexible format. Moreover, using libraries like [Jackson](h
 
 Immutables' JSON integration underwent overhaul for 2.0. This made integration a lot less exotic and comprehensible.
 
-_JSON documentation for versions 1.x of Immutables is located at [immutables.github.io//site1.x/json.html](/site1.x/json.html)_
+_JSON documentation for versions 1.x of Immutables is located at [immutables.github.io/site1.x/json.html](/site1.x/json.html)_
 
-Instead of old generated marshaler infrastructure based on _Jackson Streaming_ (jackson-core), two new integrations available:
+Instead of old generated marshaler infrastructure based on _Jackson_ streaming (jackson-core), two new integrations available:
 
 + Simplified _Jackson_ integration
   - Generation of simple `@JsonCreator` factory method and `@JsonProperty` annotations
@@ -30,7 +30,7 @@ Instead of old generated marshaler infrastructure based on _Jackson Streaming_ (
   - Generation of _TypeAdapterFactories_ which use no reflection.
   - Optional classes to integrate _Gson_ streaming with _Jackson_ streaming to squeeze maximum performance.
 
-For more background on this change you can visit related issues.
+For more background on this change you can visit related issues:
 
 + [issues/68](https://github.com/immutables/immutables/issues/68)
 + [issues/80](https://github.com/immutables/immutables/issues/80)
