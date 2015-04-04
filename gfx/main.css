@@ -41,16 +41,21 @@ section.jumbotron {
   margin-bottom: 30px;
 }
 
-.toc-h2, .toc-h3 {
+.toc-h2, .toc-h3, .toc-h4 {
   font-size: 12pt;
   list-style: none;
 }
 
-.toc-h2 a, .toc-h3 a {
+.toc-h2 a, .toc-h3 a, .toc-h4 a {
   color: inherit;
 }
 
 .toc-h3 {
+  margin-left: 1.5em;
+  font-size: 10pt;
+}
+
+.toc-h4 {
   margin-left: 1.5em;
   font-size: 10pt;
 }
