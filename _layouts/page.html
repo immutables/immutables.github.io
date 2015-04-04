@@ -63,7 +63,7 @@ $(function() {
     anchorName: function(i, heading, prefix) {
       heading = $(heading).text();
       if (heading.trim) heading = heading.trim();
-      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z]+/g, '');
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
     },
   })
 })
