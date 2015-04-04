@@ -92,6 +92,21 @@ then just one of them will be picked, should not rely on any order here
 
 ## Other customizations
 
+### Simple annotations
+That could barely be called customization. Let's say it is just a reminder that you can use annotation with simple names rather that qualified with umbrella annotations like `@Value`. 
+
+```java
+import org.immutables.value.Value.Immutable;
+import org.immutables.value.Value.Parameter;
+
+@Immutable interface Value {
+  @Parameter int getFirst();
+  @Parameter String getSecond();
+}
+```
+
+Qualifying annotation is still considered default style. More over we could see that Immutables really inspired some other libraries to use this approach to organize annotation APIs.
+
 <a name="nesting"></a>
 ### Enclosing type
 When model messages and documents, we usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class. Immutables is, of course, able to generate immutable subclasses for nested static inner classes or interfaces.

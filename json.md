@@ -16,9 +16,9 @@ JSON is a simple and flexible format. Moreover, using libraries like [Jackson](h
 [CBOR](https://github.com/FasterXML/jackson-dataformat-cbor),
 [YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
 
-Immutables' JSON integration underwent overhaul for 2.0. This made integration less exotic, and at the same time more valuable and better serve the Java JSON ecosystem.
+Immutables' JSON integration underwent overhaul for 2.0. This made integration less exotic, and at the same time more valuable and better serve the ecosystem.
 
-_JSON Documentation for versions 1.x of Immutables is located at [immutables.github.io//site1.x/json.html](/site1.x/json.html)_
+_JSON documentation for versions 1.x of Immutables is located at [immutables.github.io//site1.x/json.html](/site1.x/json.html)_
 
 Instead of old generated marshaler infrastructure based on _Jackson Streaming_ (jackson-core), two new integrations available:
 
@@ -32,10 +32,10 @@ Instead of old generated marshaler infrastructure based on _Jackson Streaming_ (
 
 For more background on this change you can visit related issues.
 
-+ [immutables/issues/68](https://github.com/immutables/immutables/issues/68)
-+ [immutables/issues/80](https://github.com/immutables/immutables/issues/80)
-+ [immutables/issues/71](https://github.com/immutables/immutables/issues/71)
-+ [immutables/issues/75](https://github.com/immutables/immutables/issues/75)
++ [issues/68](https://github.com/immutables/immutables/issues/68)
++ [issues/80](https://github.com/immutables/immutables/issues/80)
++ [issues/71](https://github.com/immutables/immutables/issues/71)
++ [issues/75](https://github.com/immutables/immutables/issues/75)
 
 <a name="jackson"></a>
 Jackson
@@ -172,7 +172,12 @@ Type adapter factory is generated in the same package and registered statically 
 You can manually register factories with `GsonBuilder`, but the most easy way to register all such factories using `java.util.ServiceLoader`.
 
 ```java
-com.google.gson.GsonBuilder gsonBuilder = new com.google.gson.GsonBuilder();
+import com.google.gson.GsonBuilder;
+import com.google.gson.Gson;
+import com.google.gson.TypeAdapterFactory;
+import java.util.ServiceLoader;
+
+GsonBuilder gsonBuilder = new GsonBuilder();
 for (TypeAdapterFactory factory : ServiceLoader.load(TypeAdapterFactory.class)) {
   gsonBuilder.registerTypeAdapterFactory(factory);
 }
@@ -180,7 +185,7 @@ for (TypeAdapterFactory factory : ServiceLoader.load(TypeAdapterFactory.class)) 
 // Manual registration is also an option
 gsonBuilder.registerTypeAdapterFactory(new GsonAdaptersMyDocument());
 
-com.google.gson.Gson gson = gsonBuilder.create();
+Gson gson = gsonBuilder.create();
 
 String json = gson.toJson(ImmutableValueObject.builder()
   .id(1)
@@ -191,13 +196,13 @@ String json = gson.toJson(ImmutableValueObject.builder()
 
 **Things to be aware of**
 - when type adapters are not registered, Gson will use default reflective serializer, however it will fail to deserialize.
-- There's potential to confuse `com.google.gson.Gson` object with `@org.immutable.gson.Gson` umbrella annotation, but they are usually not used together in one source file. If it will be huge PITA, then, please, let us know.
+- There's potential to confuse `com.google.gson.Gson` object with `@org.immutable.gson.Gson` umbrella annotation, but they are usually not used together in one source file. If it will be huge PITA, please, let us know.
 
 ### JAX-RS integration
 
 JAX-RS message body reader/writer provided out of the box. In itself it is generic Gson integration provider, but it has following special capabilities:
 
-* Auto registration of Gson type adapter factories from `/META-INF/services/com.google.gson.TypeAdapterFactory`.
+* Auto registration of Gson type adapter factories from `META-INF/services/com.google.gson.TypeAdapterFactory`.
 * Built in support for [Gson-Jackson](#gson-jackson) bridge to push streaming performance to it's limits.
 
 To use immutable types in your JAX-RS services use `org.immutables.gson.stream.GsonMessageBodyProvider` which implements `javax.ws.rs.ext.MessageBodyReader` and `javax.ws.rs.ext.MessageBodyWriter`. Also do not forget to specify "application/json" content type, so provider will match.
@@ -360,7 +365,7 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 
 You can push _Gson_'s performance to it's limits by delegating low-level streaming to _Jackson_. While _Gson_ is pretty optimized in itself, but _Jackson_ is playing "unfair game" by optimizing the whole chain of JSON streaming, including recycling of special buffers, UTF-8 encoding handling, DIY number parsing and formatting etc. This could get as fast as 2x times faster for some workloads.
 
-There's sample benchmark which we used only to see relative difference. As usual, take those numbers with a grain of salt: it's just some numbers for some JSON documents on some machine.
+There's sample benchmark which we used only to see relative difference. As usual, take those numbers with a grain of salt: it's just some numbers for some JSON documents on some macbook.
 
 ```
 Benchmark                                             Mode  Samples     Score     Error  Units

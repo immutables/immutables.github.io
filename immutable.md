@@ -71,6 +71,7 @@ _You can customize class names to have other prefixes than `Immutable*` or don't
 
 Abstract value types might be nested inside other types, classes should be `static` if declared as inner class (interfaces and annotations are implicitly static if nested).
 
+<a name="include"></a>
 But you are not limited to classes that you control. You can generate immutable implementation classes from the abstract types in other packages. `@Value.Include` annotation could be used on types and packages. This is most useful when you want to generate implementation of annotations to use with DI libraries like _Guice_. Inclusion could be used in combination with [`@Value.Enclosing`](/style.html#nesting)
 
 ```java
@@ -604,7 +605,7 @@ As it stands, empty singleton instances could be combined with builders and cons
 as all attributes are non-mandatory. If you want to provide only singleton instance, disable builder and constuctor:
 
 + Use `singleton = true` and `builder = false` with `@Value.Immutable` annotation
-+ Do not use any `@Value.Parameter` on attributes, so no constuctor generated
++ Do not use `@Value.Parameter` so no constuctor is generated
 
 ```java
 @Value.Immutable(singleton = true, builder = false)
@@ -655,7 +656,6 @@ _Immutables_ processor will not override such manual methods with generated ones
 ```java
 @Value.Immutable
 public abstract class OmniValue {
-
   @Override
   public boolean equals(Object object) {
     return object instanceof OmniValue;
@@ -721,7 +721,7 @@ interface TypeDescriptor {
 <a name="serialization"></a>
 ### Serialization
 
-Basic java binary serialization is supported in a following way to:
+Basic java binary serialization is supported in a following way:
 
 * Detect if abstract value type implementing `Serializable`
 * Make lazy attributes `transient`
@@ -732,10 +732,9 @@ For other serialization options see [JSON](/json.html) guide.
 
 <a name="generics"></a>
 ### Generics (not) supported
-_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However this it is still not clear if we should support this, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
+_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However, it's not clear if we have to fully support parametrizable immutable objects, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
 
-Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types.
-Here's example of what's possible with _Immutables_:
+Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. Here's example of what's possible with _Immutables_:
 
 ```java
 // requires version 2.0.2+ to compile
@@ -780,8 +779,8 @@ that are useful but not actually features by themselves.
 There were some feature requests to customize names of constructor method and, in addition, provide construction hooks.
 We focused on two interconnected needs:
 
-+ Construct object with some values that are different than factory method parameters, but derived from those parameters.
-+ Give descriptive name to factory method to highlight how parameters will be used to construct object.
++ Construct object with some values that are different than factory method parameters, but derived from those parameters
++ Give descriptive name to factory method to highlight how parameters will be used to construct object
 
 Having considered special annotation parameters and hook-methods,
 we eventually came up with... nothing. This, surprisingly, solves the problem and requires no features: simply declare factory methods
@@ -812,6 +811,7 @@ public abstract class Point {
 You may also want to use forwarding factory method to hide implementation class from a surface of abstract value type API. In example above, notice how usage of `ImmutablePoint` is not leaking through `Point`'s public interface.
 
 <a name="hide-implementation"></a>
+### Hiding implementation
 
 It's also possible to hide generated builder implementation in the same manner using nested abstract [Builder](#builder). While it adds up to verbosity, but implementation is not exposed as an API:
 
@@ -838,7 +838,6 @@ public abstract class Point {
   }
 }
 ```
-
 
 <a name="smart-data"></a>
 ### Smart data
@@ -949,4 +948,3 @@ to not implement them. Power to weight ratio is always considered!
 - Default and derived attributes cannot reliably refer to any other default or derived attribute.
 - Abstract value class could not be parameterized with type variables,
   however it could extend or implement parameterized type when actual types supplied.
-- _(...)_

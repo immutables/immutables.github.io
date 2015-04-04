@@ -18,7 +18,7 @@ Works out-of-the box with build tools, integrates into [IDEs](/apt.html). [Get&n
 <section class="feature">
 #### Feature packed
 
-Lazy, derived and optional attributes. Comprehenvise support for collections as attributes, including Guava collections. Copy with structural sharing. Strict builders. Singleton and interned instances... [and more!](/immutable.html#features)
+Lazy, derived and optional attributes. Comprehenvise support for collections as attributes, including Guava collections. Copy with structural sharing. Strict builders. Singleton and interned instances... [and more!](/immutable.html)
 </section>
 
 <section class="feature">
