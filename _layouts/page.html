@@ -59,6 +59,7 @@ ga('send', 'pageview');
 $(function() {
   $('#toc').toc({
     container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
     anchorName: function(i, heading, prefix) {
       heading = $(heading).text();
       if (heading.trim) heading = heading.trim();
