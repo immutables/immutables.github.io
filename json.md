@@ -362,7 +362,7 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 ```js
 [37.783333, -122.416667]
 ```
-<a name="poly">
+<a name="poly"></a>
 #### Polymorphic mapping
 
 Interesting features of _Immutables_ Gson marshaling is the ability to map abstract type to one of
