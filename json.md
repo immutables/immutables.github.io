@@ -197,6 +197,7 @@ String json = gson.toJson(
 ```
 
 **Things to be aware of**
+
 - when type adapters are not registered, Gson will use default reflective serializer, however it will fail to deserialize.
 - There's potential to confuse `com.google.gson.Gson` object with `@org.immutable.gson.Gson` umbrella annotation, but they are usually not used together in one source file. If it will be huge PITA, please, let us know.
 
