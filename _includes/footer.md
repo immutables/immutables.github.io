@@ -1,7 +1,7 @@
 ## Guides
 
 - [Get started!](/getstarted.html)
-- [Introduction](/intro.html)
+- [Inception](/intro.html)
 - [Immutable objects](/immutable.html)
 - [Factory builders](/factory.html)
 - [Style customization](/style.html)

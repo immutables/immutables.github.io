@@ -16,7 +16,7 @@ JSON is a simple and flexible format. Moreover, using libraries like [Jackson](h
 [CBOR](https://github.com/FasterXML/jackson-dataformat-cbor),
 [YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
 
-Immutables' JSON integration underwent overhaul for 2.0. This made integration less exotic, and at the same time more valuable and better serve the ecosystem.
+Immutables' JSON integration underwent overhaul for 2.0. This made integration a lot less exotic and comprehensible.
 
 _JSON documentation for versions 1.x of Immutables is located at [immutables.github.io//site1.x/json.html](/site1.x/json.html)_
 
@@ -110,9 +110,9 @@ Gson integration require `com.google.gson:gson` compile and runtime module.
 `org.immutables:gson` module contains compile time annotation to generate `TypeAdapter` factories.
 Optionally, `org.immutables:gson` module could also be used at runtime to enable following functionality:
 
-+ Field naming strategy support
-+ Polymorphic serialization by structure
-+ Gson to Jackson streaming bridge
++ [Field naming strategy support](#field-naming-strategy)
++ [Polymorphic serialization by structure](#poly)
++ [Gson to Jackson streaming bridge](#gson-jackson)
 
 ```xml
 <dependency>
@@ -139,7 +139,7 @@ Optionally, `org.immutables:gson` module could also be used at runtime to enable
 Use annotation `@org.immutables.gson.Gson.TypeAdapters` to generate `TypeAdapaterFactory` implementation which produces adapters to any immutable classes enclosed by `@Gson.TypeAdapters` annotation. The annotation could be placed on top-level type or package (using `package-info.java`). Type adapter factory will support all immutable classes in corresponding type (directly annotated and all nested immutable values) or package. Class named `GsonAdapters[_name_of_annotated_element]` will be generated in the same package.
 
 ```java
-// generated GsonAdaptersAdapt factory will handle all immutable type here
+// generated GsonAdaptersAdapt factory will handle all immutable types here:
 // Adapt, Inr, Nst
 @Gson.TypeAdapters
 @Value.Immutable
@@ -176,6 +176,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapterFactory;
 import java.util.ServiceLoader;
+...
 
 GsonBuilder gsonBuilder = new GsonBuilder();
 for (TypeAdapterFactory factory : ServiceLoader.load(TypeAdapterFactory.class)) {
@@ -187,10 +188,11 @@ gsonBuilder.registerTypeAdapterFactory(new GsonAdaptersMyDocument());
 
 Gson gson = gsonBuilder.create();
 
-String json = gson.toJson(ImmutableValueObject.builder()
-  .id(1)
-  .name("A")
-  .build());
+String json = gson.toJson(
+    ImmutableValueObject.builder()
+        .id(1)
+        .name("A")
+        .build());
 // { "id": 1, "name": "A" }
 ```
 
@@ -203,7 +205,7 @@ String json = gson.toJson(ImmutableValueObject.builder()
 JAX-RS message body reader/writer provided out of the box. In itself it is generic Gson integration provider, but it has following special capabilities:
 
 * Auto registration of Gson type adapter factories from `META-INF/services/com.google.gson.TypeAdapterFactory`.
-* Built in support for [Gson-Jackson](#gson-jackson) bridge to push streaming performance to it's limits.
+* Built in support for [Gson-Jackson](#gson-jackson) bridge. It will be turned on by default if _Jackson_ library will be present in classpath at runtime.
 
 To use immutable types in your JAX-RS services use `org.immutables.gson.stream.GsonMessageBodyProvider` which implements `javax.ws.rs.ext.MessageBodyReader` and `javax.ws.rs.ext.MessageBodyWriter`. Also do not forget to specify "application/json" content type, so provider will match.
 
@@ -259,14 +261,14 @@ new GsonMessageBodyProvider(
 
 Automatically generated bindings are straightforward and generally useful.
 
-* Java primitives, Strings — work as built-in types
+* Java primitives and Strings — work as built-in types
 * Nested documents/objects - supported as long as corresponding type adapter would be registered with Gson
 * Lists, Sets, Maps, Optional and other supported containers of the above types:
   - Collections mapped to JSON arrays
   - Map and Multimaps mapped to JSON object (keys always converted to strings)
   - Optional attributes - as nullable fields
 
-To add custom binding for types, other than immutable values use Gson APIs including mentioned TypeAdapter, TypeAdapterFactories and other pluggable serializers. What. Please refer to [Gson reference](https://sites.google.com/site/gson/gson-user-guide#TOC-Custom-Serialization-and-Deserialization)
+To add custom binding for types, other than immutable values, use Gson APIs. Please refer to [Gson reference](https://sites.google.com/site/gson/gson-user-guide#TOC-Custom-Serialization-and-Deserialization)
 
 #### Field names
 By default JSON field name is the same as an attribute name.
@@ -302,9 +304,10 @@ ValueObject valueObject =
 }
 ```
 
-`@Gson.Named("name")` annotation is analogue to _Gson_'s `SerializedName`.
-Unfortunately Gson's annotations only applicable to fields, therefore could not be used on accessor methods.
+`@Gson.Named` is similar to _Gson_'s `SerializedName` annotation.
+Unfortunately Gson's annotations are only applicable to fields, therefore could not be used on accessor methods.
 
+<a name="field-naming-strategy">
 When running on Oracle JVM, there's an option to enable field naming strategy support.
 Use `@Gson.TypeAdapters(fieldNamingStrategy = true)` to enable generation of code which use field naming strategy. See javadoc for [Gson.TypeAdapters#fieldNamingStrategy](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78)
 
@@ -314,7 +317,7 @@ Collection, optional and default attributes could be ignored during marshaling b
 
 #### Omitting empty fields
 
-Use Gson's configuration `GsonBuilder.serializeNulls()` to include empty optional and nullable fields. By default those will be omitted, this generally help to keep JSON cleaner and reduce its size if there are a lot of optional attributes. If you want to omit empty collection attributes in the same way as nullable fields &mdash; use `@Gson.TypeAdapters(emptyAsNulls = true)`
+Use Gson's configuration `GsonBuilder.serializeNulls()` to include empty optional and nullable fields as `null`. By default those will be omitted, this generally helps to keep JSON clean and reduce its size if there are a lot of optional attributes. If you want to omit empty collection attributes in the same way as nullable fields &mdash; use `@Gson.TypeAdapters(emptyAsNulls = true)`
 
 ```java
 @Value.Immutable
@@ -359,11 +362,84 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 ```js
 [37.783333, -122.416667]
 ```
+<a name="poly">
+#### Polymorphic mapping
+
+Interesting features of _Immutables_ Gson marshaling is the ability to map abstract type to one of
+it's subclasses by structure, not by "discriminator" field.
+
+Define common supertype class and it's subclasses, then use `@org.immutables.gson.Gson.ExpectedSubtypes` annotation to list expected subtypes. Then you can use supertype in attribute as plain reference or as collection.
+
+`@Gson.ExpectedSubtypes` could be placed on:
+
++ Abstract supertype
++ Attribute with reference or collection of references to supertype.
+
+```java
+@Value.Immutable
+@Gson.TypeAdapters
+public interface HostDocument {
+  // Host document contain list of values
+  // @Gson.ExpectedSubtypes annotation could be also placed on attribute.
+  List<AbstractValue> value();
+
+  @Gson.ExpectedSubtypes({
+    InterestingValue.class,
+    RelevantValue.class
+  })
+  public interface AbstractValue {}
+
+  @Value.Immutable
+  public interface InterestingValue extends AbstractValue {
+    int number();
+  }
+
+  @Value.Immutable
+  public interface RelevantValue extends AbstractValue {
+    String string();
+  }
+}
+```
+
+```js
+{
+  "values": [
+    { "number": 2 },
+    { "string": "Relevant?" },
+    { "number": 1 },
+  ]
+}
+```
+
+As you could guess, above JSON fragment may be deserialized to `HostDocument`, which `value` attribute will contain instances of `InterestingValue` and `RelevantValue` and then again `InterestingValue`.
+
+In addition, when using value [nested in enclosing](/style.html#nesting), exact set of subclasses could be figured out from the set nested types in enclosing scope. In that case `@Gson.ExpectedSubtypes` annotation may omit "value" attribute.
+
+```java
+@Gson.TypeAdapters
+@Value.Enclosing
+interface Enc {
+  interface A {}
+  @Value.Immutable interface B extends A { int b(); }
+  @Value.Immutable interface C extends A { double c(); }
+  @Value.Immutable interface E {
+    @Gson.ExpectedSubtypes A a(); // B and C will be discovered
+  }
+}
+```
+
+Although nice feature, you should generally avoid to use polymorphic marshaling if performance is important. Current implementation may suffer JIT deoptimizations due to exceptions being thrown and caught during regular deserialization. This renders polymorphic deserialization feature useful for auxiliary usages (such as configuration or model serialization), but less useful for high-throughput document streaming. However, implementation can be changed (improved) in future.
+
+**Things to be aware of**
+
++ If none of expected subclasses matches structure of JSON the `RuntimeException`s during deserialization is thrown
++ If subclass structures have collision first matching type wins
++ Runtime performance
 
 <a name="gson-jackson"></a>
 ### Gson-Jackson bridge
 
-You can push _Gson_'s performance to it's limits by delegating low-level streaming to _Jackson_. While _Gson_ is pretty optimized in itself, but _Jackson_ is playing "unfair game" by optimizing the whole chain of JSON streaming, including recycling of special buffers, UTF-8 encoding handling, DIY number parsing and formatting etc. This could get as fast as 2x times faster for some workloads.
+We can push _Gson_'s performance to it's limits by delegating low-level streaming to _Jackson_. While _Gson_ is pretty optimized in itself, but _Jackson_ is playing "unfair game" by optimizing the whole chain of JSON streaming, including UTF-8 encoding handling, recycling of special buffers, DIY number parsing and formatting etc. This could get as 2 times faster for some workloads.
 
 There's sample benchmark which we used only to see relative difference. As usual, take those numbers with a grain of salt: it's just some numbers for some JSON documents on some macbook.
 
@@ -383,8 +459,7 @@ Using Gson-Jackson bridge, it is possible use _Gson_ together with various addit
 [CBOR](https://github.com/FasterXML/jackson-dataformat-cbor),
 [YAML](https://github.com/FasterXML/jackson-dataformat-yaml)... etc.
 
-* JAX-RS provider also integrates Jackson out of the box. Use it as example of how to integrate Gson-Jackson bridge.
+* JAX-RS provider also integrates Gson-Jackson bridge out of the box. Use it as example of how to integrate Gson-Jackson bridge.
 * See class [JsonGeneratorWriter](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonGeneratorWriter.java)
 * See class [JsonParserReader](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonParserReader.java)
 * See sample [benchmark code](https://github.com/immutables/samples/tree/master/json/src/org/immutables/samples/json)
-

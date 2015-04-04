@@ -73,7 +73,7 @@ Item item = new Item.Builder()
   .create();
 ```
 
-There are really cool thing you can do to match style to your conventions and preferences!
+This way you can match style to your conventions and preferences!
 
 The simplest way to apply styles in manner similar to global is to annotate top level package of your project or module.
 
@@ -86,9 +86,9 @@ public com.mycompany.project;
 **Things to be aware of**
 
 - When there are couple of conflicting styles mixed on the same level using meta annotation,
-then just one of them will be picked, should not rely on any order here
+then just one of them will be picked. Should not rely on any order here
 - Styles are not merged in any way.
-- Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate or naming become overlapping, containing java keywords.
+- Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contains inappropriate symbols or java keywords etc.
 
 ## Other customizations
 
@@ -109,12 +109,11 @@ Qualifying annotation is still considered default style. More over we could see 
 
 <a name="nesting"></a>
 ### Enclosing type
-When model messages and documents, we usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class. Immutables is, of course, able to generate immutable subclasses for nested static inner classes or interfaces.
+When model messages and documents, we usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class. Of course, it is possible to generate immutable subclasses for nested static inner classes or interfaces.
 
 Use `@Value.Enclosing` annotation on top level class to provide namespacing for implementation classes, generated out of nested abstract value types. This could be used as a matter of preference or to avoid name clashes of immutable implementation classes which otherwise would be generated as top level classes in the same package.
 
-* Namespaced implementation have simple names without prefixes
-* Could be star-imported for clutter-free usage.
+By default, namespaced implementation classes have simple names without prefixes, could be star-imported for clutter-free usage.
 
 ```java
 @Value.Enclosing
