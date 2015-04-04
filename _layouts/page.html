@@ -57,7 +57,13 @@ ga('send', 'pageview');
 <script src="/gfx/jquery.toc.min.js"></script>
 <script>
 $(function() {
-  $('#toc').toc({ container: '.documentation' })
+  $('#toc').toc({
+    container: '.documentation',
+    anchorName: function(i, heading, prefix) {
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(' ', '-');;
+    },
+  })
 })
 </script>
 </body>
