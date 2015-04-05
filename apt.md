@@ -44,15 +44,11 @@ If it will not work for some reason, you could configure it manually.
 
 * [Using Java 6 processors in Eclipse](http://kerebus.com/2011/02/using-java-6-processors-in-eclipse/)
 
-Here's and dialog configuration example to manually configure annotation processor that is already in local maven repository. One need to enable annotation processing in the project settings, then configure factory path to point to annotation processor jar, in this example, by extending M2_REPO classpath variable (defined by m2e).
+Here's a dialog configuration example to manually configure annotation processor that is already installed in local maven repository. One need to enable annotation processing in the project settings, then configure factory path to point to annotation processor jar, in this example, by extending M2_REPO classpath variable (defined by m2e).
 
 <img src="pix/eclipse-annotation-processing.png">
 
 <img src="pix/eclipse-factory-path.png">
-
-Be sure to pick correct version of annotation processor jar.
-
-- [org.immutables:value-standalone:{{v}}]({{ depUri }}|value-standalone|{{ v }}|jar)
 
 -------------
 IntelliJ IDEA
