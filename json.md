@@ -44,7 +44,7 @@ Jackson
 Overall _Jackson_ is so cool that it doesn't require any serious code generation to be flexible and high-performant on JVM. No additional depedencies are required except for _Immutables_ processor and _Jackson_ library. It is recommended to use _Jackson_ version 2.4+, but earlier versions can work also.
 
 Integration works by generating simple `@JsonCreator` factory method and `@JsonProperty` annotations on immutable implementation. To enable this, you should use `@JsonSerialize` or
-`@JsonDeserialized` annotation (usually it is most safe to use both). Point to immutable implementation class in `as` annotation attribute.
+`@JsonDeserialize` annotation (usually it is most safe to use both). Point to immutable implementation class in `as` annotation attribute.
 
 ```java
 import com.fasterxml.jackson.annotation.*;
@@ -52,7 +52,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableVal.class)
-@JsonDeserialized(as = ImmutableVal.class)
+@JsonDeserialize(as = ImmutableVal.class)
 interface Val {
   int a();
   @JsonProperty("b") String second();
