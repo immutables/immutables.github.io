@@ -50,6 +50,10 @@ Here's a dialog configuration example to manually configure annotation processor
 
 <img src="pix/eclipse-factory-path.png">
 
+Use correct jar from M2_REPO
+
+- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+
 -------------
 IntelliJ IDEA
 -------------
