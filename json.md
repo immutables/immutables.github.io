@@ -136,7 +136,7 @@ Optionally, `org.immutables:gson` module could also be used at runtime to enable
   
 ### Generating Type Adapters
 
-Use annotation `@org.immutables.gson.Gson.TypeAdapters` to generate `TypeAdapaterFactory` implementation which produces adapters to any immutable classes enclosed by `@Gson.TypeAdapters` annotation. The annotation could be placed on top-level type or package (using `package-info.java`). Type adapter factory will support all immutable classes in corresponding type (directly annotated and all nested immutable values) or package. Class named `GsonAdapters[_name_of_annotated_element]` will be generated in the same package.
+Use annotation `@org.immutables.gson.Gson.TypeAdapters` to generate `TypeAdapaterFactory` implementation which produces adapters to any immutable classes enclosed by `@Gson.TypeAdapters` annotation. The annotation could be placed on top-level type or package (using `package-info.java`). Type adapter factory will support all immutable classes in corresponding type (directly annotated and all nested immutable values) or package. Class named `GsonAdapters[NameOfAnnotatedElement]` will be generated in the same package.
 
 ```java
 // generated GsonAdaptersAdapt factory will handle all immutable types here:
