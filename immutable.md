@@ -747,7 +747,7 @@ For other serialization options see [JSON](/json.html) guide.
 
 <a name="generics"></a>
 ### Generics (not) supported
-_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However, it's not clear if we have to fully support parametrizable immutable objects, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
+_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However, it's not clear if we have to fully support parametrizable immutable objects, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/json.html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
 
 Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. Here's example of what's possible with _Immutables_:
 
