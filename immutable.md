@@ -266,7 +266,8 @@ Collection attributes are backed by Guava immutable collections if Guava is avai
 moreover, `java.util.Set` and `java.util.Map` with `enum` keys
 are backed by efficient `EnumSet` and `EnumMap` implementations.
 
-In addition, ordered maps and sets are supported for natural and reverse natural ordering
+<a name="natural-reverse"></a>
+Ordered maps and sets are recognized for natural and reverse natural ordering
 using `@Value.NaturalOrder` and `@Value.ReverseOrder` annotations correspondingly.
 
 + `java.util.SortedSet<T>`
@@ -278,6 +279,8 @@ using `@Value.NaturalOrder` and `@Value.ReverseOrder` annotations correspondingl
 + `java.util.NavigableMap<K, V>`
 
 Without ordering annotation, ordered sets and maps attributes will be generated as regular attributes to support costruction with custom comparators etc.
+
+All mentioned above collection types could be also declared as Guava's immutable collections `com.google.common.collect.Immutable*`. Please note that other collection implementations like `java.util.ArrayList` will not be recognized as special collection attribute.
 
 When building using builder, collection attributes could be left unspecified.
 You can verify required number of items using [Precondition check method](#check-method)
@@ -307,15 +310,14 @@ You can verify required number of items using [Precondition check method](#check
   - `putAllBar(K, Iterable<V>)`
   - `putAllBar(Multimap<? extends K, ? extends K>)`
   
-Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To clear content of collection or map. Use reset method like `bar(Collections.emptyList())` or use [copy methods](#copy-methods) right after instance is built.
+Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To clear content of collection or map: use reset method like `bar(Collections.emptyList())` or use [copy methods](#copy-methods) right after instance is built.
 
 The set of methods was choosen to be minimal for a convenient usage. Smaller set of methods resulted in noisy conversions all over the code. Bigger set of methods resulted in kitchen sink
 (duplicating mutable collection API?).
 If concerned with the number of methods, consider using tools like _ProGuard_ to remove unused generated methods.
 
-Why other kinds of containers is not supported in the same way,
-for example `java.lang.Iterable`, `java.util.Collection` or `java.util.Queue`?
-That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling. This might change upon request, of course (and that is what happened with ordered sets and maps which got some support).
+Why other kinds of containers are not supported in the same way? What about `java.lang.Iterable`, `java.util.Collection` or `java.util.Queue`?
+That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling. This might change upon request, of course (and that is what happened with ordered sets and maps which got recognized with [order annotations](#natural-reverse)).
 The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic support, other container types are still usable:
 
 ```java

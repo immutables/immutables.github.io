@@ -122,9 +122,9 @@ public static TrafficLight trafficLight(@Builder.Switch Color light, boolean bli
 }
 
 new TrafficLightBuilder()
-  .redLight() 
-  .blink(false)
-  .build();
+    .redLight() 
+    .blink(false)
+    .build();
 
 ```
 
@@ -143,9 +143,9 @@ public static TrafficLight trafficLight(
 }
 
 new TrafficLightBuilder()
-  .yellowLight() 
-  .startBlinking()
-  .build();
+    .yellowLight() 
+    .startBlinking()
+    .build();
 
 ```
 
