@@ -37,5 +37,5 @@ Adapt Immutables to your design conventions and tastes. [Customize](/style.html)
 <span class="label label-success" title="Straightforward Jackson support and generated type adapters for Gson">2.0</span>
 #### JSON
 
-Immutables are serialization ready, including JSON and it's binary forms. _Jackson_ and _Gson_ libraries are suppoted. Gson is supported using generated [TypeAdapters](/typeadapters.html) which use no reflection. [JSON guide](/json.html). See also[MongoDB](/mongo.html)
+Immutables are serialization ready, including JSON and it's binary forms. _Jackson_ and _Gson_ libraries are suppoted. Gson is supported using generated [TypeAdapters](/typeadapters.html) which use no reflection. [JSON guide](/json.html). [MongoDB](/mongo.html) support also included.
 </section>
