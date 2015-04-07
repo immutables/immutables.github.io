@@ -130,7 +130,7 @@ new TrafficLightBuilder()
 
 In the above example `.redLight()`, `.yellowLight()` or `.greenLight()` should be invoked to set color switch parameter. Name of switch methods are derived from enum constant and parameter names combined.
 
-Builder will check that any corresponding light switch method should be invoked at least once (only once for [strict builders](/immutable.html/strict-builder)). To make one of the switch state as default, use enum constant name in annotation attribute.
+Builder will check that any corresponding light switch method should be invoked at least once (only once for [strict builders](/immutable.html#strict-builder)). To make one of the switch state as default, use enum constant name in annotation attribute.
 
 ```java
 enum Color {RED, YELLOW, GREEN}

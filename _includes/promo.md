@@ -4,8 +4,6 @@ With _Immutables_ you can generate state of the art immutable object and builder
 Type-safe, null-safe and thread-safe, with no boilerplate. Generate builders for [immutable objects](/immutable.html) and even plain static [factory methods](/factory.html).
 </section>
 
-Uses Effective&nbsp;Java&nbsp;2nd style.
-
 <section class="feature">
 <span class="label label-success" title="No required dependencies. Both Guava and JDK collections are supported">2.0</span>
 #### Easy to use
@@ -32,12 +30,12 @@ Generated APIs are carefully tuned for the best power-to-weight ratio. No ugly n
 <span class="label label-success" title="Comprehensive styling system for generated code">2.0</span>
 #### Flexible
 
-Adapt Immutables to your design conventions and tastes. [Customize](/style.html) `get`, `set`, `with` or whatever prefixes. Describe that style as reusable meta-annotations. Generate as much or as little as you need, expose or hide generated classes.
+Adapt Immutables to your design conventions and tastes. [Customize](/style.html) `get`, `set`, `with` or whatever prefixes. Describe styles as reusable meta-annotations. Generate as much or as little as you need, expose or hide generated classes.
 </section>
 
 <section class="feature">
 <span class="label label-success" title="Straightforward Jackson support and generated type adapters for Gson">2.0</span>
 #### JSON
 
-Immutables are serialization ready, including JSON and it's binary forms. _Jackson_ and _Gson_ libraries are suppoted. Gson is supported using generated [TypeAdapters](/typeadapters.html) which use no reflection. [JSON guide](/json.html)
+Immutables are serialization ready, including JSON and it's binary forms. _Jackson_ and _Gson_ libraries are suppoted. Gson is supported using generated [TypeAdapters](/typeadapters.html) which use no reflection. [JSON guide](/json.html). [MongoDB](/mongo.html)
 </section>
