@@ -22,7 +22,7 @@ Lazy, derived and optional attributes. Comprehensive support for collections as 
 <section class="feature">
 #### Clean code
 
-_Immutables_ has much higher standards for code readability then other generators.
+_Immutables_ has much higher standards for code readability than other generators.
 Generated APIs are carefully tuned for the best power-to-weight ratio. No ugly named identifiers. Implementation code is clear, efficient, and have corresponding javadocs. [Take a look](/generated.html)
 </section>
 
