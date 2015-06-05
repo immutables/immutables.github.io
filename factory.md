@@ -3,7 +3,7 @@ title: 'Factory builders'
 layout: page
 ---
 
-{% capture v %}2.0.10{% endcapture %}
+{% capture v %}2.0.11{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -34,7 +34,7 @@ Compile dependencies:
 
 ### Factory
 
-Place `@org.immutables.builder.Builder.Factory` annotation on static factory method to generate builder in the same package. 
+Place `@org.immutables.builder.Builder.Factory` annotation on static factory method to generate builder in the same package.
 
 ```java
 @Builder.Factory
@@ -51,13 +51,17 @@ int sumOf1and2 = new SumBuilder()
 
 By default (when not customizing [styles](/style.html)), name of builder and it's visibility modifier is derived from the annotated static factory methods. Build method invokes static factory methods and returns value. Just like when using builders for immutable objects, builders for factory methods take care of parameter null-checking, conversion to immutable collection and verifying that all attributes are set.
 
-Use `@Value.Style(newBuilder)` naming template to customize name of a builder constuctor. By default `newBuilder = "new"`, so factory builder generated having plain constructor. You might change it to something else to have static factory method to produce builder.
+Use `@Value.Style(newBuilder)` naming template to customize name of a builder constuctor. By default `newBuilder = "new"`, so factory builder generated having plain constructor. You might change it to something else to have static factory method to produce builder. Styles could only be applied to enclosing class or package, and not on a method itself.
 
 ```java
+// put styles on enclosing class or package
 @Value.Style(newBuilder = "newBuilder")
-@Builder.Factory
-public static int sum(int a, int b) {
-  return a + b;
+class Factories {
+
+  @Builder.Factory
+  public static int sum(int a, int b) {
+    return a + b;
+  }
 }
 
 ...
@@ -110,9 +114,9 @@ Pet p = new PetBuilder(AnimalKind.DOG) // Parameter
 ### Switch parameters
 
 Switch parameters are a way to provide some sugar to builders.
-Let's say you can create object in some state and want builder to have exressive methods to switch modes. Modes could be simple as boolean ON/OFF or any enumeration like LIQUID/SOLID/GAS.
+Let's say you can create object in some state and want builder to have exressive methods to switch modes. Modes could be simple as boolean ON/OFF or any enumeration like LIQUID/SOLID/GAS/PLASMA.
 
-Use `@Builder.Switch` on parameters of enum type to turn initialization methots into a switch methods.
+Use `@Builder.Switch` on parameters of enum type to turn regular initialization methods into a switch methods.
 
 ```java
 enum Color {RED, YELLOW, GREEN}
@@ -122,8 +126,8 @@ public static TrafficLight trafficLight(@Builder.Switch Color light, boolean bli
 }
 
 new TrafficLightBuilder()
-    .redLight() 
-    .blink(false)
+    .redLight() // a switch method
+    .blink(false) // a regular initializer
     .build();
 
 ```
@@ -143,11 +147,10 @@ public static TrafficLight trafficLight(
 }
 
 new TrafficLightBuilder()
-    .yellowLight() 
+    .yellowLight()
     .startBlinking()
     .build();
 
 ```
 
 If omit `.startBlinking()`, the default value `Blink.NONE` will be passed to factory.
-

@@ -62,7 +62,7 @@ Features
 --------
 
 ### Value
-The annotation processor works by using annotated abstract value types as a model to generate immutable implementation, which extends or implements abstract value type. Classes don't have to be abstract if they are not defining abstract accessor methods. 
+The annotation processor works by using annotated abstract value types as a model to generate immutable implementation, which extends or implements abstract value type. Classes don't have to be abstract if they are not defining abstract accessor methods.
 
 ```java
 @Value.Immutable
@@ -82,7 +82,8 @@ ValueClass valueClass = ImmutableValueClass.builder().build();
 
 ValueAnnotation valueAnnotation = ImmutableValueAnnotation.builder().build();
 ```
-_You can customize class names to have other prefixes than `Immutable*` or don't have prefix at all, see [styles](/style.html)_.
+_You can customize class names t
+o have other prefixes than `Immutable*` or don't have prefix at all, see [styles](/style.html)_.
 
 Abstract value types might be nested inside other types, classes should be `static` if declared as inner class (interfaces and annotations are implicitly static if nested).
 
@@ -175,7 +176,7 @@ class Builders {
   void buildIt(VehicleBuilder builder) {
     Vehicle vehicle = builder.build();
   }
-  
+
   void use() {
     buildIt(ImmutableScooter.builder());
     buildIt(ImmutableAutomobile.builder());
@@ -187,6 +188,24 @@ Explicitly declared abstract "Builder" could specify all needed `extends` or `im
 declared builder supertype and generated builders, otherwise compile error will occur in generated code.
 
 Using "forwarding" factory methods and abstract builder it is possible to hide generated implementation type and it's builder from the API. See [example](#hide-implementation).
+
+Another structural customization for builders is having immutable implementation class private, hidden inside the builder, which would be then generated as standalone top level builder class in the same package.
+
+```java
+@Value.Immutable
+@Value.Style(visibility = ImplementationVisibility.PRIVATE)
+public interface Person {
+  String getName();
+  String getAddress();
+}
+
+Person person = new PersonBuilder()
+  .name("Jim Boe")
+  .address("P.O. box 0000, Lexington, KY")
+  .build();
+```
+
+For other structural and naming style customization see [style guide](/style.html)
 
 <a name="strict-builder"></a>
 ### Strict Builder
@@ -237,7 +256,19 @@ boolean willBeTrue = hostWithPort.equals(
         .build());
 ```
 
-If there's more that one constructor parameter it is advised to put `order` annotation attribute to make constructor parameter order deterministic across java compilers that may not honor source order. Source ordering currently works for Javac and Eclipse JDT compilers.
+You can optionally specify order using `order` annotation attribute to make constructor parameter order deterministic across java compilers that may not honor source order. Source ordering currently works for Javac and Eclipse JDT compilers.
+
+```java
+@Value.Immutable
+public abstract class HostWithPort {
+  @Value.Parameter(order = 2)
+  public abstract int port();
+  @Value.Parameter(order = 1)
+  public abstract String hostname();
+}
+...
+HostWithPort hostWithPort = ImmutableHostWithPort.of("localhost", 8081);
+```
 
 **Things to be aware of**
 
@@ -295,7 +326,7 @@ You can verify required number of items using [Precondition check method](#check
   - `addFoo(T)`
   - `addFoo(T...)`
   - `addAllFoo(Iterable<? extends T>)`
-  
+
 + for map attribute named `bar` where keys are of type `K` and values of type `V`
   - `bar(Map<? extends K, ? extends K>)` &mdash; not available in [strict](#strict-builder) mode
   - `putBar(K, V)`
@@ -309,7 +340,7 @@ You can verify required number of items using [Precondition check method](#check
   - `putBar(K, ...V)`
   - `putAllBar(K, Iterable<V>)`
   - `putAllBar(Multimap<? extends K, ? extends K>)`
-  
+
 Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To clear content of collection or map: use reset method like `bar(Collections.emptyList())` or use [copy methods](#copy-methods) right after instance is built.
 
 The set of methods was choosen to be minimal for a convenient usage. Smaller set of methods resulted in noisy conversions all over the code. Bigger set of methods resulted in kitchen sink
@@ -385,15 +416,15 @@ public abstract class PlayerInfo {
 
   @Value.Parameter
   public abstract long id();
-  
+
   @Value.Default
   public String name() {
-    return "Anonymous_" + id(); 
+    return "Anonymous_" + id();
   }
-  
+
   @Value.Default
   public int gamesPlayed() {
-    return 0; 
+    return 0;
   }
 }
 ...
@@ -442,7 +473,7 @@ public abstract class Order {
 
     for (Item i : items())
       count += i.count();
-      
+
     return count;
   }
 }
@@ -461,7 +492,7 @@ body should not refer to any other derived or default attribute.
 
 **Things to be aware of**
 
-+ Unspecified result if initializer method body refers to non-abstract attribute accessor. 
++ Unspecified result if initializer method body refers to non-abstract attribute accessor.
 
 <a name="nullable"></a>
 ### Nullable attributes
@@ -478,7 +509,7 @@ NullAccepted obj = ImmutableNullAccepted.builder()
     .i1(null)
     .build();
 
-obj.toString(); // NullAccepted{i1=null, l2=null}    
+obj.toString(); // NullAccepted{i1=null, l2=null}
 ```
 
 <a name="lazy-attribute"></a>
@@ -547,7 +578,7 @@ you can write non-private method annotated with `@Value.Check` and throw runtime
 @Value.Immutable
 public abstract class NumberContainer {
   public abstract List<Number> nonEmptyNumbers();
-  
+
   @Value.Check
   protected void check() {
     Preconditions.checkState(!nonEmptyNumbers().isEmpty(),
@@ -578,7 +609,7 @@ counter = counter.withValue(counter.value() + 1)
 
 Cheap refrence equality `==` check added to prevent copy of the same value by returning `this`. Also primitives has the same `==` value check (except for `float` and `double`). Full equality check or other specialized checks were omitted: It may be less computationally expensive to create and new copy of value than to check some attribute for deep-equality.
 
-Copy methods provide form of copying with structural sharing. It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by builder. New values will effectively share subgraphs of old values, which is desirable in many cases. 
+Copy methods provide form of copying with structural sharing. It is very useful to change some of the attributes values, but have other collection attributes reference the same immutable value as before, instead of being rebuilt manually or by builder. New values will effectively share subgraphs of old values, which is desirable in many cases.
 
 What about collection and map attributes? While it is tempting to have a bunch of methods like `withItemAdded` or `withKeyValuePut`, they might require a lot of variation like _add last_ or _add first_ and will hide the fact of collection rebuilding or rehashing, which is not always desirable for immutable collections. As of now, there's only simple value replacement for all kinds of attributes, but new collection values are guaranteed to be copied as immutable if they are not already immutable.
 
@@ -650,7 +681,7 @@ measurable performance improvements may be gained by interning those instances.
 If all you need is to _strongly_ intern all instances of particular value type — _Immutables_ just does that for you.
 Use `@Value.Immutable(intern = true)` annotation parameter to enable strong interning:
 
-+ Any object returned by builder or constructor will be interned and "canonical" instance returned 
++ Any object returned by builder or constructor will be interned and "canonical" instance returned
 + `equals` will be short-circuited to object reference equality.
 
 There's support only for strong interning:
@@ -668,7 +699,7 @@ Just use `@Value.Immutable(prehash = true)` annotation parameter to enable hash 
 ### Customize toString, hashCode and equals
 It's quite easy to customize generated `toString`, `hashCode` and `equals` methods,
 in fact it is as easy as just implement them yourself in abstract value class.
-_Immutables_ processor will not override such manual methods with generated ones. 
+_Immutables_ processor will not override such manual methods with generated ones.
 
 ```java
 @Value.Immutable
@@ -677,7 +708,7 @@ public abstract class OmniValue {
   public boolean equals(Object object) {
     return object instanceof OmniValue;
   }
-  
+
   @Override
   public int hashCode() {
     return 1;
@@ -810,15 +841,15 @@ public abstract class Point {
   public abstract double x();
   @Value.Parameter
   public abstract double y();
-  
+
   public static Point origin() {
     return ImmutablePoint.of(0, 0);
   }
-  
+
   public static Point of(double x, double y) {
     return ImmutablePoint.of(x, y);
   }
-  
+
   public static Point fromPolar(double r, double t) {
     return ImmutablePoint.of(r * Math.cos(t), r * Math.sin(t));
   }
@@ -873,11 +904,11 @@ public abstract class OriginDestination {
   public boolean isDomestic() {
     return origin().country().equals(destination().country());
   }
-  
+
   public boolean isCrossCityTransit() {
     return origin().city().equals(destination().city());
   }
-  
+
   public OriginDestination reverse() {
     return ImmutableOriginDestination.of(destination(), origin());
   }
@@ -893,12 +924,12 @@ Particular attributes may become redundant from standpoint of public interface o
 @Value.Immutable
 public abstract class Name {
   @Value.Parameter
-  abstract String value(); 
-  
+  abstract String value();
+
   public String toString() {
     return value();
   }
-  
+
   public static Name of(String value) {
     return ImmutableName.of(value);
   }

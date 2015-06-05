@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.0.10{% endcapture %}
+{% capture v %}2.0.11{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -133,7 +133,7 @@ Optionally, `org.immutables:gson` module could also be used at runtime to enable
 **Can't wait to see generated code?**
 
 - See page with [generated code sample](/typeadapters.html)
-  
+
 ### Generating Type Adapters
 
 Use annotation `@org.immutables.gson.Gson.TypeAdapters` to generate `TypeAdapaterFactory` implementation which produces adapters to any immutable classes enclosed by `@Gson.TypeAdapters` annotation. The annotation could be placed on top-level type or package (using `package-info.java`). Type adapter factory will support all immutable classes in corresponding type (directly annotated and all nested immutable values) or package. Class named `GsonAdapters[NameOfAnnotatedElement]` will be generated in the same package.
@@ -167,6 +167,7 @@ public interface Adapt {
 
 - See javadocs in [Gson](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java)
 
+<a name="adapter-registration"></a>
 ### Type Adapter registration
 Type adapter factory is generated in the same package and registered statically as service providers in `META-INF/services/com.google.gson.TypeAdapterFactory`.
 You can manually register factories with `GsonBuilder`, but the most easy way to register all such factories using `java.util.ServiceLoader`.
@@ -268,6 +269,9 @@ Automatically generated bindings are straightforward and generally useful.
   - Collections mapped to JSON arrays
   - Map and Multimaps mapped to JSON object (keys always converted to strings)
   - Optional attributes - as nullable fields
+* Immutable values having only constructor - arrays of constructor arguments.
+
+While there's certain amount of customization (like changing field names in JSON), basic idea is to have direct and straightforward mapping to JSON derived from the structure of value object, where value objects are adapted to a representation rather than free-form object have complex mapping to JSON representation.
 
 To add custom binding for types, other than immutable values, use Gson APIs. Please refer to [Gson reference](https://sites.google.com/site/gson/gson-user-guide#TOC-Custom-Serialization-and-Deserialization)
 
@@ -363,6 +367,49 @@ Coordinates coordinates = ImmutableCoordinates.of(37.783333, -122.416667);
 ```js
 [37.783333, -122.416667]
 ```
+
+As special case of this are values with single constructor parameter.
+Having a tuple of 1 argument, is essentially equivalent to having just a value of argument. Therefore you can marshal and unmarshal such objects as value of it's single argument.
+If you want to make value to be a wrapper invisible in BSON,
+you can define it as having no builder and single argument constructor, so it will become pure wrapper.
+
+```java
+@Gson.TypeAdapters
+interface WrapperExample {
+  // Name will become wrapper around name string, invisible in JSON
+  @Value.Immutable(builder = false)
+  interface Name {
+    @Value.Parameter String value();
+  }
+
+  // Id will become wrapper around id number, invisible in JSON
+  @Value.Immutable(builder = false)
+  interface Id {
+    @Value.Parameter int value();
+  }
+
+  @Value.Immutable(builder = false)
+  interface Val {
+    Id id();
+    Name name();
+  }
+}
+
+Val val = ImmutableVal.build()
+  .id(ImmutableId.of(124))
+  .name(ImmutableName.of("Nameless"))
+  .build();
+```
+
+```js
+{
+  "id": 124,
+  "name": "Nameless"
+}
+```
+
+This allows to archive needed level of abstraction and type safety without cluttering JSON data structure.
+
 <a name="poly"></a>
 #### Polymorphic mapping
 

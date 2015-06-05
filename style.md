@@ -86,14 +86,15 @@ public com.mycompany.project;
 **Things to be aware of**
 
 - When there are couple of conflicting styles mixed on the same level using meta annotation,
-then just one of them will be picked. Should not rely on any order here
+then just one of them will be picked. Should not rely on any order here.
 - Styles are not merged in any way.
+- Styles are applied at package, top level class level, or value type itself if it's nested. Styles will not work on attribute level or declared on intermediate nested types.
 - Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contains inappropriate symbols or java keywords etc.
 
 ## Other customizations
 
 ### Simple annotations
-That could barely be called customization. Let's say it is just a reminder that you can use annotation with simple names rather that qualified with umbrella annotations like `@Value`. 
+That could barely be called customization. Let's say it is just a reminder that you can use annotation with simple names rather that qualified with umbrella annotations like `@Value`.
 
 ```java
 import org.immutables.value.Value.Immutable;
@@ -131,4 +132,3 @@ Vertex.builder().build();
 ```
 
 _Note: prior to 2.0, `@Value.Enclosing` was named `@Value.Nested`_
-

@@ -3,7 +3,7 @@ title: 'MongoDB repositories'
 layout: page
 ---
 
-{% capture v %}2.0.10{% endcapture %}
+{% capture v %}2.0.11{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -16,7 +16,7 @@ is to provide best possible API that matches well for storing documents expresse
   + Document field names are expressed as method names, not strings. Works nice with auto-completion in IDE.
   + Operations and types should match.
 * Asynchronous operations returning `Future`
-  + Easily compose async operations.
+  + Compose async operations.
   - IO is still synchronous underneath with dedicated thread pool.
 
 One of the side goals of this module was to demonstrate that Java DSLs and APIs could be actually a lot less ugly.
@@ -106,17 +106,17 @@ Snippet of maven dependencies:
 
 In order to enable repository generation, put `org.immutables.mongo.Mongo.Repository`
 annotation on a abstract value class alongside with `org.immutables.value.Value.Immutable` annotation.
-Repository which accesses collection of documents will be generated 
+Repository which accesses collection of documents will be generated
 as a class with `Repository` suffix in the same package.
 
-By default mapped collection name is derived from abstract value class name: for `UserDocument` class collection
-name will be `userDocument`. However, name is customizable using `value` annotation attribute.
+By default mapped collection name is derived from abstract value class name: for `UserDocument` class collection name will be `userDocument`. However, name is customizable using `value` annotation attribute.
 
 ```java
 import org.immutables.mongo.Mongo;
 import org.immutables.value.Value;
 
 @Value.Immutable
+@Gson.TypeAdapters // you can put TypeAdapters on a package instead
 @Mongo.Repository("user")
 public abstract class UserDocument {
   ...
@@ -125,17 +125,16 @@ public abstract class UserDocument {
 
 ### Creating repositories
 
-Once repository class is generated, it's possible to instantiate this class using `new` operator. You need
-to supply `org.immutables.common.repository.RepositorySetup` as a constructor argument. Setup could be shared by all repositories for a single MongoDB database. `RepositorySetup` combines definition of a thread pool and MongoDB database and configured `com.google.gson.Gson` instance.
+Once repository class is generated, it's possible to instantiate this class using `new` operator. You need to supply `org.immutables.common.repository.RepositorySetup` as a constructor argument. Setup could be shared by all repositories for a single MongoDB database. `RepositorySetup` combines definition of a thread pool and MongoDB database and configured `com.google.gson.Gson` instance.
 
-Luckily, for getting started and for simpler applications, there's an easy way to create
-a setup using `RepositorySetup.forUri` factory method. Pass mongodb connection string and setup will be created with default settings.
+Luckily, to get started and for simpler applications, there's an easy way to create
+a setup using `RepositorySetup.forUri` factory method. Pass MongoDB connection string and setup will be created with default settings.
 
 ```java
 RepositorySetup setup = RepositorySetup.forUri("mongodb://localhost/test");
 ```
 
-Test database on a default port on a local machine: just launch `mongod` to get up and running.
+Test database, the default port on a local machine: just launch `mongod` to get it up and running.
 
 To fully customize setting use `RepositorySetup` builder:
 
@@ -152,15 +151,15 @@ RepositorySetup setup = RepositorySetup.builder()
   .build();
 ```
 
-See [getting started with java driver](http://docs.mongodb.org/ecosystem/tutorial/getting-started-with-java-driver/)
-for an explanation how to create `MongoClient`.
+See [getting started with java driver](http://docs.mongodb.org/ecosystem/tutorial/getting-started-with-java-driver/) for an explanation how to create `MongoClient`.
 
 ### Id attribute
 
-It is highly recommended to have explicit `_id` field. Use `@Mongo.Id` annotation to declare Id attribute, note that it will act as an alias to `@Gson.Named("_id")`, which could also be used.
+It is highly recommended to have explicit `_id` field for MongoDB documents. Use `@Mongo.Id` annotation to declare id attribute. The `@Mongo.Id` annotation acts as an alias to `@Gson.Named("_id")`, which could also be used.
 
 ```java
 @Value.Immutable
+@Gson.TypeAdapters
 @Mongo.Repository("user")
 public abstract class UserDocument {
   @Mongo.Id
@@ -169,16 +168,18 @@ public abstract class UserDocument {
 }
 ```
 
-Identifier attribute can be of any type that is marshaled to a valid BSON type that could be used as `_id` field in MongoDB.
-Java attribute name is irrelevant as long as it will be generated marshaled as `_id` (`@Gson.Named("_id")`).
+Identifier attribute can be of any type that is marshaled to a valid BSON type that could be used as `_id` field in MongoDB. Java attribute name is irrelevant as long as it will be generated marshaled as `_id` (annotated with `@Gson.Named("_id")` or `@Mongo.Id`).
 
-In some cases you may need to use special type `ObjectID` for `_id` fields. In order to do this,
-_Immutables_ provides wrapper type `org.immutables.common.repository.Id`. Use static factory methods of `org.immutables.mongo.types.Id` class
-to construct instances that corresponds to MongoDB' `ObjectID`.
-Here's example of auto-generated identifier:
+In some cases you may need to use special type `ObjectID` for `_id` or other fields. In order to do this, _Immutables_ provides wrapper type `org.immutables.mongo.types.Id`. Use static factory methods of `org.immutables.mongo.types.Id` class to construct instances that corresponds to MongoDB' `ObjectID`. Here's example of auto-generated identifier:
 
 ```java
+import org.immutables.value.Value;
+import org.immutables.gson.Gson;
+import org.immutables.mongo.Mongo;
+import org.immutables.mongo.types.Id;
+
 @Value.Immutable
+@Gson.TypeAdapters
 @Mongo.Repository("events")
 public abstract class EventRecord {
   @Mongo.Id
@@ -194,8 +195,10 @@ public abstract class EventRecord {
 BSON/JSON documents
 ----
 
+All values used to model documents should have GSON type adapters registered. To generate use `@Gson.TypeAdapters` on types or packages. When using `RepositorySetup.forUri`, all type generators will be auto-registered from the classpath. When using custom `RepositorySetup`, register type adapters on a `Gson` instance using `GsonBuilder` as shown [in GSON guide](json.html#adapter-registration).
+
 Large portion of things needed to know to create MongoDB documents described in [JSON guide](json.html#gson)
-  
+
 ----------
 Operations
 ----------
@@ -204,6 +207,7 @@ Operations
 
 ```java
 @Value.Immutable
+@Gson.TypeAdapters
 @Mongo.Repository("posts")
 public abstract class PostDocument {
   @Mongo.Id
@@ -249,7 +253,7 @@ posts.insert(
 ```
 
 ### Upsert document
-Update or insert full document content by `_id` using `upsert` method 
+Update or insert full document content by `_id` using `upsert` method
 
 ```java
 posts.upsert(
@@ -257,21 +261,21 @@ posts.upsert(
         .id(1)
         .content("a1")
         .build());
-                
+
 posts.upsert(
     ImmutablePostDocument.builder()
         .id(10)
         .content("!!!")
         .addRatings(2)
         .build());
-          
+
 ```
 
 If document with `_id` 10 is not found, then it will be created, otherwise updated
 
 ### Find documents
 
-To find document you need to provide criteria object. Search criteria objects are generated to reflect fields of 
+To find document you need to provide criteria object. Search criteria objects are generated to reflect fields of
 the document, empty criteria objects are obtained by using `criteria()` static factory method on generated repository.
 Criteria objects are immutable and can be stored as constants or otherwise safely passed around.
 Criteria objects has methods corresponding to document attributes and relevant constraints.
@@ -283,14 +287,14 @@ List<PostDocument> documents =
     posts.find(where.contentStartsWith("a"))
         .fetchAll()
         .getUnchecked();
-        
+
 Optional<PostDocument> document =
     posts.find(
         where.content("!!!")
             .ratingsNonEmpty())
         .fetchFirst()
         .getUnchecked();
-            
+
 List<PostDocument> limited =
     posts.find(
         where.contentStartsWith("a")
@@ -368,7 +372,7 @@ int deletedDocumentsCount = posts.find(where.content(""))
 
 // Delete all? Ok
 posts.findAll().deleteAll();
-``` 
+```
 
 ### Update and FindAndModify
 
@@ -385,11 +389,11 @@ Optional<PostDocument> updatedDocument =
         .returningNew()
         .update()
         .getUnchecked();
-        
+
 posts.update(where.ratingsEmpty())
     .addRatings(3)
     .updateAll();
-    
+
 posts.findById(111)
     .andModifyFirst()
     .incrementVersion(1)
