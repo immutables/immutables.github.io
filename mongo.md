@@ -195,9 +195,9 @@ public abstract class EventRecord {
 BSON/JSON documents
 ----
 
-All values used to model documents should have GSON type adapters registered. To generate use `@Gson.TypeAdapters` on types or packages. When using `RepositorySetup.forUri`, all type generators will be auto-registered from the classpath. When using custom `RepositorySetup`, register type adapters on a `Gson` instance using `GsonBuilder` as shown [in GSON guide](json.html#adapter-registration).
+All values used to model documents should have GSON type adapters registered. Use `@Gson.TypeAdapters` on types or packages to generate type adapters for enclosed value types. When using `RepositorySetup.forUri`, all type adapters will be auto-registered from the classpath. When using custom `RepositorySetup`, register type adapters on a `Gson` instance using `GsonBuilder` as shown in [GSON guide](json.html#adapter-registration).
 
-Large portion of things needed to know to create MongoDB documents described in [JSON guide](json.html#gson)
+Large portion of things you need to know to create MongoDB mapped documents is described in [GSON guide](json.html#gson)
 
 ----------
 Operations
