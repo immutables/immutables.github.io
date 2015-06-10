@@ -3,6 +3,9 @@ title: 'Immutable objects'
 layout: page
 ---
 
+{% capture v %}2.0.12{% endcapture %}
+{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+
 Overview
 --------
 To get benefits of immutability in Java we created the annotation processor
@@ -776,11 +779,19 @@ Basic java binary serialization is supported in a following way:
 * Copy `serialVersionUID` from abstract value type to immutable implementation type
 * Generate `readResolve` method implementation to preserve [singleton](#singleton) and [interned](#interning) instances.
 
-For other serialization options see [JSON](/json.html) guide.
+Advanced java binary serialization annotations are available in `serial` module
+(_added as experimental feature in version 2.0.12_):
+
+- [org.immutables:serial:{{v}}]({{ depUri }}|serial|{{ v }}|jar)
+
++ `@Serial.Version` — to apply serial version to enclosing value types
++ `@Serial.Structural` — enables special structural serialization. Object serialized and deserialized using structural serialization are more flexible to enable data evolution. By having fields changed to optional, scalars changed to arrays or collection type changed (was set, then became list, for example), you have more freedom to evolve value objects.
+
+For JSON serialization options see [JSON](/json.html) guide.
 
 <a name="generics"></a>
 ### Generics (not) supported
-_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However, it's not clear if we have to fully support parametrizable immutable objects, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/json.html#gson) serialization etc. Annotation processing provide limited tools to analyse types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
+_Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However, it's not clear if we have to fully support parametrizable immutable objects, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/json.html#gson) serialization etc. Annotation processing provide limited tools to analyze types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
 
 Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. Here's example of what's possible with _Immutables_:
 
