@@ -442,12 +442,28 @@ PlayerInfo anonymous44 = ImmutablePlayerInfo.of(44);
 
 String name = anonymous44.name(); // Anonymous_44
 ```
+
 Default attribute method's body should not refer to any other derived or default attribute.
 Otherwise construction will be broken due to unspecified initialization order.
 It's only guaranteed that all attributes with abstract accessors will be initialized before
 default and derived attributes, and therefore could be safely referred in initializers.
 
+There's no need to use `@Value.Default` to return empty collection as collection attributes are empty by default if not initialized. If you use `@Value.Default` on [collection attributes](#collection) —
+it will turn it into nothing-special attribute, no sugar-sweet initializers in builder will be generated.
+
 For immutable [annotation](#annotations) types default attributes defined by using `default` keyword and will have corresponding default constant value initialized if not set.
+
+Default attributes work well with Java 8 default methods in interfaces. It's just attributes should be `@Default default` ).
+
+```java
+@Value.Immutable
+interface Val {
+  int anAttribute();
+  @Value.Default default int otherAttribute() {
+    return 0;
+  }
+}
+```
 
 **Things to be aware of**
 
@@ -733,6 +749,8 @@ fine with [instance interning](#interning) and [precomputed hashCode](#prehashed
 
 It is deemed to be redundantly to note, but you should implement `equals`
 and `hashCode` correctly and only if you a know what you are doing.
+
+If you just want to store some attributes, but exclude them from the `equals` and `hashCode` — simpler alternative would be to mark such attributes with [`@Value.Auxiliary`](#auxiliary) and still use auto-generated `hashCode`/`equals`.
 
 <a name="annotations"></a>
 ### Immutable Annotation
