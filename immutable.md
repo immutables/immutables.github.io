@@ -768,7 +768,7 @@ fine with [instance interning](#interning) and [precomputed hashCode](#prehashed
 It is deemed to be redundantly to note, but you should implement `equals`
 and `hashCode` correctly and only if you a know what you are doing.
 
-If you just want to store some attributes, but exclude them from the `equals` and `hashCode` — simpler alternative would be to mark such attributes with [`@Value.Auxiliary`](#auxiliary) and still use auto-generated `hashCode`/`equals`.
+If you just want to store some attributes, but exclude them from the `equals` and `hashCode` — simpler alternative would be to mark such attributes with `@Value.Auxiliary` ([see auxiliary](#auxiliary)) and still use auto-generated `hashCode`/`equals`.
 
 <a name="annotations"></a>
 ### Immutable Annotation
