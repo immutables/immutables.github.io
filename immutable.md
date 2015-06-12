@@ -715,6 +715,24 @@ when used extensively with hashtables.
 For such cases, hash code may be precomputed on construction and stored for fast retrieval.
 Just use `@Value.Immutable(prehash = true)` annotation parameter to enable hash computing in advance.
 
+<a name="auxiliary"></a>
+### Auxiliary attributes
+There's annotation that excludes annotated attribute from generated `equals`, `hashCode` and `toString` methods.
+
+`@Value.Auxiliary` attributes will be stored and will be accessible, but are excluded from `equals`, `hashCode` and `toString` method implementations. [Lazy](#lazy-attribute) attributes are always act as _auxiliary_.
+
+```java
+@Value.Immutable(intern = true)
+interface TypeDescriptor {
+  // Instances are interned only by qualified name
+  String qualifiedName();
+  @Value.Auxiliary
+  TypeElement element();
+}
+```
+If you need even more custom handling of `hashCode`, `equals` and `toString`, consider to [customize those methods directly](#custom-equals-hashcode-tostring).
+
+<a name="custom-equals-hashcode-tostring"></a>
 ### Customize toString, hashCode and equals
 It's quite easy to customize generated `toString`, `hashCode` and `equals` methods,
 in fact it is as easy as just implement them yourself in abstract value class.
@@ -770,22 +788,6 @@ ImmutableMyAnnotation.builder()
 ```
 
 If annotations reside in different library or package, you still can generate implementation and builder using [Include](#include) annotation.
-
-<a name="auxiliary"></a>
-### Auxiliary attributes
-There's annotation that excludes annotated attribute from generated `equals`, `hashCode` and `toString` methods.
-
-`@Value.Auxiliary` attributes will be stored and will be accessible, but are excluded from `equals`, `hashCode` and `toString` method implementations. [Lazy](#lazy-attribute) attributes are always act as _auxiliary_.
-
-```java
-@Value.Immutable(intern = true)
-interface TypeDescriptor {
-  // Instances are interned only by qualified name
-  String qualifiedName();
-  @Value.Auxiliary
-  TypeElement element();
-}
-```
 
 <a name="serialization"></a>
 ### Serialization
