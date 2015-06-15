@@ -85,8 +85,7 @@ ValueClass valueClass = ImmutableValueClass.builder().build();
 
 ValueAnnotation valueAnnotation = ImmutableValueAnnotation.builder().build();
 ```
-_You can customize class names t
-o have other prefixes than `Immutable*` or don't have prefix at all, see [styles](/style.html)_.
+_You can customize generated class names to have other prefixes than `Immutable*` or don't have prefix at all, see [styles](/style.html)_.
 
 Abstract value types might be nested inside other types, classes should be `static` if declared as inner class (interfaces and annotations are implicitly static if nested).
 
