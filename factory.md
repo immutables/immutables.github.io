@@ -8,7 +8,7 @@ layout: page
 
 Overview
 --------
-Do not repeat yourself writing builders for your APIs, with all that overhead of fluent structure and checking. Generate builders for static factory methods as easily as you would generate builders for [immutable values](/immutable.html). Factory builders are some form of partial function application, supplying named parameters one by one and invoking function in the end. But if you need builder doing processing along the way while values are being collected, then, probably, stucture of factory builders will not suit your case.
+Do not repeat yourself writing builders for your APIs, with all that overhead of fluent structure and checking. Generate builders for static factory methods as easily as you would generate builders for [immutable values](/immutable.html). A factory builder is a some form of partial function application. Supply named parameters one by one and invoke a function in the end. But if you need builder doing processing along the way, while values are being collected, then, probably, factory builders will not suit your case.
 
 + In addition to this guide, see JavaDocs of [org.immutables.builder.Builder](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java)
 
@@ -73,16 +73,14 @@ int sumOf1and2 = SumBuilder.newBuilder()
 
 Couple of other features and styles works for factory builders in the same way as for immutable objects:
 
-+ Array, Collection and Map parameters
-+ Optional and Nullable parameters
-+ Strict builders
-+ Various naming style customizations
++ [Array, Collection and Map parameters](/immutable.html##collection)
++ [Optional](/immutable.html#optional) and [Nullable](/immutable.html#nullable) parameters
++ [Strict builders](/immutable.html#strict-builder)
++ Various naming [style customizations](/style.html)
 
-See [immutable values](/immutable.html) and [styles](/style.html) for additional details.
+Note that `@Value.Default`, `@Value.Lazy`, `@Value.Derived` etc annotation are **not applicable** to parameters of factory methods, moreover they usually don't make sense for factory builders as the way they work for immutable value objects.
 
-Note that `@Value.Default`, `@Value.Lazy`, `@Value.Derived` etc annotation are **not applicable** to parameters of factory methods, moreover they usually don't make any sense for factory builders.
-
-To have default parameters just use `Optional` parameteres.
+To have default parameters just use `Optional` parameters.
 
 ```java
 @Builder.Factory
@@ -93,7 +91,7 @@ public static int sum(Optional<Integer> a, Optional<Integer> b) {
 
 ### Parameters
 
-Sometimes you might want to have some factory parameters to be turned into parameters of builder's contructor. Annotate parameter with `@Builder.Parameter` to achieve this. Generated builder will accept such parameters via constuctor and not by initialization methods.
+Sometimes you might want to have some factory parameters to be turned into parameters of builder's constructor. Annotate parameter with `@Builder.Parameter` to achieve this. Generated builder will accept such parameters via constructor instead of initialization method.
 
 ```java
 @Builder.Factory
@@ -132,7 +130,7 @@ new TrafficLightBuilder()
 
 ```
 
-In the above example `.redLight()`, `.yellowLight()` or `.greenLight()` should be invoked to set color switch parameter. Name of switch methods are derived from enum constant and parameter names combined.
+In the above example `.redLight()`, `.yellowLight()` or `.greenLight()` should be invoked to set color switch parameter. Name of a switch method is derived from an enum constant and corresponding parameter names combined.
 
 Builder will check that any corresponding light switch method should be invoked at least once (only once for [strict builders](/immutable.html#strict-builder)). To make one of the switch state as default, use enum constant name in annotation attribute.
 
@@ -142,7 +140,7 @@ enum Blink {NONE, START}
 
 public static TrafficLight trafficLight(
     @Builder.Switch Color light,
-    @Builder.Switch(defaultName = "NONE") boolean blinking) {
+    @Builder.Switch(defaultName = "NONE") Blink blinking) {
   ...
 }
 
