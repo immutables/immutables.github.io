@@ -294,10 +294,14 @@ Following collection types enjoy built-in support for convenient usage:
 
 + `com.google.common.collect.Multimap<K, V>` (`ListMultimap`, `SetMultimap`)
 
++ `com.google.common.collect.BiMap<K, V>`
+
++ `com.google.common.collect.Immutable*` variants for collections above
+
 Array attributes are being cloned for safety.
-Collection attributes are backed by Guava immutable collections if Guava is available in classpath, or are safely copied and wrapped in unmodifiable collection classes from standard JDK,
-moreover, `java.util.Set` and `java.util.Map` with `enum` keys
-are backed by efficient `EnumSet` and `EnumMap` implementations.
+Collection attributes are backed by Guava immutable collections if Guava is available in classpath, or are safely copied and wrapped in unmodifiable collection classes from standard JDK.
+
+`java.util.Set` and `java.util.Map` with `enum` keys are backed by efficient `EnumSet` and `EnumMap` implementations.
 
 <a name="natural-reverse"></a>
 Ordered maps and sets are recognized for natural and reverse natural ordering
@@ -311,7 +315,7 @@ using `@Value.NaturalOrder` and `@Value.ReverseOrder` annotations correspondingl
 
 + `java.util.NavigableMap<K, V>`
 
-Without ordering annotation, ordered sets and maps attributes will be generated as regular attributes to support costruction with custom comparators etc.
+Without ordering annotation, ordered sets and maps attributes will be generated as regular attributes to support construction with custom comparators etc.
 
 All mentioned above collection types could be also declared as Guava's immutable collections `com.google.common.collect.Immutable*`. Please note that other collection implementations like `java.util.ArrayList` will not be recognized as special collection attribute.
 
@@ -329,7 +333,7 @@ You can verify required number of items using [Precondition check method](#check
   - `addFoo(T...)`
   - `addAllFoo(Iterable<? extends T>)`
 
-+ for map attribute named `bar` where keys are of type `K` and values of type `V`
++ for map and bimap attribute named `bar` where keys are of type `K` and values of type `V`
   - `bar(Map<? extends K, ? extends K>)` &mdash; not available in [strict](#strict-builder) mode
   - `putBar(K, V)`
   - `putBar(Map.Entry<? extends K, ? extends V>)`
@@ -345,12 +349,12 @@ You can verify required number of items using [Precondition check method](#check
 
 Since version 0.16 we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection and map attributes. To clear content of collection or map: use reset method like `bar(Collections.emptyList())` or use [copy methods](#copy-methods) right after instance is built.
 
-The set of methods was choosen to be minimal for a convenient usage. Smaller set of methods resulted in noisy conversions all over the code. Bigger set of methods resulted in kitchen sink
+The set of methods was chosen to be minimal for a convenient usage. Smaller set of methods resulted in noisy conversions all over the code. Bigger set of methods resulted in kitchen sink
 (duplicating mutable collection API?).
-If concerned with the number of methods, consider using tools like _ProGuard_ to remove unused generated methods.
+If concerned with the number of methods, consider using tools like _ProGuard_ to remove unused generated methods in resulting application.
 
 Why other kinds of containers are not supported in the same way? What about `java.lang.Iterable`, `java.util.Collection` or `java.util.Queue`?
-That's because those other containers are either too-generic or too-specific for the purposes of immutable object modelling. This might change upon request, of course (and that is what happened with ordered sets and maps which got recognized with [order annotations](#natural-reverse)).
+That's because those other containers are either too-generic or too-specific for the purposes of immutable object modeling. This might change upon request, of course (and that is what happened with ordered sets and maps which got recognized with [order annotations](#natural-reverse)).
 The nice side of this is that any type is supported as attribute value, and while there's no any kind of magic support, other container types are still usable:
 
 ```java
@@ -373,7 +377,7 @@ attribute of type `T`.
 
 As of 2.0, `java.util.Optional`, `java.util.OptionalInt`, `java.util.OptionalLong`, `java.util.OptionalDouble` from Java 8 are fully supported also.
 
-Optional value could be omitted when building object, and will default to `Optional.absent()` (or `Optional.empty()`).
+Optional value could be omitted when building object, and will default to `Optional.absent()` (or `Optional.empty()` in Java 8).
 Generated builders have special initializer for optional attributes:
 
 + for optional attribute named `opt` where elements are of type `T`
@@ -889,17 +893,17 @@ public abstract class Point {
 You may also want to use forwarding factory method to hide implementation class from a surface of abstract value type API. In example above, notice how usage of `ImmutablePoint` is not leaking through `Point`'s public interface.
 
 <a name="hide-implementation"></a>
-### Hiding implementation
+### Hide implementation class
 
-It's also possible to hide generated builder implementation in the same manner using nested abstract [Builder](#builder). While it adds up to verbosity, but implementation is not exposed as an API:
+In addition to what was shown above. It's also possible to hide builder implementation in the same manner using nested abstract [Builder](#builder). While it adds up to verbosity, but implementation classes is not exposed as a public API:
 
 ```java
+// Make generated class package private
+@Value.Style(visibility = ImplementationVisibility.PACKAGE)
 @Value.Immutable
 public abstract class Point {
-  @Value.Parameter
-  public abstract double x();
-  @Value.Parameter
-  public abstract double y();
+  @Value.Parameter public abstract double x();
+  @Value.Parameter public abstract double y();
 
   public static Point of(double x, double y) {
     return ImmutablePoint.of(x, y);
@@ -908,11 +912,12 @@ public abstract class Point {
   public static Builder builder() {
     return ImmutablePoint.builder();
   }
-  // Signatures of abstract methods should match to be overriden by implementation
-  public abstract static class Builder {
-    public abstract Builder x(double x);
-    public abstract Builder y(double y);
-    public abstract Point build();
+  // Signatures of abstract methods should match to be
+  // overridden by implementation builder
+  public interface Builder {
+    Builder x(double x);
+    Builder y(double y);
+    Point build();
   }
 }
 ```
