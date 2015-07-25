@@ -32,7 +32,23 @@ In maven you can declare it "provided" scope, or make it "optional" to prevent p
 _Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend (given annotation processing is not disabled in build tool configuration).
 _Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using annotation processor in IDE](/apt.html).
 
-**Note:** There's known issue with Javac incremental compilation and annotation processing, which appeared not so long ago. Build tools like Maven are also affected by this. Most often commands like `mvn clean compile` will resolve any such problems by forcing full build. For other workarounds you could see [PojoBuilder wiki: Incremental Compilation and Maven](https://github.com/mkarneim/pojobuilder/wiki/Incremental-Compilation-and-Maven). Search phrase: "java.lang.IllegalStateException: endPosTable already set".
+**Note:** There's known issue with Javac incremental compilation and annotation processing, which appeared some time ago. Build tools like Maven are also affected by this bug. Most often commands like `mvn clean compile` will resolve any such problems by forcing full build. Disabling incremental compilation is also an option.
+
+```xml
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.3</version>
+  <configuration>
+    <compilerVersion>1.8</compilerVersion>
+    <source>1.8</source>
+    <target>1.8</target>
+    <!-- prevents endPosTable exception for maven compile -->
+    <useIncrementalCompilation>false</useIncrementalCompilation>
+  </configuration>
+</plugin>
+```
+Search phrase: "java.lang.IllegalStateException: endPosTable already set".
 
 ## Create immutable object
 
