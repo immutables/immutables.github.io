@@ -109,9 +109,9 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.2.3'
+    classpath "com.android.tools.build:gradle:1.2.3"
     // add dependency to plugin
-    classpath 'com.neenbedankt.gradle.plugins:android-apt:1.6'
+    classpath "com.neenbedankt.gradle.plugins:android-apt:1.6"
   }
 }
 // ...
@@ -124,11 +124,11 @@ Then use `apply plugin: 'android-apt'` in modules to apply plugin.
 Immutables annotation processor should be added to the special `apt` scope (declared by android-apt plugin) and to the compile only `provided` scope (declared by android gradle plugins).
 
 ```javascript
-apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
+apply plugin: "com.android.application"
+apply plugin: "android-apt"
 // ...
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
+  compile fileTree(dir: "libs", include: ["*.jar"])
   apk "org.immutables:value:{{v}}" // <-- for annotation processor
   provided "org.immutables:value:{{v}}" // <-- for annotation API
 }
