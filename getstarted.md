@@ -10,11 +10,10 @@ layout: page
 
 Java 7 or higher is required to run _Immutables_ annotation processor.
 
-
 Add required dependencies for basic immutable object generation:
 
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
-  + Compile-only annotation processing tool. All in one artifact: annotations, processor with repackaged embedded dependencies.
+  + Compile-only annotation processing tool. All in one artifact: annotations, processor with properly repackaged embedded dependencies.
 
 Snippet of maven dependencies:
 
@@ -96,13 +95,15 @@ See sample [generated code](/generated.html) for an example of what kind of code
 
 Even basic immutable class generation has a lot more tricks to show, check out the [guide](/immutable.html)!
 
+<a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
+
 <a name="android"></a>
 ### Configuration for Android
 To comfortably use _Immutables_ for Android development, here are the steps for to setup working build configuration:
 
 #### Using apt plugin
 
-An annotation processor plugin should be configured for Android build. Although Immutables annotation processing works with Javac without specific configuration, however the work of a plugin is to ensure that output directories, dependency scopes and other miscellaneous details are being setup correctly. We found the 'android-apt' plugin works well for this, especially with Android Studio.
+An annotation processor plugin should be configured for Android build. Although _Immutables_ annotation processing works with Javac without specific configuration, the work of a plugin is to ensure that output directories, dependency scopes and other miscellaneous details are being setup correctly. We found the 'android-apt' plugin works well for this, including interaction with Android Studio.
 
 ```javascript
 buildscript {
@@ -130,7 +131,7 @@ apply plugin: "android-apt"
 // ...
 dependencies {
   compile fileTree(dir: "libs", include: ["*.jar"])
-  apk "org.immutables:value:{{v}}" // <-- for annotation processor
+  apt "org.immutables:value:{{v}}" // <-- for annotation processor
   provided "org.immutables:value:{{v}}" // <-- for annotation API
 }
 ```
@@ -140,9 +141,11 @@ Other compile-only dependencies applicable to android should be just added in pr
 ```javascript
 dependencies {
   // ...
-  apk "org.immutables:value:{{v}}" // for annotation processor
+  apt "org.immutables:value:{{v}}" // for annotation processor
   provided "org.immutables:value:{{v}}" // for annotations
   provided "org.immutables:builder:{{v}}" // for annotations
   provided "org.immutables:gson:{{v}}" // for annotations
 }
 ```
+
+<a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
