@@ -14,7 +14,7 @@ Java 7 or higher is required to run _Immutables_ annotation processor.
 Add required dependencies for basic immutable object generation:
 
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
-  + Compile-only annotation processing tool. All in one artifact: annotations, processor with repackaged embedded depencies.
+  + Compile-only annotation processing tool. All in one artifact: annotations, processor with repackaged embedded dependencies.
 
 Snippet of maven dependencies:
 
@@ -48,7 +48,7 @@ _Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using
   </configuration>
 </plugin>
 ```
-Search phrase: "java.lang.IllegalStateException: endPosTable already set".
+Search phrase: ["java.lang.IllegalStateException: endPosTable already set"](https://www.google.com/search?q=java.lang.IllegalStateException%3A+endPosTable+already+set)
 
 ## Create immutable object
 
@@ -97,10 +97,10 @@ See sample [generated code](/generated.html) for an example of what kind of code
 Even basic immutable class generation has a lot more tricks to show, check out the [guide](/immutable.html)!
 
 <a name="android"></a>
-## Configuration for Android
+### Configuration for Android
 To comfortably use _Immutables_ for Android development, here are the steps for to setup working build configuration:
 
-### Using apt plugin
+#### Using apt plugin
 
 An annotation processor plugin should be configured for Android build. Although Immutables annotation processing works with Javac without specific configuration, however the work of a plugin is to ensure that output directories, dependency scopes and other miscellaneous details are being setup correctly. We found the 'android-apt' plugin works well for this, especially with Android Studio.
 
@@ -120,7 +120,7 @@ buildscript {
 
 Then use `apply plugin: 'android-apt'` in modules to apply plugin.
 
-### Adding Immutables dependencies
+#### Adding Immutables dependencies
 
 Immutables annotation processor should be added to the special `apt` scope (declared by android-apt plugin) and to the compile only `provided` scope (declared by android gradle plugins).
 
