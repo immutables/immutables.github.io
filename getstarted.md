@@ -96,6 +96,7 @@ See sample [generated code](/generated.html) for an example of what kind of code
 
 Even basic immutable class generation has a lot more tricks to show, check out the [guide](/immutable.html)!
 
+<a name="android"></a>
 ## Configuration for Android
 To comfortably use _Immutables_ for Android development, here are the steps for to setup working build configuration:
 
