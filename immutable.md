@@ -226,8 +226,8 @@ Person person = new Person.Builder()
   .build();
 ```
 
-Having prettier, concise class names, this is not a complete [hiding of implementation](#hide-implementation) but you might be interested to see for yourself
-which classes and methods are actually referenced in calling bytecode.
+Having prettier, concise class names, this is not a complete [hiding of implementation](#hide-implementation), but you might be interested to see for yourself
+which classes and methods are actually referenced in a calling bytecode.
 
 For other structural and naming style customization see [style guide](/style.html)
 
