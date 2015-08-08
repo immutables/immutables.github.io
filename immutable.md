@@ -207,6 +207,7 @@ Person person = new PersonBuilder()
   .build();
 ```
 
+<a name="extending-builder"></a>
 Since version `2.0.17` you also can extend [yet-to-be] generated builder to code in the following style:
 
 ```java
