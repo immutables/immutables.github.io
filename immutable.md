@@ -207,6 +207,27 @@ Person person = new PersonBuilder()
   .build();
 ```
 
+Since version `2.0.17` you also can extend [yet-to-be] generated builder to code in the following style:
+
+```java
+@Value.Immutable
+@Value.Style(visibility = ImplementationVisibility.PACKAGE)
+public interface Person {
+  String name();
+  String address();
+  // static inner class Builder extends generated or yet to be generated Builder
+  class Builder extends ImmutablePerson.Builder {}
+}
+
+Person person = new Person.Builder()
+  .name("Jim Boe")
+  .address("P.O. box 0000, Lexington, KY")
+  .build();
+```
+
+Having prettier, concise class names, this is not a complete [hiding of implementation](#hide-implementation) but you might be interested to see for yourself
+which classes and methods are actually referenced in calling bytecode.
+
 For other structural and naming style customization see [style guide](/style.html)
 
 <a name="strict-builder"></a>
