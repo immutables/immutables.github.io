@@ -3,7 +3,7 @@ title: 'Using annotation processor in IDE'
 layout: page
 ---
 
-{% capture v %}2.0.17{% endcapture %}
+{% capture v %}2.0.18{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 --------
 Overview
@@ -40,7 +40,7 @@ After this on each m2e Maven project import/update, annotation processors will b
 
 ###Manual configuration tutorial
 
-If it will not work for some reason, you could configure it manually. 
+If it will not work for some reason, you could configure it manually.
 
 * [Using Java 6 processors in Eclipse](http://kerebus.com/2011/02/using-java-6-processors-in-eclipse/)
 

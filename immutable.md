@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.0.17{% endcapture %}
+{% capture v %}2.0.18{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
