@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}2.0.18{% endcapture %}
+{% capture v %}2.0.19{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -145,6 +145,21 @@ dependencies {
   provided "org.immutables:value:{{v}}" // for annotations
   provided "org.immutables:builder:{{v}}" // for annotations
   provided "org.immutables:gson:{{v}}" // for annotations
+}
+```
+
+Since version `2.0.19` for some combined annotation and runtime artifacts, there are separate annotation-only artifact available. For example, `value`
+and `gson` module have such artifact with `annotations` classifier. This a reduces dependencies and
+avoid lint warnings about using certain types that are not available on Android (despite not being
+required at runtime). So above example with dependencies could be rewritten as
+
+```javascript
+dependencies {
+  // ...
+  apt "org.immutables:value:{{v}}" // for annotation processor
+  provided "org.immutables:value:{{v}}:annotations" // annotation-only artifact
+  provided "org.immutables:builder:{{v}}" // there are only annotations anyway
+  provided "org.immutables:gson:{{v}}:annotations" // annotation-only artifact
 }
 ```
 
