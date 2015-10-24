@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.0.21{% endcapture %}
+{% capture v %}2.1.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -41,7 +41,7 @@ For more background on this change you can visit related issues:
 Jackson
 -------
 
-Overall _Jackson_ is so cool that it doesn't require any serious code generation to be flexible and high-performant on JVM. No additional depedencies are required except for _Immutables_ processor and _Jackson_ library. It is recommended to use _Jackson_ version 2.4+, but earlier versions can work also.
+Overall _Jackson_ is so cool that it doesn't require any serious code generation to be flexible and high-performant on JVM. No additional dependencies are required except for _Immutables_ processor and _Jackson_ library. It is recommended to use _Jackson_ version 2.4+, but earlier versions can work also.
 
 Integration works by generating simple `@JsonCreator` factory method and `@JsonProperty` annotations on immutable implementation. To enable this, you should use `@JsonSerialize` or
 `@JsonDeserialize` annotation (usually it is most safe to use both). Point to immutable implementation class in `as` annotation attribute.
@@ -77,6 +77,10 @@ String json = objectMapper.writeValueAsString(
 ```
 
 Make sure that _Jackson_ can serialize any other type that is used as attribute type.
+
+**Things to be aware of**
+
+- Not all Jackson annotations are propagated by default to the generated code. You can use `Value.Style.additionalJsonAnnotations` style attribute to specify such annotation types.
 
 ### Jackson-Guava
 

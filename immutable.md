@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.0.21{% endcapture %}
+{% capture v %}2.1.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -13,7 +13,7 @@ to easily create simple and consistent value objects. You can think of it as
 [Guava's Immutable Collections](https://code.google.com/p/guava-libraries/wiki/ImmutableCollectionsExplained) but for regular objects.
 
 The core of _Immutables_ is modeling. Good modelling is at heart of creating good application and
-services. Good modelling is part of good design. We feel proud to fill a gap in modelling on the Java programming language, where usage of conventional JavaBeans just insufficient.
+services, of good design in general. We feel proud to fill a gap in modelling on the Java programming language, where usage of conventional JavaBeans just insufficient.
 
 * Immutable object constructed once, in consistent state and can be safely shared
   - Will fail if mandatory attribute is missing
@@ -138,7 +138,7 @@ By default builder will have method `from`, which allow to copy-edit operations 
 ```java
 
 ImmutableValue.builder()
-    .from(otherValue) // merges attrbiute value into builder
+    .from(otherValue) // merges attribute value into builder
     .addBuz("b")
     .build();
 ```
@@ -468,13 +468,13 @@ PlayerInfo anonymous44 = ImmutablePlayerInfo.of(44);
 String name = anonymous44.name(); // Anonymous_44
 ```
 
-Default attribute method's body should not refer to any other derived or default attribute.
-Otherwise construction will be broken due to unspecified initialization order.
-It's only guaranteed that all attributes with abstract accessors will be initialized before
-default and derived attributes, and therefore could be safely referred in initializers.
+Since v2.1, default attribute initializer method's body could refer to other default
+or derived attributes as long as there are no initialization cycles.
+If cycle would be detected, then `IllegalStateException` will be thrown pointing
+to attribute names which form cycle.
 
 There's no need to use `@Value.Default` to return empty collection as collection attributes are empty by default if not initialized. If you use `@Value.Default` on [collection attributes](#collection) —
-it will turn it into nothing-special attribute, no sugar-sweet initializers in builder will be generated.
+it will turn it into nothing-special attribute, no "addition" initializers in builder will be generated.
 
 For immutable [annotation](#annotations) types default attributes defined by using `default` keyword and will have corresponding default constant value initialized if not set.
 
@@ -492,7 +492,7 @@ interface Val {
 
 **Things to be aware of**
 
-+ Unspecified result if initializer method body refers to non-abstract attribute accessor.
++ Initializers dependent on other attributes should not form cycles.
 
 <a name="derived-attribute"></a>
 ### Derived attributes
@@ -531,12 +531,14 @@ Order order = ImmutableOrder.builder()
 int totalCount33 = order.totalCount();
 ```
 
-As with [default attributes](#default-attribute), derived attribute method's
-body should not refer to any other derived or default attribute.
+As with [default attributes](#default-attribute), derived attribute initializer
+method's body could refer to other default or derived attributes as long as there are no cycles.
+If cycle would be detected during object construction, then `IllegalStateException` will be thrown pointing
+to attribute names which form cycle.
 
 **Things to be aware of**
 
-+ Unspecified result if initializer method body refers to non-abstract attribute accessor.
++ Initializers dependent on other attributes should not form cycles.
 
 <a name="nullable"></a>
 ### Nullable attributes
@@ -834,11 +836,24 @@ Advanced java binary serialization annotations are available in `serial` module
 
 For JSON serialization options see [JSON](/json.html) guide.
 
+<a name="modifiable"></a>
+### Modifiable classes
+
+While _Immutables_ are all around immutability, but we introduce utility generator to generate modifiable (aka mutable) equivalent of abstract value type.
+
+Use annotation `@Value.Modifiable` with or without corresponding `@Value.Immutable`.
+Generated mutable companion class will have prefix `Modifiable`. It is more limited and arguably more difficult to get right semantically, but it may be useful as buffer or uber-builder or partially-initialized implementation. We believe that modifiable companion class is way better alternative to:
+
++ Polluting builder with attribute query and _isSet_/_isInitialized_ methods.
++ Introducing dangerous `buildPartial()` method producing incomplete immutable instances.
+
+Naming conventions of modifiable class could be changed using [styles](/style.html), even as far as create builders "in disguise".
+
 <a name="generics"></a>
 ### Generics (not) supported
 _Immutables_ do not support type parameters in the sense that you cannot add type variables to the abstract value type and construct parametrized instances. This is definitely a sort of limitation and probably will be lifted at some point. However, it's not clear if we have to fully support parametrizable immutable objects, given how much headaches it might bring when implementing various functionality like collection support in builder or [JSON](/json.html#gson) serialization etc. Annotation processing provide limited tools to analyze types: if you want to get beyond simplest cases then non-trivial type variable resolution should be programmed (wildcards, intersections, lower and upper bounds etc).
 
-Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of paramerized types. Here's example of what's possible with _Immutables_:
+Having that said, there's also some good news: generics are supported by creating abstract value types as instantiations of parametrized types. Here's example of what's possible with _Immutables_:
 
 ```java
 // requires version 2.0.2+ to compile
@@ -873,11 +888,69 @@ TreeElement<String> tree =
 
 You can notice that inherited attributes are being generated with correct type variable substitution. While not perfect, it's still very useful, and in some cases even better that fully-erased generic types.
 
+See [Wrapper types](#wrapper-types) for other good example of generics used for good.
+
 --------
 Patterns
 --------
 This section contains common patterns and recipes using _Immutables_
 that are useful but not actually features by themselves.
+
+<a name="wrapper-types"></a>
+### Wrapper types
+
+Very often we're creating wrapper types around primitives, string and commonly used types to radically improve type safety. We definetely don't want you to have unsafe "stringly typed" code all over the place.
+But it is also desired so types will bring absolute minimum of syntactic overhead. If such wrapper types are easy to create and use, then less number of accidental errors will end up in a code down the road.
+
+Use base supertype and corresponding styles to describe your wrapper types. Example is better of thouthand words:
+
+```java
+// declare style as meta annotation as shown
+// or on package/top level class
+// This is just an example, adapt to your taste however you like
+@Value.Style(
+    // Detect names starting with underscore
+		typeAbstract = "_*",
+    // Generate without any suffix, just raw detected name
+		typeImmutable = "*",
+     // Make generated it public, leave underscored as package private
+		visibility = ImplementationVisibility.PUBLIC,
+    // Seems unnecessary to have builder or superfluous copy method
+		defaults = @Value.Immutable(builder = false, copy = false))
+public @interface Wrapped {}
+
+// base wrapper type
+abstract class Wrapper<T> {
+  @Value.Parameter
+  public T value();
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + "(" + value() + ")";
+  }
+}
+
+...
+// Declare wrapper types/domain values
+
+@Value.Immutable @Wrapped
+abstract class _LongId extends Wrapper<Long> {}
+
+@Value.Immutable @Wrapped
+abstract class _PersonName extends Wrapper<String> {}
+
+@Value.Immutable @Wrapped
+abstract class _VehicleMake extends Wrapper<String> {}
+
+...
+// Enjoy your wrapper value types
+
+LongId id = LongId.of(123L);
+
+PersonName name = PersonName.of("Vasilij Pupkin");
+
+VehicleMake make = VehicleMake.of("Honda");
+
+```
 
 ### Expressive factory methods
 There were some feature requests to customize names of constructor method and, in addition, provide construction hooks.
@@ -1050,6 +1123,5 @@ Some features are not implemented due to lack of time or interest,
 while other features are too complex or too specific — so it's better
 to not implement them. Power to weight ratio is always considered!
 
-- Default and derived attributes cannot reliably refer to any other default or derived attribute.
 - Abstract value class could not be parameterized with type variables,
   however it could extend or implement parameterized type when actual types supplied.

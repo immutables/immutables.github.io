@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}2.0.21{% endcapture %}
+{% capture v %}2.1.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -51,7 +51,7 @@ Search phrase: ["java.lang.IllegalStateException: endPosTable already set"](http
 
 ## Create immutable object
 
-Assuming that required dependencies were added, create a abstract class with abstract accessor methods. You can do the same by annotating with interfaces or even annotations (`@interface`)
+Assuming that required dependencies were added, create an abstract class with abstract accessor methods. You can do the same by annotating with interfaces or even annotations (`@interface`)
 
 ```java
 package info.sample;
@@ -99,7 +99,7 @@ Even basic immutable class generation has a lot more tricks to show, check out t
 
 <a name="android"></a>
 ### Configuration for Android
-To comfortably use _Immutables_ for Android development, here are the steps for to setup working build configuration:
+To comfortably use _Immutables_ for Android development, here are the steps to setup working build configuration:
 
 #### Using apt plugin
 
@@ -149,7 +149,7 @@ dependencies {
 ```
 
 Since version `2.0.19` for some combined annotation and runtime artifacts, there are separate annotation-only artifact available. For example, `value`
-and `gson` module have such artifact with `annotations` classifier. This a reduces dependencies and
+and `gson` module have such artifact with `annotations` classifier. This reduces dependencies and
 avoid lint warnings about using certain types that are not available on Android (despite not being
 required at runtime). So above example with dependencies could be rewritten as
 
