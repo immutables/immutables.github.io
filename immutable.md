@@ -839,13 +839,46 @@ For JSON serialization options see [JSON](/json.html) guide.
 <a name="modifiable"></a>
 ### Modifiable classes
 
-While _Immutables_ are all around immutability, but we introduce utility generator to generate modifiable (aka mutable) equivalent of abstract value type.
+While _Immutables_ are all around immutability, but we introduce utility generator to generate modifiable (mutable) implementation of abstract value type.
 
 Use annotation `@Value.Modifiable` with or without corresponding `@Value.Immutable`.
 Generated mutable companion class will have prefix `Modifiable`. It is more limited and arguably more difficult to get right semantically, but it may be useful as buffer or uber-builder or partially-initialized implementation. We believe that modifiable companion class is way better alternative to:
 
 + Polluting builder with attribute query and _isSet_/_isInitialized_ methods.
 + Introducing dangerous `buildPartial()` method producing incomplete immutable instances.
+
+```java
+@Value.Immutable
+@Value.Modifiable
+interface Item {
+  String getName();
+  List<Integer> getCount();
+}
+...
+
+// When simple workflow of regular Builder is not enough
+
+ModifiableItem item = ModifiableItem.create()
+    .setName("Super Item")
+    .addCount(1)
+    .addCount(2);
+
+item.getCount().add(3);
+
+if (item.isIntialized()) {
+  ImmutableItem immutableItem = item.toImmutable();
+  System.out.println(immutableItem);
+  // Item{name=Super Item, count=[1, 2, 3]}
+}
+
+item.clear()
+    .from(ImmutableItem.builder().name("First").addCound(4, 5).build())
+    .from(ImmutableItem.builder().name("Second").addCound(6).build());
+
+System.out.println(item);
+// ModifiableItem{name=Second, count=[4, 5, 6]}
+
+```
 
 Naming conventions of modifiable class could be changed using [styles](/style.html), even as far as create builders "in disguise".
 
