@@ -4,38 +4,46 @@ layout: page
 ---
 
 ## Overview
-In addition to feature annotations, which are used for specific features, you can customize what and how need to be generated for immutable value. The "what" is defined by using attributes of `@org.immutables.value.Value.Immutable` annotation. The "how" is defined using styles defined by `@org.immutables.value.Value.Style` annotation. Custom styles is definitely more advanced functionality and the annotation processor cannot verify all consequences of defining.
+
+In addition to feature annotations (which are used for specific features), you can customize what
+and how code will be generated for immutable values. The "what" is defined by using attributes
+of the `@org.immutables.value.Value.Immutable` annotation. The "how" is defined by using styles
+defined by the `@org.immutables.value.Value.Style` annotation. Custom styles are definitely
+more advanced functionality and the annotation processor cannot guarantee that all possible
+combinations of customizations will work correctly.
 
 ## Define style
 
-`@Value.Style` annotation has a number of attributes to customize generated APIs and implementation. See javadoc for [Value.Style](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L308)
+`@Value.Style` annotation has a number of attributes to
+customize generated the APIs and implementations. See the JavaDoc for
+[Value.Style](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L308)
 
 In nutshell, using styles you can:
 
-+ Customize prefixes or suffixes of how names of types and attributes are detected
-+ Customize prefixes or suffixes of generated types and methods
-+ Force builders to be constructed using constructor rather that factory method (set naming template to "new")
-+ Make implementation hidden or visible: public, package private or same
-+ Make construction methods return abstract value type instead of implementation class.
-+ Make immutable implementation hide as private inside top-level builder.
-+ Make immutable implementations hide as private inside top-level [enclosing](#nesting) class
-+ Generate [strict builders](/immutable.html#strict-builder)
-+ Force to generate JDK only implementation code even if Guava is available in classpath.
-+ Set template "defaults" setting for `@Value.Immutable` which will be used for every immutable class
++ Customize prefixes or suffixes of how names of types and attributes are detected.
++ Customize prefixes or suffixes of generated types and methods.
++ Force builders to be constructed using a constructor rather than a factory method (by setting the naming template to "new").
++ Make an implementation hidden or visible: public, package private or the same as the abstract value type.
++ Make construction methods return abstract value types instead of the implementation class.
++ Make immutable implementations hidden as private inside a top-level builder.
++ Make immutable implementations hidden as private inside a top-level [enclosing](#nesting) class.
++ Generate [strict builders](/immutable.html#strict-builder).
++ Force the generation of JDK-only implementation code, even if Guava is available in classpath.
++ Set template "defaults" setting for `@Value.Immutable` which will then be used for every immutable class.
 
 ## Apply style
 
-Style could be attached to:
+A `Style` can be attached to:
 
-+ Package, where it will affect all classes in the package
++ A package, where it will affect all classes in the package
   * It will also affect nested packages unless overridden
-+ Top level type, where it will affect this and nested value types
-+ Nested value type if this does not contradict top-level style in case of [enclosing](#nesting) class.
++ A top-level type, where it will affect this and nested value types
++ A nested value type, if this does not contradict top-level style in case of [enclosing](#nesting) class.
 + Annotation, which in turn will serve as style meta-annotation to annotate types and packages.
 
-`@Value.Style` as inline style will win over meta-annotation style.
+A `@Value.Style` as inline style will win over meta-annotation style.
 
-It is recommended to create one or more style meta-annotations for your projects. It will result in a lot less clutter and easier maintenance and upgrades.
+It is recommended to create one or more style meta-annotations for your projects. Doing this will result in a lot less clutter, and easier maintenance and upgrades.
 
 ```java
 import org.immutables.value.Value;
@@ -73,9 +81,9 @@ Item item = new Item.Builder()
   .create();
 ```
 
-This way you can match style to your conventions and preferences!
+This way you can match the generated code style to your conventions and preferences!
 
-The simplest way to apply styles in manner similar to global is to annotate top level package of your project or module.
+The simplest way to apply styles in manner as close to globally as possible is to annotate the top-level package of your project or module.
 
 ```java
 // com/mycompany/project/package-info.java
@@ -85,16 +93,17 @@ public com.mycompany.project;
 
 **Things to be aware of**
 
-- When there are couple of conflicting styles mixed on the same level using meta annotation,
-then just one of them will be picked. Should not rely on any order here.
+- When there are couple of conflicting styles mixed on the same level using meta annotations, then either may be selected arbitrarily. You should not rely on any particular selection order here.
 - Styles are not merged in any way.
-- Styles are applied at package, top level class level, or value type itself if it's nested. Styles will not work on attribute level or declared on intermediate nested types.
-- Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contains inappropriate symbols or java keywords etc.
+- Styles are applied at package level, top-level class level, or on a value type itself if it's nested. Styles will not work if applied at attribute level or declared on intermediate nested types.
+- Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contain inappropriate symbols or Java keywords etc.
 
 ## Other customizations
 
 ### Simple annotations
-That could barely be called customization. Let's say it is just a reminder that you can use annotation with simple names rather that qualified with umbrella annotations like `@Value`.
+
+This example can barely be called customization. Let's just say that it is a reminder that you can use
+annotations with simple names rather than qualified with umbrella annotations like `@Value`:
 
 ```java
 import org.immutables.value.Value.Immutable;
@@ -106,15 +115,24 @@ import org.immutables.value.Value.Parameter;
 }
 ```
 
-Qualifying annotation is still considered default style. More over we could see that Immutables really inspired some other libraries to use this approach to organize annotation APIs.
+Qualifying annotations is still considered the default style. More over we can see that
+_Immutables_ really inspired some other libraries to use this approach to organize annotation APIs.
 
 <a name="nesting"></a>
 ### Enclosing type
-When model messages and documents, we usually want to have a lot of small value classes in one file. In Java this naturally accomplished by nesting those classes under umbrella top level class. Of course, it is possible to generate immutable subclasses for nested static inner classes or interfaces.
 
-Use `@Value.Enclosing` annotation on top level class to provide namespacing for implementation classes, generated out of nested abstract value types. This could be used as a matter of preference or to avoid name clashes of immutable implementation classes which otherwise would be generated as top level classes in the same package.
+When modelling messages and documents, we usually want to have a lot of small value classes in one
+file. In Java this naturally accomplished by nesting those classes under an umbrella top-level
+class. Of course, it is possible to generate immutable subclasses for nested static inner
+classes or interfaces.
 
-By default, namespaced implementation classes have simple names without prefixes, could be star-imported for clutter-free usage.
+Use a `@Value.Enclosing` annotation on a top-level class to provide namespacing for implementation
+classes generated out of nested abstract value types. This can be used as a matter of
+preference or to avoid name clashes of immutable implementation classes which would otherwise
+be generated as top-level classes in the same package.
+
+By default, namespaced implementation classes have simple names without prefixes, an can be
+star-imported for clutter-free usage.
 
 ```java
 @Value.Enclosing
