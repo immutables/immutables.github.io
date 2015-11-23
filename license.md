@@ -3,7 +3,7 @@ title: 'License'
 layout: page
 ---
 
-Immutables toolkit and all required dependencies are covered under [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+The _Immutables_ toolkit and all required dependencies are covered under [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 <hr>
 

@@ -8,21 +8,21 @@ layout: page
 
 Overview
 --------
-There already lot of tools to access MongoDB collections [using Java](http://docs.mongodb.org/ecosystem/drivers/java/).
-Each driver or wrapper has it's own distinct features and advantages. Focus of _Immutables_ repository generation
-is to provide best possible API that matches well for storing documents expressed as immutable objects.
+There are already a lot of tools to access MongoDB collections [using Java](http://docs.mongodb.org/ecosystem/drivers/java/).
+Each driver or wrapper has it's own distinct features and advantages. The focus of _Immutables_ repository generation
+is to provide the best possible API that matches well for storing documents expressed as immutable objects.
 
 * Expressive type safe API
-  + Document field names are expressed as method names, not strings. Works nice with auto-completion in IDE.
+  + Document field names are expressed as method names, not strings. Works nicely with auto-completion in IDE.
   + Operations and types should match.
 * Asynchronous operations returning `Future`
   + Compose async operations.
   - IO is still synchronous underneath with dedicated thread pool.
 
-One of the side goals of this module was to demonstrate that Java DSLs and APIs could be actually a lot less ugly.
+One of the side goals of this module was to demonstrate that Java DSLs and APIs could be actually a lot less ugly than they usually are.
 
-Generated repositories wrap infrastructure of the official java driver, but there are couple of places where operations are handled more efficiently in _Immutables_.
-Repositories employ BSON marshaling which use the same infrastructure for [JSON marshaling](/json.html) using excellent [bson4jackson](https://github.com/michel-kraemer/bson4jackson) data-format adapter.
+Generated repositories wrap the infrastructure of the official Java driver, but there are couple of places where operations are handled more efficiently in _Immutables_.
+Repositories employ BSON marshaling which uses the same infrastructure for [JSON marshaling](/json.html) using the excellent [bson4jackson](https://github.com/michel-kraemer/bson4jackson) data-format adapter.
 
 ```java
 // Define repository for collection "items".
@@ -74,7 +74,7 @@ Usage
 
 ### Dependencies
 
-In addition to code annotation-processor, you need to add `mongo` annotation module and runtime library, including some required transitive dependencies.
+In addition to code annotation-processor, it's necessary to add the `mongo` annotation module and runtime library, including some required transitive dependencies.
 
 <a name="dependencies"></a>
 
@@ -84,9 +84,9 @@ In addition to code annotation-processor, you need to add `mongo` annotation mod
 _Mongo_ artifact required to be used for compilation as well be available at runtime.
 _Mongo_ module works closely with [Gson](/json.html#gson) module, which is also included as transitive dependency.
 
-**Note:** Current release works with versions `2.12+` of MongoDB Java driver, version `3.0` is not yet supported.
+**Note:** Current release works with versions `2.12+` of the MongoDB Java driver - version `3.0` is not yet supported.
 
-Snippet of maven dependencies:
+Snippet of Maven dependencies:
 
 ```xml
 <dependency>
@@ -104,12 +104,14 @@ Snippet of maven dependencies:
 
 ### Enable repository generation
 
-In order to enable repository generation, put `org.immutables.mongo.Mongo.Repository`
-annotation on a abstract value class alongside with `org.immutables.value.Value.Immutable` annotation.
-Repository which accesses collection of documents will be generated
-as a class with `Repository` suffix in the same package.
+In order to enable repository generation, put an `org.immutables.mongo.Mongo.Repository`
+annotation on a abstract value class alongside an `org.immutables.value.Value.Immutable` annotation.
+A repository which accesses a collection of documents will be generated
+as a class with a `Repository` suffix in the same package.
 
-By default mapped collection name is derived from abstract value class name: for `UserDocument` class collection name will be `userDocument`. However, name is customizable using `value` annotation attribute.
+By default, the mapped collection name is derived from abstract value class name: For a
+`UserDocument` class, the collection name will be `userDocument`. However, the name is customizable
+using a `value` annotation attribute:
 
 ```java
 import org.immutables.mongo.Mongo;
@@ -125,16 +127,21 @@ public abstract class UserDocument {
 
 ### Creating repositories
 
-Once repository class is generated, it's possible to instantiate this class using `new` operator. You need to supply `org.immutables.common.repository.RepositorySetup` as a constructor argument. Setup could be shared by all repositories for a single MongoDB database. `RepositorySetup` combines definition of a thread pool and MongoDB database and configured `com.google.gson.Gson` instance.
+Once the repository class is generated, it's possible to instantiate this class using the `new`
+operator. You need to supply a `org.immutables.common.repository.RepositorySetup` as a
+constructor argument. Setup can be shared by all repositories for a single MongoDB
+database. `RepositorySetup` combines the definition of a thread pool, MongoDB database,
+and a configured `com.google.gson.Gson` instance.
 
-Luckily, to get started and for simpler applications, there's an easy way to create
-a setup using `RepositorySetup.forUri` factory method. Pass MongoDB connection string and setup will be created with default settings.
+Luckily, to get started (and for simpler applications), there's an easy way to create a setup
+using `RepositorySetup.forUri` factory method. Pass a MongoDB connection string and a setup
+will be created with default settings.
 
 ```java
 RepositorySetup setup = RepositorySetup.forUri("mongodb://localhost/test");
 ```
 
-Test database, the default port on a local machine: just launch `mongod` to get it up and running.
+To get a test database running on the default port on a local machine, just launch `mongod`.
 
 To fully customize setting use `RepositorySetup` builder:
 
@@ -151,11 +158,13 @@ RepositorySetup setup = RepositorySetup.builder()
   .build();
 ```
 
-See [getting started with java driver](http://docs.mongodb.org/ecosystem/tutorial/getting-started-with-java-driver/) for an explanation how to create `MongoClient`.
+See [getting started with java driver](http://docs.mongodb.org/ecosystem/tutorial/getting-started-with-java-driver/) for an explanation how to create a `MongoClient`.
 
 ### Id attribute
 
-It is highly recommended to have explicit `_id` field for MongoDB documents. Use `@Mongo.Id` annotation to declare id attribute. The `@Mongo.Id` annotation acts as an alias to `@Gson.Named("_id")`, which could also be used.
+It is highly recommended to have explicit `_id` field for MongoDB documents. Use the `@Mongo.Id`
+annotation to declare an `id` attribute. The `@Mongo.Id` annotation acts as an alias to
+`@Gson.Named("_id")`, which can also be used.
 
 ```java
 @Value.Immutable
@@ -168,9 +177,14 @@ public abstract class UserDocument {
 }
 ```
 
-Identifier attribute can be of any type that is marshaled to a valid BSON type that could be used as `_id` field in MongoDB. Java attribute name is irrelevant as long as it will be generated marshaled as `_id` (annotated with `@Gson.Named("_id")` or `@Mongo.Id`).
+An identifier attribute can be of any type that is marshaled to a valid BSON type that can
+be used as `_id` field in MongoDB. The Java attribute name is irrelevant as long as it will be
+generated marshaled as `_id` (annotated with `@Gson.Named("_id")` or `@Mongo.Id`).
 
-In some cases you may need to use special type `ObjectID` for `_id` or other fields. In order to do this, _Immutables_ provides wrapper type `org.immutables.mongo.types.Id`. Use static factory methods of `org.immutables.mongo.types.Id` class to construct instances that corresponds to MongoDB' `ObjectID`. Here's example of auto-generated identifier:
+In some cases you may need to use special type `ObjectID` for `_id` or other fields. In order to
+do this, _Immutables_ provides the wrapper type `org.immutables.mongo.types.Id`. Use the static
+factory methods of `org.immutables.mongo.types.Id` class to construct instances that correspond
+to MongoDB' `ObjectID`. Here's example of an auto-generated identifier:
 
 ```java
 import org.immutables.value.Value;
@@ -195,9 +209,14 @@ public abstract class EventRecord {
 BSON/JSON documents
 ----
 
-All values used to model documents should have GSON type adapters registered. Use `@Gson.TypeAdapters` on types or packages to generate type adapters for enclosed value types. When using `RepositorySetup.forUri`, all type adapters will be auto-registered from the classpath. When using custom `RepositorySetup`, register type adapters on a `Gson` instance using `GsonBuilder` as shown in [GSON guide](json.html#adapter-registration).
+All values used to model documents should have GSON type adapters registered. Use
+`@Gson.TypeAdapters` on types or packages to generate type adapters for enclosed value types. When
+using `RepositorySetup.forUri`, all type adapters will be auto-registered from the classpath. When
+using custom `RepositorySetup`, register type adapters on a `Gson` instance using `GsonBuilder`
+as shown in [GSON guide](json.html#adapter-registration).
 
-Large portion of things you need to know to create MongoDB mapped documents is described in [GSON guide](json.html#gson)
+A large portion of the things you need to know to create MongoDB mapped documents is described in
+[GSON guide](json.html#gson)
 
 ----------
 Operations
@@ -253,7 +272,8 @@ posts.insert(
 ```
 
 ### Upsert document
-Update or insert full document content by `_id` using `upsert` method
+
+Update or insert full document content by `_id` using the `upsert` method:
 
 ```java
 posts.upsert(
@@ -271,14 +291,14 @@ posts.upsert(
 
 ```
 
-If document with `_id` 10 is not found, then it will be created, otherwise updated
+If document with `_id` 10 is not found, then it will be created, otherwise updated.
 
 ### Find documents
 
-To find document you need to provide criteria object. Search criteria objects are generated to reflect fields of
-the document, empty criteria objects are obtained by using `criteria()` static factory method on generated repository.
+To find a document, you need to provide criteria object. Search criteria objects are generated to reflect fields of
+the document. Empty criteria objects are obtained by using the `criteria()` static factory method on a generated repository.
 Criteria objects are immutable and can be stored as constants or otherwise safely passed around.
-Criteria objects has methods corresponding to document attributes and relevant constraints.
+Criteria objects have methods corresponding to document attributes and relevant constraints.
 
 ```java
 Criteria where = posts.criteria();
@@ -306,17 +326,17 @@ List<PostDocument> limited =
         .getUnchecked();
 ```
 
-With each constraint, new immutable criteria is returned which composes constraints with the _and_ logic. Constraints
+With each constraint, a new immutable criteria is returned which composes constraints with the _and_ logic. Constraints
 can be composed with _or_ logic by explicitly delimiting with `.or()` method,
 effectively forming [DNF](http://en.wikipedia.org/wiki/Disjunctive_normal_form) consisting of constraints.
 
-Find method returns an uncompleted operation, which is subject to configuration via `Finder` object methods,
+The `find` method returns an uncompleted operation, which is subject to configuration via `Finder` object methods,
 discover these configuration methods, use them as needed, then invoke finalizing operation which returns _future_
 of result.
 
 #### Simple find methods
-For convenience, there are methods to lookup by `_id` and to find all documents, these methods do not need
-criteria objects.
+
+For convenience, there are methods to lookup by `_id` and to find all documents. These methods do not need criteria objects.
 
 ```java
 posts.findById(10).fetchFirst();
@@ -325,14 +345,15 @@ posts.findById(10).fetchFirst();
 posts.findAll().fetchAll();
 ```
 
-Note that `findById` method might be named differently if your document has it attribute with name different than `id`
+Note that `findById` method might be named differently if your document has its attribute with a name other than `id`
 in Java.
 
 ### Excluding output fields
-MongoDB has a feature to return a subset of fields in results. In order to preserve consistency of immutable
-document objects created during unmarshaling, repository only allows to exclude optional fields such
+
+MongoDB has a feature to return a subset of fields in results. In order to preserve the consistency of immutable
+document objects created during unmarshaling, a repository only allows the exclusion of optional fields such
 as [collection attributes](immutable.html#collection) and [optional attributes](immutable.html#optional).
-Use `exclude*` methods on `Finder` object to configure attribute exclusion.
+Use `exclude*` methods on `Finder` objects to configure attribute exclusion.
 
 ```java
 boolean isTrue =
@@ -345,8 +366,9 @@ boolean isTrue =
 ```
 
 ### Sorting result
-Use `Finder` to specify ordering by attributes and direction. Ordering used for fetching results as well
-as finding first matching object to modify.
+
+Use `Finder` to specify ordering by attributes and direction. Ordering is used for fetching results as well
+as finding the first matching object to modify.
 
 ```java
 posts.find(where.contentNot("b"))
@@ -360,8 +382,10 @@ posts.findAll()
 ```
 
 ### Delete documents
-Looking for delete operations? Well, we found good place for them, but probably not very obvious to begin with )).
-Delete operations are tailing on the same `Finder` object:
+
+Looking for delete operations? Well, we found good place for them, but probably not a very obvious one!
+
+Delete operations are defined on the same `Finder` object:
 
 ```java
 posts.findById(1).deleteFirst();
@@ -376,9 +400,9 @@ posts.findAll().deleteAll();
 
 ### Update and FindAndModify
 
-Update, find and modify operations support incremental update of the documents matching a criteria.
-Incremental update operations used to update particular fields. Also some fields may need to be initialized
-if document is to be created via upsert operation.
+Update, find, and modify operations support incremental updates of the documents matching a criteria.
+Incremental update operations are used to update particular fields. Some fields may need to be initialized
+if a document is to be created via upsert operation.
 
 ```java
 Optional<PostDocument> updatedDocument =
@@ -403,8 +427,10 @@ posts.findById(111)
 ```
 
 ### Ensure Index
-If you want to ensure indexes using code rather than administrative tools,
-you can use `Indexer` object, which ensures index with particular fields. See the methods of `Indexer` object.
+
+If you want to ensure indices using code rather than the administrative tools,
+you can use an `Indexer` object, which ensures indexing with particular fields.
+See the methods of `Indexer` object.
 
 ```java
 
