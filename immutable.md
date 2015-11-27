@@ -655,13 +655,8 @@ lazilyComputedCost = order.totalCost();
 
 Lazy values are thread-safe and will be computed once and only once, regardless of race conditions.
 
-Unlike [default](#default-attribute) or [derived](#derived-attributes) attributes,
-bodies of lazy attribute accessor methods can refer to any attribute.
-
-That said, restrictions still apply: Do not refer to lazy values from default or derived attributes.
-Calling lazy attributes from derived or default attributes is _not always safe_. In effect,
-it will result in the lazy value being eagerly computed. Moreover, if a lazy value
-uses in computation one of those default or derived attributes, then it may found it uninitialized.
+Unlike to [default](#default-attribute) or [derived](#derived-attributes) attributes,
+body of the lazy attribute accessor method could refer to any attribute. If you call lazy attribute during initialization of a [default](#default-attribute) or a [derived](#derived-attributes) attribute, it will be initialized eagerly, making it equivalent of a derived attribute.
 
 The current implementation of lazy attributes is very similar to the way they were implemented in older versions of Scala.
 Currently, this implementation strategy potentially suffers from the problem described in [Scala SIP-20](http://docs.scala-lang.org/sips/pending/improved-lazy-val-initialization.html).
@@ -1295,4 +1290,3 @@ left unimplemented. Power to weight ratio is always considered!
 
 - Abstract value classes cannot not be parameterized with type variables, however they can
   extend or implement parameterized types where actual types are supplied.
-
