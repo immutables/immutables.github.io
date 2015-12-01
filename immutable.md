@@ -1279,4 +1279,4 @@ interface Value {
 "Value{number=1, confidential=<NON DISCLOSED>}"
 ```
 
-See [Auxiliary attributes](#auxiliary) for another approach.
+See also [auxiliary attributes](#auxiliary) for similar functionality. 
