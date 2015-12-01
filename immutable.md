@@ -1280,13 +1280,3 @@ interface Value {
 ```
 
 See [Auxiliary attributes](#auxiliary) for another approach.
-
------------
-Limitations
------------
-Some features are not implemented due to lack of time or interest.
-Other features are too complex or too specific and therefore better
-left unimplemented. Power to weight ratio is always considered!
-
-- Abstract value classes cannot not be parameterized with type variables, however they can
-  extend or implement parameterized types where actual types are supplied.
