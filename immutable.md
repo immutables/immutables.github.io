@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.1.0{% endcapture %}
+{% capture v %}2.1.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -452,6 +452,8 @@ defines a logically [optional](https://code.google.com/p/guava-libraries/wiki/Us
 attribute of type `T`.
 
 As of version 2.0, `java.util.Optional`, `java.util.OptionalInt`, `java.util.OptionalLong`, `java.util.OptionalDouble` from Java 8 are also fully supported.
+
+As of version 2.1.1, `com.atlassian.fugue.Option` and `io.atlassian.fugue.Option` are also supported.
 
 Optional values can be omitted when building objects, and will default to `Optional.absent()` (or `Optional.empty()` in Java 8).
 Generated builders have special initializers for optional attributes:
