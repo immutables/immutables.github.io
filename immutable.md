@@ -1032,6 +1032,13 @@ types.
 
 See [Wrapper types](#wrapper-types) for other examples illustrating the use of generics.
 
+<a name="warnings"></a>
+### Warnings
+
+The _Immutables_ annotation processor have dozens of checks and issues errors and warning where it's impossible to generate certain elements or certain features are error prone and discouraged. When you use `@Nullable` on a primitive or when one `Value.Immutable` type extends another `Value.Immutable`, you'll get an error. For missing, superfluous or ignored annotations or discouraged combinations, you will get warnings. You can suppress such warnings using `SuppressWarnings("immutables")` or `SuppressWarnings("all")` on an element or its enclosing elements.
+
+See also [Value.Style#generateSuppressAllWarnings](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L695) style attribute to adjust warnings in the generated code.
+
 --------
 Patterns
 --------
@@ -1279,4 +1286,4 @@ interface Value {
 "Value{number=1, confidential=<NON DISCLOSED>}"
 ```
 
-See also [auxiliary attributes](#auxiliary) for similar functionality. 
+See also [auxiliary attributes](#auxiliary) for similar functionality.
