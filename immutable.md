@@ -823,7 +823,7 @@ Sometimes it is desirable to exclude an attribute from the generated `equals`, `
 
 Attributes annotated with `@Value.Auxiliary` will be stored and will be accessible, but are
 excluded from `equals`, `hashCode` and `toString` method implementations. [Lazy](#lazy-attribute)
-attributes are always act as _auxiliary_.
+attributes are always acting as _auxiliary_.
 
 ```java
 @Value.Immutable(intern = true)
