@@ -3,12 +3,16 @@ title: Immutables.org
 layout: default
 ---
 
+{% capture v %}2.1.3{% endcapture %}
+
 <header class="jumbotron">
   <div class="container">
-    <h1>Immutables <span class="text-muted">2.1</span></h1>
+    <h1 title="The Immutables Java Annotation Processor v{{v}}">Immutables <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></span></h1>
     {% capture story0 %}{% include story0.md %}{% endcapture %}{{ story0 | markdownify }}
     <a href="/getstarted.html" class="btn btn-primary btn-lg">Get started!</a>
     <a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
+
+
     <a href="https://twitter.com/ImmutablesOrg" class="pull-right">
       <i class="fa fa-twitter"></i> News and announcements</a>
   </div>
@@ -28,6 +32,7 @@ layout: default
 <section class="promo jumbotron">
   <div class="container clearfix">
     <section class="feature">
+      <span class="label label-info" title="Current version">v{{v}}</span>
 {% capture promo %}
 #### Values and Builders
 With _Immutables_ you can generate state of the art immutable objects and builders.
@@ -80,7 +85,6 @@ Adapt Immutables to your code conventions and tastes. [Customize](/style.html) `
     </section>
 
     <section class="feature">
-    <!-- <span class="label label-success" title="Straightforward Jackson support and generated type adapters for Gson">2.0</span> -->
 {% capture promo %}
 #### JSON
 
@@ -93,25 +97,23 @@ Immutables are [serialization](/immutable.html#serialization) ready, including J
 </section>
 
 <div class="text-center container">
-  <hr>
-  <strong>Features:</strong>
-  <span class="badge alert-success">Classes, Interfaces and Annotations</span>
-  <span class="badge alert-success">Builders</span>
-  <span class="badge alert-success">Constuctor methods</span>
-  <span class="badge alert-success">With-copy methods</span>
-  <span class="badge alert-success">equals, toString, hashCode methods</span>
-  <span class="badge alert-success">Default attributes</span>
-  <span class="badge alert-success">Derived attributes</span>
-  <span class="badge alert-success">Lazy attributes</span>
-  <span class="badge alert-success">Optional attributes</span>
-  <span class="badge alert-success">Array, List, Set and Map attributes</span>
-  <span class="badge alert-success">Singleton values</span>
-  <span class="badge alert-success">Instance interning</span>
-  <span class="badge alert-success">hashCode precomputing</span>
-  <span class="badge alert-success">JSON serialization</span>
-  <span class="badge alert-success">JAX-RS integration</span>
-  <span class="badge alert-success">MongoDB integration</span>
-  <span class="badge alert-info">and even more...</span>
+  <!--hr-->
+  <span class="badge alert-info">Classes, Interfaces and Annotations</span>
+  <span class="badge alert-info">Builders</span>
+  <span class="badge alert-info">Constuctor methods</span>
+  <span class="badge alert-info">With-copy methods</span>
+  <span class="badge alert-info">equals, toString, hashCode methods</span>
+  <span class="badge alert-info">Default attributes</span>
+  <span class="badge alert-info">Derived attributes</span>
+  <span class="badge alert-info">Lazy attributes</span>
+  <span class="badge alert-info">Optional attributes</span>
+  <span class="badge alert-info">Array, List, Set and Map attributes</span>
+  <span class="badge alert-info">Singleton values</span>
+  <span class="badge alert-info">Instance interning</span>
+  <span class="badge alert-info">hashCode precomputing</span>
+  <span class="badge alert-info">JSON serialization</span>
+  <span class="badge alert-info">JAX-RS integration</span>
+  <span class="badge alert-info">MongoDB integration</span>
   <br>
 </div>
 
@@ -126,9 +128,3 @@ Immutables are [serialization](/immutable.html#serialization) ready, including J
   -->
 
 </footer>
-
-<a href="https://github.com/immutables/immutables">
-  <img style="position: absolute; top: 0; right: 0; border: 0;"
-       src="//s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"
-       alt="Fork me on GitHub">
-</a>

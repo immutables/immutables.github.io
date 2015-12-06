@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.1.2{% endcapture %}
+{% capture v %}2.1.3{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -18,24 +18,15 @@ JSON is a simple and flexible format. Moreover, using libraries like [Jackson](h
 
 _Immutables_ JSON integration underwent an overhaul for 2.0. This made integration a lot less exotic and more comprehensible.
 
-_JSON documentation for versions 1.x of Immutables is located at [immutables.github.io/site1.x/json.html](/site1.x/json.html)_
-
 Instead of the old generated marshaler infrastructure based on _Jackson_ streaming (jackson-core), two new integrations available:
 
 + Simplified _Jackson_ integration
-  - Generation of simple `@JsonCreator` factory method and `@JsonProperty` annotations
-  - Delegates everything back to Jackson, which is cool on it's own!
+  - Generation of `@JsonCreator`, `@JsonProperty` annotations and a helper class.
+  - Delegates everything back to Jackson using it's powerful binding engine
 + Comprehensive _Gson_ integration
   - No custom runtime APIs, Gson APIs are used
   - Generation of _TypeAdapterFactories_ which use no reflection.
-  - Optional classes to integrate _Gson_ streaming with _Jackson_ streaming to squeeze maximum performance.
-
-For more background on this change, see the related issues:
-
-+ [issues/68](https://github.com/immutables/immutables/issues/68)
-+ [issues/80](https://github.com/immutables/immutables/issues/80)
-+ [issues/71](https://github.com/immutables/immutables/issues/71)
-+ [issues/75](https://github.com/immutables/immutables/issues/75)
+  - Helper classes to integrate _Gson_ streaming with _Jackson_ streaming to squeeze maximum performance.
 
 <a name="jackson"></a>
 Jackson

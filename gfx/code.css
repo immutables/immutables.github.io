@@ -11,40 +11,52 @@
 
 .highlight .kn,
 .highlight .kd,
-.highlight .k,
 .highlight .kt,
-.highlight .kc {
-  color: #92a800;
+.highlight .kc,
+.highlight .k {
+  color: #b376b1;
 }
 
+.highlight .nt,
 .highlight .nd {
-  color: #d3d28c;
+  color: #22a4d7;
 }
 
 .highlight .c,
 .highlight .c1,
 .highlight .c2,
 .highlight .cm {
-  color: #7e8f8b;
+  color: #5f696f;
+}
+
+.highlight .n,
+.highlight .nc {
+  color: white;
 }
 
 .highlight .o {
-  color: #AAA;
+  color: #999;
 }
 
-.highlight .nf,
+.highlight .nf {
+  /*color: white;*/
+  /*color: #A2CBFF;*/
+  color: #C1AEE8;
+}
+
 .highlight .na {
-  color: white;
+  color: #CBDFF9;
 }
 
 .highlight .s,
 .highlight .s2 {
-  color: #77c9ff;
+  /*color: #5A9EFA;*/
+  color: #64e8e8;
+  /*color: #2FCDFF;*/
 }
 
-.highlight .mi,
-.highlight .nt {
-  color: #4ed9b4;
+.highlight .mi {
+  color: #029494;
 }
 
 .highlight,
@@ -55,7 +67,5 @@
 .illustration .highlight,
 .highlight pre code {
   font-size: 14px;
-  /*font-family: "Courier", "Courier New", monospace;*/
-  font-family: "Inconsolata", "Liberation Mono", "Consolas", monospace;
-  /*font-family: "Liberation Mono", "Consolas", monospace;*//* "Inconsolata", */
+  font-family: "Anonymous Pro", "Inconsolata", "Liberation Mono", "Consolas", monospace;
 }

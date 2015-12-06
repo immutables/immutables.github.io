@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.1.2{% endcapture %}
+{% capture v %}2.1.3{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -151,7 +151,7 @@ _You can customize initialization methods to have prefixes like `set` or `with`,
 
 By default, builders have a method named `from`. The `from` method allows for "editing"
 operations on immutable values by initializing the builder with attribute values taken
-from an existing immutable object. This could be used to prevent structural sharing as with
+from an existing immutable object. This could be used to prevent structural sharing as happens with
 [copy-methods](#copy-methods), or to accumulate collection elements from attributes of multiple
 values.
 
@@ -163,11 +163,8 @@ ImmutableValue.builder()
     .build();
 ```
 
-The `from` method on builders is a much more sound and powerful alternative than having `toBuilder()` (or alike) on immutable values.
-
-In old versions of _Immutables_ (0.16 and below), this method was called `copy`. The name
-of this method can, of course, be customized. For [strict builders](#strict-builder), `from`
-methods are not generated.
+The `from` method on builders is a much more sound and powerful alternative than having `toBuilder()` (or alike) on immutable values. For [strict builders](#strict-builder), `from`
+methods are not generated as they're prone to errors.
 
 If a particular builder has become redundant due to the presence of a [constructor](#constructor),
 generation of the builder can be disabled using the `@Value.Immutable(builder = false)`
@@ -214,7 +211,7 @@ class Builders {
 An explicitly declared abstract "Builder" could specify all needed `extends` or `implements`
 declarations in addition to having convenience methods that will show up on the generated builder.
 However, special care should be taken in order to maintain the structural compatibility of
-declared builder supertypes and generated builders to prevent compile-time type errors from
+declared builder super-types and generated builders to prevent compile-time type errors from
 appearing in the generated code.
 
 Using "forwarding" factory methods and abstract builders, it is possible to hide the generated
@@ -234,7 +231,7 @@ public interface Person {
 
 Person person = new PersonBuilder()
   .name("Jim Boe")
-  .address("P.O. box 0000, Lexington, KY")
+  .address("P.O. box 0001, Lexington, KY")
   .build();
 ```
 
@@ -707,7 +704,7 @@ checks is made unreachable to a caller due to an exception being raised.
 <a name="copy-methods"></a>
 ### Copy methods
 
-`with*` methods (withers) allow for "editing" of the values of attributes by returning a new
+`with*` methods (withers) allow to modify values of attributes by returning a new
 immutable object with new value applied and the rest of attributes unchanged.
 
 ```java
@@ -717,19 +714,14 @@ counter = counter.withValue(counter.value() + 1)
 A cheap reference equality `==` check is added to prevent a copy of the same value by returning `this`.
 Primitives are subjected to the same `==` value check (except for `float` and `double`). Full
 equality checks or other specialized checks were omitted: It may be less computationally expensive
-in practice to create an new copy of a value than to check some attribute for deep-equality.
+in practice to create new copy of a value than to check some attribute for deep-equality.
 
-Copy methods provide a form of copying with structural sharing. It is very useful to change one
-or more attribute values, but have other collection attribute values reference the same immutable
-values as before, instead of being rebuilt manually or by builder. New values will effectively
+Wither methods are implemented to copy with structural sharing. It is useful to change one attribute value, but have other attributes values reference the same values as before, including any immutable collections and nested values that are wasteful to rebuild. New values will effectively
 share the subgraphs of old values, which is desirable in many cases.
 
-What about collection and map attributes? While it is tempting to have a bunch of methods such as
+While it was tempting to generated a bunch of methods to support collections and maps such as
 `withItemAdded` or `withKeyValuePut`, they might require a lot of variation like _add last_ or
-_add first_ and will hide the fact that collections are being rebuilt or rehashed, which is not always
-desirable for immutable collections. As of now, there's only simple value replacement for all
-kinds of attributes, but new collection values are guaranteed to be copied as immutable if they
-are not already immutable.
+_add first_ and will hide the fact that immutable collections are being rebuilt and/or rehashed, which is not always desirable for immutable collections. As of now, there's only simple value replacement for all kinds of attributes. New collection values are guaranteed to be copied as immutable unless already immutable.
 
 ```java
 Value changedValue =
@@ -926,15 +918,15 @@ Advanced Java binary serialization annotations are available in the `serial` mod
 - [org.immutables:serial:{{v}}]({{ depUri }}|serial|{{ v }}|jar)
 
 + `@Serial.Version` — to apply a serial version to enclosing value types
-+ `@Serial.Structural` — enables special structural serialization. Object serialized and deserialized using structural serialization are more flexible, to enable data evolution. By having fields changed to optional, scalars changed to arrays or collection type changed (was `Set`, then became `List`, for example), you have more freedom to evolve value objects.
++ `@Serial.Structural` — enables special structural serialization. Using structural serialization enables you can evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from `Set` to `List` will not break compatibility of serialized value objects.
 
 For JSON serialization options see the [JSON](/json.html) guide.
 
 <a name="modifiable"></a>
 ### Modifiable classes
 
-While _Immutables_ is heavily biased towards immutability, support for mutable implementations
-is provided via a generator utility.
+While _Immutables_ is heavily biased towards immutability, limited support for mutable implementations
+is also provided.
 
 Use the annotation `@Value.Modifiable` with or without a corresponding `@Value.Immutable`.
 The generated mutable companion class will have the prefix `Modifiable`.
