@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.1.3{% endcapture %}
+{% capture v %}2.1.4{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -289,15 +289,15 @@ To add custom binding for types, other than immutable values, use Gson APIs. Ple
 #### Field names
 By default, the JSON field name is the same as the attribute name.
 However, it is very easy to specify the JSON field name as it should appear in the JSON representation.
-Use the `value` attribute of the `org.immutables.gson.Gson.Named` annotation placed on an attribute accessor.
+Use the `value` attribute of the `com.google.gson.annotations.SerializedName` annotation placed on an attribute accessor.
 
 ```java
 @Value.Immutable
 @Gson.TypeAdapters
 public abstract class ValueObject {
-  @Gson.Named("_id")
+  @SerializedName("_id")
   public abstract long getId();
-  @Gson.Named("name")
+  @SerializedName("name")
   public abstract String getNamedAs();
   public abstract int getOtherAttribute();
 }
@@ -320,12 +320,12 @@ ValueObject valueObject =
 }
 ```
 
-`@Gson.Named` is similar to _Gson_'s `SerializedName` annotation.
-Unfortunately Gson's annotations are only applicable to fields and therefore cannot be used on accessor methods.
+`@Gson.Named` is deprecated in favor of _Gson_'s `SerializedName` annotation.
+As of _Gson_ v2.5 `SerializedName` is applicable to methods and renders _Immutables'_ custom annotation unnecessary. In addition to that, there's support for `SerializedName.alternate` attribute which allows to specify alternative names used during deserialization.
 
 <a name="field-naming-strategy"></a>
 When running on an Oracle JVM, there's an option to enable field naming strategy support.
-Use `@Gson.TypeAdapters(fieldNamingStrategy = true)` to enable generation of code which uses a field naming strategy. See javadoc for [Gson.TypeAdapters#fieldNamingStrategy](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78)
+Use `@Gson.TypeAdapters(fieldNamingStrategy = true)` to enable generation of code which uses a field naming strategy. See Javadoc for [Gson.TypeAdapters#fieldNamingStrategy](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78)
 
 #### Ignoring attributes
 
