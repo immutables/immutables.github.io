@@ -80,13 +80,13 @@ Make sure that _Jackson_ can serialize any other type that is used as attribute 
 
 ### Jackson-Guava
 
-If you use Guava, make sure to use the special serialization module `com.fasterxml.jackson.datatype:jackson-datatype-guava`.
+If you use Guava, make sure to use the special serialization module `jackson-datatype-guava`.
 
 ```xml
 <dependency>
   <groupId>com.fasterxml.jackson.datatype</groupId>
   <artifactId>jackson-datatype-guava</artifactId>
-  <version>2.5.0</version>
+  <version>2.4.0</version>
 </dependency>
 ```
 ```java
@@ -94,6 +94,33 @@ If you use Guava, make sure to use the special serialization module `com.fasterx
 ObjectMapper mapper = new ObjectMapper();
 // register module with object mapper
 mapper.registerModule(new GuavaModule());
+```
+
+### Jackson and Java 8
+
+For Java 8 specific datatypes use `jackson-datatype-jdk8` module.
+
+```xml
+<dependency>
+  <groupId>com.fasterxml.jackson.datatype</groupId>
+  <artifactId>jackson-datatype-jdk8</artifactId>
+  <version>2.6.3</version>
+</dependency>
+```
+
+```java
+ObjectMapper mapper = new ObjectMapper();
+mapper.registerModule(new Jdk8Module());
+```
+
+Sometimes you might use high-level application framework which handles _Jackson_ for you. So in order to register modules you need to get to `ObjectMapper` during initialization phase and configure it. Here's the sample of how it looks like for _Dropwizard_
+
+```java
+public void run(AppConfiguration configuration, Environment environment) throws Exception {
+  environment.getObjectMapper().registerModule(new GuavaModule());
+  environment.getObjectMapper().registerModule(new Jdk8Module());
+  ...
+}
 ```
 
 ----
