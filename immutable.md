@@ -337,6 +337,8 @@ public abstract class HostWithPort {
 HostWithPort hostWithPort = ImmutableHostWithPort.of("localhost", 8081);
 ```
 
+If you want to automatically turn all attributes into parameters to generate constructor, you could use styles for that, see [tuple style](#tuples) pattern.
+
 **Things to be aware of**
 
 + If not all mandatory attributes are marked as `@Value.Parameter`
@@ -1098,6 +1100,32 @@ PersonName name = PersonName.of("Vasilij Pupkin");
 
 VehicleMake make = VehicleMake.of("Honda");
 
+```
+
+<a name="tuples"></a>
+### Tuple style
+
+Using styles you can create types with only constructor generated which includes all attributes as parameters.
+The key style here is `allParameters` which automatically makes constructor for all parameters regardless if they are annotated with `@Value.Parameter`.
+```java
+@Value.Style(
+    // Generate construction method using all attributes as parameters
+    allParameters = true,
+    // Changing generated name just for fun
+    typeImmutable = "*Tuple",
+    // We may also disable builder
+		defaults = @Value.Immutable(builder = false))
+public @interface Tuple {}
+...
+// declare type with "tuple" style
+@Value.Immutable @Tuple
+public interface Complex {
+  double re();
+  double im();
+}
+...
+
+Complex c = ComplexTuple.of(1d, 0d);
 ```
 
 ### Expressive factory methods
