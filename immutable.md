@@ -1115,7 +1115,7 @@ The key style here is `allParameters` which automatically makes constructor for 
     // Changing generated name just for fun
     typeImmutable = "*Tuple",
     // We may also disable builder
-		defaults = @Value.Immutable(builder = false))
+    defaults = @Value.Immutable(builder = false))
 public @interface Tuple {}
 ...
 // declare type with "tuple" style
