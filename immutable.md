@@ -1107,6 +1107,7 @@ VehicleMake make = VehicleMake.of("Honda");
 
 Using styles you can create types with only constructor generated which includes all attributes as parameters.
 The key style here is `allParameters` which automatically makes constructor for all parameters regardless if they are annotated with `@Value.Parameter`.
+
 ```java
 @Value.Style(
     // Generate construction method using all attributes as parameters
