@@ -97,6 +97,7 @@ public com.mycompany.project;
 - Styles are not merged in any way.
 - Styles are applied at package level, top-level class level, or on a value type itself if it's nested. Styles will not work if applied at attribute level or declared on intermediate nested types.
 - Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contain inappropriate symbols or Java keywords etc.
+- Styles are aggressively cached. If you change some meta-style or parent-package style you may not see thing correctly compiling until a full clean rebuild or IDE restart.
 
 ## Other customizations
 
