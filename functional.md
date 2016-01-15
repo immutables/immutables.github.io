@@ -19,7 +19,7 @@ but many programmers, due to customer requirements or other reasons, cannot use 
 many of the functional capabilities of Java 8 using their [`Function` and `Predicate`](https://github.com/google/guava/wiki/FunctionalExplained) interfaces:
 
 ```java
-class PersonNameFunction implements Function<Person, String>{
+class PersonNameFunction implements Function<Person, String> {
    @Override
    public String apply(Person person) {
        return person.name();
@@ -27,7 +27,7 @@ class PersonNameFunction implements Function<Person, String>{
 }
 
 final ImmutableList<String> names = FluentIterables.from(people)
-              .transform(new PersonNameFunction())
+              .transform(new PersonNameFunction());
 ```
 
 However, without lambdas, writing `Functions` and `Predicates` is verbose and often results in functional 
