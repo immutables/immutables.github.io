@@ -1,5 +1,5 @@
 ---
-title: 'Functional accessors'
+title: 'Functions and Predicates'
 layout: page
 ---
 
@@ -9,65 +9,86 @@ layout: page
 Overview
 --------
 Java 8 provides lambda expressions, which are very handy for functional programming:
+
 ```java
 people.stream()
       .map(p -> p.name())
 ```
 
 They are particularly useful for filtering and transforming immutable value objects,
-but many programmers, due to customer requirements or other reasons, cannot use Java 8.  [Guava](https://github.com/google/guava) provides 
+but many programmers, due to customer requirements or other reasons, cannot use Java 8.  [Guava](https://github.com/google/guava) provides
 many of the functional capabilities of Java 8 using their [`Function` and `Predicate`](https://github.com/google/guava/wiki/FunctionalExplained) interfaces:
 
 ```java
 class PersonNameFunction implements Function<Person, String> {
-   @Override
-   public String apply(Person person) {
-       return person.name();
-   }
+  @Override
+  public String apply(Person person) {
+    return person.name();
+  }
 }
 
-final ImmutableList<String> names = FluentIterables.from(people)
-              .transform(new PersonNameFunction());
+ImmutableList<String> names = FluentIterables.from(people)
+    .transform(new PersonNameFunction());
 ```
 
-However, without lambdas, writing `Functions` and `Predicates` is verbose and often results in functional 
+However, without lambdas, writing `Function`s and `Predicate`s is verbose and often results in functional
 code less clear than its imperative equivalent.  
 
-With `org.immutables:func`, you can easily generate Guava `Function`s and `Predicate`s for field access without the clutter:
+### Generate functions and predicates
+
+With `org.immutables:func`, you can easily generate Guava `Function`s and `Predicate`s for field access without the clutter. Special class `*Functions` is generated and provides function and predicates instances.
+
 ```java
 @Value.Immutable
 @Functional
-abstract class AbstractPerson {
-   public abstract String name();
-   public abstract String jobTitle();
-   public abstract boolean speaksFrench();
+abstract class Person {
+  public abstract String name();
+  public abstract String jobTitle();
+  public abstract boolean speaksFrench();
 }
 
-final List<String> names = Lists.transform(people,PersonFunctions.name());
+List<String> names = Lists.transform(people, PersonFunctions.name());
 ```
 
 Boolean attributes become `Predicates`:
+
 ```java
-final List<Person> frenchSpeakers = Lists.filter(people, PersonFunctions.speaksFrench())
+List<Person> frenchSpeakers = Lists.filter(people, PersonFunctions.speaksFrench());
 ```
 
 By placing `@Functional` on a method instead of the class, you can restrict which `Functions` and `Predicates` are generated:
+
 ```java
 @Value.Immutable
-abstract class AbstractPerson {
-   @Functional
-   public abstract String name();
-   // no Function will be generated for jobTitle
-   public abstract String jobTitle();
-   @Functional
-   public abstract boolean speaksFrench();
+abstract class Person {
+  @Functional
+  public abstract String name();
+  // no Function will be generated for jobTitle
+  public abstract String jobTitle();
+  @Functional
+  public abstract boolean speaksFrench();
 }
 ```
+
+Of course, you can use static imports to further reduce clutter.
+
+```java
+import ...PersonFunctions.*;
+import ...FluentIterable.*;
+
+List<String> frenchSpeakerNames =
+    from(people)
+        .filter(speaksFrench())
+        .transform(name())
+        .toList();
+```
+
+### Dependencies
 
 This feature has the following compile-time dependencies in addition to a runtime dependency on Guava:
 
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
-- [org.immutables:builder:{{v}}]({{ depUri }}|func|{{ v }}|jar)
+- [org.immutables:func:{{v}}]({{ depUri }}|func|{{ v }}|jar)
 
 ```xml
 <dependency>
@@ -80,6 +101,5 @@ This feature has the following compile-time dependencies in addition to a runtim
   <groupId>org.immutables</groupId>
   <artifactId>func</artifactId>
   <version>{{ v }}</version>
-  <scope>provided</scope>
 </dependency>
 ```
