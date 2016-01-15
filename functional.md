@@ -15,8 +15,8 @@ people.stream()
 ```
 
 They are particularly useful for filtering and transforming immutable value objects,
-but many programmers, due to customer requirements or other reasons, cannot use Java 8.  Guava provides 
-many of the functional capabilities of Java 8 using their `Function` and `Predicate` interfaces:
+but many programmers, due to customer requirements or other reasons, cannot use Java 8.  [Guava](https://github.com/google/guava) provides 
+many of the functional capabilities of Java 8 using their [`Function` and `Predicate`](https://github.com/google/guava/wiki/FunctionalExplained) interfaces:
 
 ```java
 class PersonNameFunction implements Function<Person, String>{
@@ -31,9 +31,9 @@ final ImmutableList<String> names = FluentIterables.from(people)
 ```
 
 However, without lambdas, writing `Functions` and `Predicates` is verbose and often results in functional 
-code less clear than its iterable equivalent.  
+code less clear than its imperative equivalent.  
 
-With `immutables.func`, you can easily generate functions and predicates for field access without the clutter:
+With `org.immutables:func`, you can easily generate Guava `Function`s and `Predicate`s for field access without the clutter:
 ```java
 @Value.Immutable
 @Functional
@@ -46,7 +46,7 @@ abstract class AbstractPerson {
 final List<String> names = Lists.transform(people,PersonFunctions.name());
 ```
 
-Boolean attributes become Predicates:
+Boolean attributes become `Predicates`:
 ```java
 final List<Person> frenchSpeakers = Lists.filter(people, PersonFunctions.speaksFrench())
 ```
