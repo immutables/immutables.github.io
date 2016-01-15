@@ -64,7 +64,7 @@ abstract class AbstractPerson {
 }
 ```
 
-This feature has the following compile-time dependencies:
+This feature has the following compile-time dependencies in addition to a runtime dependency on Guava:
 
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
 - [org.immutables:builder:{{v}}]({{ depUri }}|func|{{ v }}|jar)
