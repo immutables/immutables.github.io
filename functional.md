@@ -48,12 +48,8 @@ abstract class Person {
 }
 
 List<String> names = Lists.transform(people, PersonFunctions.name());
-```
-
-Boolean attributes become `Predicates`:
-
-```java
-List<Person> frenchSpeakers = Lists.filter(people, PersonFunctions.speaksFrench());
+// Boolean attributes become `Predicates`
+Iterable<Person> frenchSpeakers = Iterables.filter(people, PersonFunctions.speaksFrench());
 ```
 
 By placing `@Functional` on a method instead of the class, you can restrict which `Functions` and `Predicates` are generated:
