@@ -36,7 +36,7 @@ code less clear than its imperative equivalent.
 
 ### Generate functions and predicates
 
-With `org.immutables:func`, you can easily generate Guava `Function`s and `Predicate`s for field access without the clutter. Special class `*Functions` is generated and provides function and predicates instances.
+With `org.immutables:func`, you can easily generate Guava `Function`s and `Predicate`s for field access without the clutter. Special class `*Functions` is generated and provides function and predicate instances.
 
 ```java
 @Value.Immutable
@@ -97,5 +97,6 @@ This feature has the following compile-time dependencies in addition to a runtim
   <groupId>org.immutables</groupId>
   <artifactId>func</artifactId>
   <version>{{ v }}</version>
+  <scope>provided</scope>
 </dependency>
 ```
