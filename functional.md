@@ -6,8 +6,8 @@ layout: page
 {% capture v %}2.1.7{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
-Overview
---------
+### Overview
+
 Java 8 provides lambda expressions, which are very handy for functional programming:
 
 ```java
