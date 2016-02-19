@@ -115,11 +115,11 @@ Exceptions are provided using `Style.depluralizeDictionary` array of `"singular:
 
 When given the dictionary defined as `{"person:people", "foot:feet"}` then examples for `add*` method in builder would be:
 
-* boats -> addBoat
-* people -> addPerson
-* feet -> addFoot
-* feetPeople -> addFeetPerson
-* peopleRepublics -> addPeopleRepublic
+* boats → addBoat
+* people → addPerson
+* feet → addFoot
+* feetPeople → addFeetPerson
+* peopleRepublics → addPeopleRepublic
 
 Dictionary-based depluralization is based on the assumption that simple `s` trimming will cover most cases, while exceptions, if provided, are likely to be ubiquitous in a problem domain being modelled by value objects. As a reminder, you don't have to annotate every single value class with bulky style definitions, rather annotate some top-level package or use style as meta annotation (See [Apply style](#apply))
 
