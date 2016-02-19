@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.1.10{% endcapture %}
+{% capture v %}2.1.11{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -420,6 +420,8 @@ It is possible to verify, for example, that they contain a required number of it
 
 From version `0.16` onwards, we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection or map attributes.
 To clear the contents of collections or maps, use a reset method `bar(Collections.emptyList())`, or use [copy methods](#copy-methods) right after an instance is built.
+
+Since version `2.1.11` you can use opt-in [depluralization](style.html#depluralization) to generate methods named `addFoo` or `putFoo` derived from collection attribute named `foos`.
 
 The set of methods was chosen to represent the minimum required for convenient use. A smaller
 selection of methods resulted in noisy conversions all over the code using the generated types. A
@@ -915,12 +917,13 @@ Basic Java binary serialization is supported in the following way:
 * Generate a `readResolve` method implementation to preserve [singleton](#singleton) and [interned](#interning) instances.
 
 Advanced Java binary serialization annotations are available in the `serial` module
-(_added as experimental feature in version 2.0.12_):
+(since v2.0.12):
 
 - [org.immutables:serial:{{v}}]({{ depUri }}|serial|{{ v }}|jar)
 
 + `@Serial.Version` — to apply a serial version to enclosing value types
-+ `@Serial.Structural` — enables special structural serialization. Using structural serialization enables you can evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from `Set` to `List` will not break compatibility of serialized value objects.
++ `@Serial.Structural` — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from `Set` to `List` will not break compatibility of serialized value objects.
++ immutable value type generated from types annotated with either `@Serial.Version` or `@Serial.Structural` will auto-implement `java.lang.Serializable` if not already.
 
 For JSON serialization options see the [JSON](/json.html) guide.
 
@@ -964,8 +967,8 @@ if (item.isIntialized()) {
 }
 
 item.clear()
-    .from(ImmutableItem.builder().name("First").addCound(4, 5).build())
-    .from(ImmutableItem.builder().name("Second").addCound(6).build());
+    .from(ImmutableItem.builder().name("First").addCount(4, 5).build())
+    .from(ImmutableItem.builder().name("Second").addCount(6).build());
 
 System.out.println(item);
 // ModifiableItem{name=Second, count=[4, 5, 6]}
@@ -973,7 +976,7 @@ System.out.println(item);
 ```
 
 The naming conventions of modifiable classes can be changed using [styles](/style.html),
-even going as far as creating _builders in disguise_.
+even going as far as creating [builders in disguise]().
 
 <a name="generics"></a>
 ### Generics (not) supported
@@ -1072,7 +1075,7 @@ public @interface Wrapped {}
 // base wrapper type
 abstract class Wrapper<T> {
   @Value.Parameter
-  public T value();
+  public abstract T value();
   @Override
   public String toString() {
     return getClass().getSimpleName() + "(" + value() + ")";

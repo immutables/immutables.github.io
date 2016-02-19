@@ -31,6 +31,7 @@ In nutshell, using styles you can:
 + Force the generation of JDK-only implementation code, even if Guava is available in classpath.
 + Set template "defaults" setting for `@Value.Immutable` which will then be used for every immutable class.
 
+<a name="apply"></a>
 ## Apply style
 
 A `Style` can be attached to:
@@ -97,7 +98,30 @@ public com.mycompany.project;
 - Styles are not merged in any way.
 - Styles are applied at package level, top-level class level, or on a value type itself if it's nested. Styles will not work if applied at attribute level or declared on intermediate nested types.
 - Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contain inappropriate symbols or Java keywords etc.
-- Styles are aggressively cached. If you change some meta-style or parent-package style you may not see thing correctly compiling until a full clean rebuild or IDE restart.
+- Styles are aggressively cached. If you change some meta-style or parent-package style sometimes you may not see thing correctly compiling until a full clean rebuild or even IDE restart.
+
+<a name="depluralization"></a>
+### Depluralization
+
+`Style.depluralize` style attribute enables automatic depluralization of attribute names for collection and map attributes used for generating derived method names, such as `add*` and `put*`. In order to enable depluralization specify depluralize = true: this will trim trailing "s" suffixes if present to create singular form ("ies" to "y" suffix conversion is also supported).
+
+Exceptions are provided using `Style.depluralizeDictionary` array of `"singular:plural"` pairs as alternative to mechanical `"*s"` depluralization.
+
+```java
+@Value.Style(
+  depluralize = true, // enable feature
+  depluralizeDictionary = {"person:people", "foot:feet"}) // specifying dictionary of exceptions
+```
+
+When given the dictionary defined as `{"person:people", "foot:feet"}` then examples for `add*` method in builder would be:
+
+* boats -> addBoat
+* people -> addPerson
+* feet -> addFoot
+* feetPeople -> addFeetPerson
+* peopleRepublics -> addPeopleRepublic
+
+Dictionary-based depluralization is based on the assumption that simple `s` trimming will cover most cases, while exceptions, if provided, are likely to be ubiquitous in a problem domain being modelled by value objects. As a reminder, you don't have to annotate every single value class with bulky style definitions, rather annotate some top-level package or use style as meta annotation (See [Apply style](#apply))
 
 ## Other customizations
 
@@ -127,7 +151,7 @@ file. In Java this naturally accomplished by nesting those classes under an umbr
 class. Of course, it is possible to generate immutable subclasses for nested static inner
 classes or interfaces.
 
-Use a `@Value.Enclosing` annotation on a top-level class to provide namespacing for implementation
+`@Value.Enclosing` annotation can be used on a top-level class to provide namespacing for implementation
 classes generated out of nested abstract value types. This can be used as a matter of
 preference or to avoid name clashes of immutable implementation classes which would otherwise
 be generated as top-level classes in the same package.
@@ -150,4 +174,10 @@ Edge.builder().build();
 Vertex.builder().build();
 ```
 
+The number of styling options available to customize naming of generated top-level and nested classes.
+It worth to note that style annotation should be placed on a top-level enclosing class or on a package,
+because style of the enclosing class and nested value objects should be the same.
+
 _Note: prior to 2.0, `@Value.Enclosing` was named `@Value.Nested`_
+
+_Note: as of 2.1 we would not advertise the use of `@Value.Enclosing`. It is not deprecated and may be useful as namespacing tool, but still this should be considered as a niche solution, not the one that you should use "by default". Just nesting value types and generating top-level immutable classes in the same package works fine in  many cases._

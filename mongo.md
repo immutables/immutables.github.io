@@ -3,7 +3,7 @@ title: 'MongoDB repositories'
 layout: page
 ---
 
-{% capture v %}2.1.10{% endcapture %}
+{% capture v %}2.1.11{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -84,7 +84,7 @@ In addition to code annotation-processor, it's necessary to add the `mongo` anno
 _Mongo_ artifact required to be used for compilation as well be available at runtime.
 _Mongo_ module works closely with [Gson](/json.html#gson) module, which is also included as transitive dependency.
 
-**Note:** Current release works with versions `2.12+` of the MongoDB Java driver - version `3.0` is not yet supported.
+**Note:** Current release works with versions `2.12+` of the MongoDB Java driver - version `3.0` and up is not yet supported.
 
 Snippet of Maven dependencies:
 
@@ -362,7 +362,7 @@ boolean isTrue =
         .fetchFirst()
         .getUnchecked()
         .ratings()
-        .isEmtpy();
+        .isEmpty();
 ```
 
 ### Sorting result

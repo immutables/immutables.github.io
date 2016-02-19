@@ -3,7 +3,7 @@ title: 'Functions and Predicates'
 layout: page
 ---
 
-{% capture v %}2.1.10{% endcapture %}
+{% capture v %}2.1.11{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ### Overview
@@ -16,8 +16,7 @@ people.stream()
 ```
 
 They are particularly useful for filtering and transforming immutable value objects,
-but many programmers, due to customer requirements or other reasons, cannot use Java 8.  [Guava](https://github.com/google/guava) provides
-many of the functional capabilities of Java 8 using their [`Function` and `Predicate`](https://github.com/google/guava/wiki/FunctionalExplained) interfaces:
+but many programmers, due to customer requirements or other reasons, cannot use Java 8.  [Guava](https://github.com/google/guava) provides many of the functional capabilities of Java 8 using their [`Function` and `Predicate`](https://github.com/google/guava/wiki/FunctionalExplained) interfaces:
 
 ```java
 class PersonNameFunction implements Function<Person, String> {
