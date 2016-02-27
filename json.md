@@ -544,7 +544,7 @@ high-throughput document streaming. However, the implementation can be changed (
 <a name="gson-jackson"></a>
 ### Gson-Jackson bridge
 
-We can push _Gson_'s performance to it's limits by delegating low-level streaming to
+We can push _Gson_'s performance to its limits by delegating low-level streaming to
 _Jackson_. _Gson_ is pretty optimized in itself, but _Jackson_ is playing an "unfair game"
 by optimizing the whole chain of JSON streaming, including UTF-8 encoding handling, recycling
 of special buffers, DIY number parsing and formatting etc. This can be as much as 200% faster
