@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.1.11{% endcapture %}
+{% capture v %}2.1.12{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -716,9 +716,8 @@ counter = counter.withValue(counter.value() + 1)
 ```
 
 A cheap reference equality `==` check is added to prevent a copy of the same value by returning `this`.
-Primitives are subjected to the same `==` value check (except for `float` and `double`). Full
-equality checks or other specialized checks were omitted: It may be less computationally expensive
-in practice to create new copy of a value than to check some attribute for deep-equality.
+Primitives are compared using the `==` value check. Primitive `float` and `double` are compared strictly by using `Float.floatToIntBits` and `Double.doubleToLongBits` respectively, consistently with how `Float.equals` and `Double.equals` work.
+For strings and primitive wrapper types we use `Object.equals` equality. But in general, full equality checks were omitted: in practice it may be less computationally expensive to create new copy of a value than to check some attribute for deep-equality.
 
 Wither methods are implemented to copy with structural sharing. It is useful to change one attribute value, but have other attributes values reference the same values as before, including any immutable collections and nested values that are wasteful to rebuild. New values will effectively
 share the subgraphs of old values, which is desirable in many cases.
