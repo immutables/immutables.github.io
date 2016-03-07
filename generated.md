@@ -25,28 +25,26 @@ The source code of the generated immutable implementation:
 
 ```java
 import java.util.Objects;
-import javax.annotation.Generated;
 
 /**
  * Immutable implementation of {@link Tuple}.
  * <p>
- * Use static factory method to create immutable instances:
+ * Use the static factory method to create immutable instances:
  * {@code ImmutableTuple.of()}.
  */
 @SuppressWarnings("all")
-@Generated({"Immutables.generator", "Tuple"})
+@Immutable
 final class ImmutableTuple implements Tuple {
   private final int index;
   private final String name;
 
   private ImmutableTuple(int index, String name) {
     this.index = index;
-    this.name = Objects.requireNonNull(name);
+    this.name = Objects.requireNonNull(name, "name");
   }
 
   /**
-   * {@inheritDoc}
-   * @return value of {@code index} attribute
+   * @return The value of the {@code index} attribute
    */
   @Override
   public int getIndex() {
@@ -54,8 +52,7 @@ final class ImmutableTuple implements Tuple {
   }
 
   /**
-   * {@inheritDoc}
-   * @return value of {@code name} attribute
+   * @return The value of the {@code name} attribute
    */
   @Override
   public String getName() {
@@ -63,13 +60,14 @@ final class ImmutableTuple implements Tuple {
   }
 
   /**
-   * This instance is equal to instances of {@code ImmutableTuple} with equal attribute values.
+   * This instance is equal to all instances of {@code ImmutableTuple} that have equal attribute values.
    * @return {@code true} if {@code this} is equal to {@code another} instance
    */
   @Override
   public boolean equals(Object another) {
-    return this == another
-        || (another instanceof ImmutableTuple && equalTo((ImmutableTuple) another));
+    if (this == another) return true;
+    return another instanceof ImmutableTuple
+        && equalTo((ImmutableTuple) another);
   }
 
   private boolean equalTo(ImmutableTuple another) {
@@ -78,7 +76,7 @@ final class ImmutableTuple implements Tuple {
   }
 
   /**
-   * Computes hash code from attributes: {@code index}, {@code name}.
+   * Computes a hash code from attributes: {@code index}, {@code name}.
    * @return hashCode value
    */
   @Override
@@ -90,29 +88,28 @@ final class ImmutableTuple implements Tuple {
   }
 
   /**
-   * Prints immutable value {@code Tuple{...}} with attribute values,
-   * excluding any non-generated and auxiliary attributes.
-   * @return string representation of value
+   * Prints the immutable value {@code Tuple...} with all non-generated
+   * and non-auxiliary attribute values.
+   * @return A string representation of the value
    */
   @Override
   public String toString() {
-    return new StringBuilder("Tuple{")
-        .append("index=").append(index)
-        .append(", name=").append(name)
-        .append('}').toString();
+    return "Tuple{"
+        + "index=" + index
+        + ", name=" + name
+        + "}";
   }
 
   /**
-   * Construct new immutable {@code Tuple} instance.
-   * @param index value for {@code index}
-   * @param name value for {@code name}
-   * @return immutable Tuple instance
+   * Construct a new immutable {@code Tuple} instance.
+   * @param index The value for the {@code index} attribute
+   * @param name The value for the {@code name} attribute
+   * @return An immutable Tuple instance
    */
   public static ImmutableTuple of(int index, String name) {
     return new ImmutableTuple(index, name);
   }
 }
-
 ```
 
 By default, extra code is generated. These extras can be disabled.
@@ -140,14 +137,14 @@ interface ValueObject {
 You will probably agree that the code below would have been painful to write by hand:
 
 ```java
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Longs;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -157,7 +154,7 @@ import javax.annotation.concurrent.NotThreadSafe;
 /**
  * Immutable implementation of {@link ValueObject}.
  * <p>
- * Use builder to create immutable instances:
+ * Use the builder to create immutable instances:
  * {@code ImmutableValueObject.builder()}.
  */
 @SuppressWarnings("all")
@@ -171,16 +168,7 @@ final class ImmutableValueObject implements ValueObject {
   private final Optional<String> comment;
   private final long[] data;
 
-  private ImmutableValueObject(ImmutableValueObject.Builder builder) {
-    this.id = builder.id;
-    this.name = builder.name;
-    this.numbers = builder.numbersBuilder.build();
-    this.comment = builder.comment;
-    this.data = builder.data;
-  }
-
   private ImmutableValueObject(
-      ImmutableValueObject original,
       long id,
       String name,
       ImmutableList<Number> numbers,
@@ -194,8 +182,7 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * {@inheritDoc}
-   * @return value of {@code id} attribute
+   * @return The value of the {@code id} attribute
    */
   @Override
   public long id() {
@@ -203,8 +190,7 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * {@inheritDoc}
-   * @return value of {@code name} attribute
+   * @return The value of the {@code name} attribute
    */
   @Override
   public String name() {
@@ -212,8 +198,7 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * {@inheritDoc}
-   * @return value of {@code numbers} attribute
+   * @return The value of the {@code numbers} attribute
    */
   @Override
   public ImmutableList<Number> numbers() {
@@ -221,8 +206,7 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * {@inheritDoc}
-   * @return value of {@code comment} attribute
+   * @return The value of the {@code comment} attribute
    */
   @Override
   public Optional<String> comment() {
@@ -230,8 +214,7 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * {@inheritDoc}
-   * @return cloned {@code data} array
+   * @return A cloned {@code data} array
    */
   @Override
   public long[] data() {
@@ -239,100 +222,96 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * Copy current immutable object by setting value for {@link ValueObject#id() id}.
-   * Value equality check is used to prevent copying of the same value by returning {@code this}.
-   * @param value new value for id
-   * @return modified copy of the {@code this} object
+   * Copy the current immutable object by setting a value for the {@link ValueObject#id() id} attribute.
+   * A value equality check is used to prevent copying of the same value by returning {@code this}.
+   * @param value A new value for id
+   * @return A modified copy of the {@code this} object
    */
   public final ImmutableValueObject withId(long value) {
-    if (this.id == value) {
-      return this;
-    }
-    long newValue = value;
-    return new ImmutableValueObject(this, newValue, this.name, this.numbers, this.comment, this.data);
+    if (this.id == value) return this;
+    return new ImmutableValueObject(value, this.name, this.numbers, this.comment, this.data);
   }
 
   /**
-   * Copy current immutable object by setting value for {@link ValueObject#name() name}.
-   * Shallow reference equality check is used to prevent copying of the same value by returning {@code this}.
-   * @param value new value for name
-   * @return modified copy of the {@code this} object
+   * Copy the current immutable object by setting a value for the {@link ValueObject#name() name} attribute.
+   * An equals check used to prevent copying of the same value by returning {@code this}.
+   * @param value A new value for name
+   * @return A modified copy of the {@code this} object
    */
   public final ImmutableValueObject withName(String value) {
-    if (this.name == value) {
-      return this;
-    }
-    String newValue = Preconditions.checkNotNull(value);
-    return new ImmutableValueObject(this, this.id, newValue, this.numbers, this.comment, this.data);
+    if (this.name.equals(value)) return this;
+    return new ImmutableValueObject(
+        this.id,
+        Preconditions.checkNotNull(value, "name"),
+        this.numbers,
+        this.comment,
+        this.data);
   }
 
   /**
-   * Copy current immutable object with elements that replace content of {@link ValueObject#numbers() numbers}.
-   * @param elements elements to set
-   * @return modified copy of {@code this} object
+   * Copy the current immutable object with elements that replace the content of {@link ValueObject#numbers() numbers}.
+   * @param elements The elements to set
+   * @return A modified copy of {@code this} object
    */
   public final ImmutableValueObject withNumbers(Number... elements) {
     ImmutableList<Number> newValue = ImmutableList.copyOf(elements);
-    return new ImmutableValueObject(this, this.id, this.name, newValue, this.comment, this.data);
+    return new ImmutableValueObject(this.id, this.name, newValue, this.comment, this.data);
   }
 
   /**
-   * Copy current immutable object with elements that replace content of {@link ValueObject#numbers() numbers}.
-   * Shallow reference equality check is used to prevent copying of the same value by returning {@code this}.
-   * @param elements iterable of numbers elements to set
-   * @return modified copy of {@code this} object
+   * Copy the current immutable object with elements that replace the content of {@link ValueObject#numbers() numbers}.
+   * A shallow reference equality check is used to prevent copying of the same value by returning {@code this}.
+   * @param elements An iterable of numbers elements to set
+   * @return A modified copy of {@code this} object
    */
   public final ImmutableValueObject withNumbers(Iterable<? extends Number> elements) {
-    if (this.numbers == elements) {
-      return this;
-    }
+    if (this.numbers == elements) return this;
     ImmutableList<Number> newValue = ImmutableList.copyOf(elements);
-    return new ImmutableValueObject(this, this.id, this.name, newValue, this.comment, this.data);
+    return new ImmutableValueObject(this.id, this.name, newValue, this.comment, this.data);
   }
 
   /**
-   * Copy current immutable object by setting present value for optional {@link ValueObject#comment() comment}.
-   * @param value value for comment
-   * @return modified copy of {@code this} object
+   * Copy the current immutable object by setting a <i>present</i> value for the optional {@link ValueObject#comment() comment} attribute.
+   * @param value The value for comment
+   * @return A modified copy of {@code this} object
    */
   public final ImmutableValueObject withComment(String value) {
     Optional<String> newValue = Optional.of(value);
-    return new ImmutableValueObject(this, this.id, this.name, this.numbers, newValue, this.data);
+    return new ImmutableValueObject(this.id, this.name, this.numbers, newValue, this.data);
   }
 
   /**
-   * Copy current immutable object by setting optional value for {@link ValueObject#comment() comment}.
-   * Shallow reference equality check on optional value is used to prevent copying of the same value by returning {@code this}.
-   * @param optional value for comment
-   * @return modified copy of {@code this} object
+   * Copy the current immutable object by setting an optional value for the {@link ValueObject#comment() comment} attribute.
+   * A shallow reference equality check on the optional value is used to prevent copying of the same value by returning {@code this}.
+   * @param optional A value for comment
+   * @return A modified copy of {@code this} object
    */
   public final ImmutableValueObject withComment(Optional<String> optional) {
-    if (this.comment == optional) {
-      return this;
-    }
-    Optional<String> newValue = Preconditions.checkNotNull(optional);
-    return new ImmutableValueObject(this, this.id, this.name, this.numbers, newValue, this.data);
+    Optional<String> value = Preconditions.checkNotNull(optional, "comment");
+    if (this.comment == value) return this;
+    return new ImmutableValueObject(this.id, this.name, this.numbers, value, this.data);
   }
 
   /**
-   * Copy current immutable object with elements that replace content of {@link ValueObject#data() data}.
-   * Array is cloned before saved as the attribute value.
-   * @param elements elements for data, not null
-   * @return modified copy of {@code this} object
+   * Copy the current immutable object with elements that replace the content of {@link ValueObject#data() data}.
+   * The array is cloned before being saved as attribute values.
+   * @param elements The non-null elements for data
+   * @return A modified copy of {@code this} object
    */
   public final ImmutableValueObject withData(long... elements) {
     long[] newValue = elements.clone();
-    return new ImmutableValueObject(this, this.id, this.name, this.numbers, this.comment, newValue);
+    return new ImmutableValueObject(this.id, this.name, this.numbers, this.comment, newValue);
   }
 
   /**
-   * This instance is equal to instances of {@code ImmutableValueObject} with equal attribute values.
+   * This instance is equal to all instances of {@code ImmutableValueObject} that have equal attribute values.
    * @return {@code true} if {@code this} is equal to {@code another} instance
    */
   @Override
   public boolean equals(@Nullable Object another) {
-    return this == another
-        || (another instanceof ImmutableValueObject && equalTo((ImmutableValueObject) another));
+    if (this == another) return true;
+    return another instanceof ImmutableValueObject
+        && equalTo((ImmutableValueObject) another);
   }
 
   private boolean equalTo(ImmutableValueObject another) {
@@ -344,7 +323,7 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * Computes hash code from attributes: {@code id}, {@code name}, {@code numbers}, {@code comment}, {@code data}.
+   * Computes a hash code from attributes: {@code id}, {@code name}, {@code numbers}, {@code comment}, {@code data}.
    * @return hashCode value
    */
   @Override
@@ -359,13 +338,13 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * Prints immutable value {@code ValueObject{...}} with attribute values,
-   * excluding any non-generated and auxiliary attributes.
-   * @return string representation of value
+   * Prints the immutable value {@code ValueObject...} with all non-generated
+   * and non-auxiliary attribute values.
+   * @return A string representation of the value
    */
   @Override
   public String toString() {
-    return Objects.toStringHelper("ValueObject")
+    return MoreObjects.toStringHelper("ValueObject")
         .add("id", id)
         .add("name", name)
         .add("numbers", numbers)
@@ -375,11 +354,13 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * Creates immutable copy of {@link ValueObject}.
-   * Uses accessors to get values to initialize immutable instance.
+   * Creates an immutable copy of a {@link ValueObject} value.
+   * Uses accessors to get values to initialize the new immutable instance.
    * If an instance is already immutable, it is returned as is.
+   * @param instance The instance to copy
+   * @return A copied immutable ValueObject instance
    */
-  static ImmutableValueObject copyOf(ValueObject instance) {
+  public static ImmutableValueObject copyOf(ValueObject instance) {
     if (instance instanceof ImmutableValueObject) {
       return (ImmutableValueObject) instance;
     }
@@ -389,45 +370,46 @@ final class ImmutableValueObject implements ValueObject {
   }
 
   /**
-   * Creates builder for {@link ImmutableValueObject}.
-   * @return new ImmutableValueObject builder
+   * Creates a builder for {@link ImmutableValueObject ImmutableValueObject}.
+   * @return A new ImmutableValueObject builder
    */
-  static ImmutableValueObject.Builder builder() {
+  public static ImmutableValueObject.Builder builder() {
     return new ImmutableValueObject.Builder();
   }
 
   /**
-   * Builds instances of {@link ImmutableValueObject}.
-   * Initialized attributes and then invoke {@link #build()} method to create
+   * Builds instances of type {@link ImmutableValueObject ImmutableValueObject}.
+   * Initialize attributes and then invoke the {@link #build()} method to create an
    * immutable instance.
-   * <p><em>Builder is not thread safe and generally should not be stored in field or collection,
-   * but used immediately to create instances.</em>
+   * <p><em>{@code Builder} is not thread-safe and generally should not be stored in a field or collection,
+   * but instead used immediately to create instances.</em>
    */
   @NotThreadSafe
   static final class Builder {
-    private static final long INITIALIZED_BITSET_ALL = 0x7;
-    private static final long INITIALIZED_BIT_ID = 0x1L;
-    private static final long INITIALIZED_BIT_NAME = 0x2L;
-    private static final long INITIALIZED_BIT_DATA = 0x4L;
-    private long initializedBitset;
+    private static final long INIT_BIT_ID = 0x1L;
+    private static final long INIT_BIT_NAME = 0x2L;
+    private static final long INIT_BIT_DATA = 0x4L;
+    private long initBits = 0x7;
 
     private long id;
     private @Nullable String name;
     private ImmutableList.Builder<Number> numbersBuilder = ImmutableList.builder();
     private Optional<String> comment = Optional.absent();
     private @Nullable long[] data;
-    private Builder() {}
+
+    private Builder() {
+    }
 
     /**
-     * Adjust builder with values from provided {@link ValueObject} instance.
-     * Regular attribute values will be overridden, i.e. replaced with ones of an instance.
-     * Instance's absent optional values will not be copied (will not override current).
+     * Fill a builder with attribute values from the provided {@code ValueObject} instance.
+     * Regular attribute values will be replaced with those from the given instance.
+     * Absent optional values will not replace present values.
      * Collection elements and entries will be added, not replaced.
-     * @param instance instance to copy values from
-     * @return {@code this} builder for chained invocation
+     * @param instance The instance from which to copy values
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder from(ValueObject instance) {
-      Preconditions.checkNotNull(instance);
+      Preconditions.checkNotNull(instance, "instance");
       id(instance.id());
       name(instance.name());
       addAllNumbers(instance.numbers());
@@ -440,31 +422,31 @@ final class ImmutableValueObject implements ValueObject {
     }
 
     /**
-     * Initializes value for {@link ValueObject#id() id}.
-     * @param id value for id
-     * @return {@code this} builder for chained invocation
+     * Initializes the value for the {@link ValueObject#id() id} attribute.
+     * @param id The value for id
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder id(long id) {
       this.id = id;
-      initializedBitset |= INITIALIZED_BIT_ID;
+      initBits &= ~INIT_BIT_ID;
       return this;
     }
 
     /**
-     * Initializes value for {@link ValueObject#name() name}.
-     * @param name value for name
-     * @return {@code this} builder for chained invocation
+     * Initializes the value for the {@link ValueObject#name() name} attribute.
+     * @param name The value for name
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder name(String name) {
-      this.name = Preconditions.checkNotNull(name);
-      initializedBitset |= INITIALIZED_BIT_NAME;
+      this.name = Preconditions.checkNotNull(name, "name");
+      initBits &= ~INIT_BIT_NAME;
       return this;
     }
 
     /**
      * Adds one element to {@link ValueObject#numbers() numbers} list.
-     * @param element numbers element
-     * @return {@code this} builder for chained invocation
+     * @param element A numbers element
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder addNumbers(Number element) {
       numbersBuilder.add(element);
@@ -473,8 +455,8 @@ final class ImmutableValueObject implements ValueObject {
 
     /**
      * Adds elements to {@link ValueObject#numbers() numbers} list.
-     * @param elements array of numbers elements
-     * @return {@code this} builder for chained invocation
+     * @param elements An array of numbers elements
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder addNumbers(Number... elements) {
       numbersBuilder.add(elements);
@@ -483,8 +465,8 @@ final class ImmutableValueObject implements ValueObject {
 
     /**
      * Sets or replaces all elements for {@link ValueObject#numbers() numbers} list.
-     * @param elements iterable of numbers elements
-     * @return {@code this} builder for chained invocation
+     * @param elements An iterable of numbers elements
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder numbers(Iterable<? extends Number> elements) {
       numbersBuilder = ImmutableList.builder();
@@ -493,8 +475,8 @@ final class ImmutableValueObject implements ValueObject {
 
     /**
      * Adds elements to {@link ValueObject#numbers() numbers} list.
-     * @param elements iterable of numbers elements
-     * @return {@code this} builder for chained invocation
+     * @param elements An iterable of numbers elements
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder addAllNumbers(Iterable<? extends Number> elements) {
       numbersBuilder.addAll(elements);
@@ -502,8 +484,8 @@ final class ImmutableValueObject implements ValueObject {
     }
 
     /**
-     * Initializes present value for optional {@link ValueObject#comment() comment}.
-     * @param comment value for comment
+     * Initializes the optional value {@link ValueObject#comment() comment} to comment.
+     * @param comment The value for comment
      * @return {@code this} builder for chained invocation
      */
     public final Builder comment(String comment) {
@@ -512,64 +494,43 @@ final class ImmutableValueObject implements ValueObject {
     }
 
     /**
-     * Initializes optional value for {@link ValueObject#comment() comment}.
-     * @param comment value for comment
-     * @return {@code this} builder for chained invocation
+     * Initializes the optional value {@link ValueObject#comment() comment} to comment.
+     * @param comment The value for comment
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder comment(Optional<String> comment) {
-      this.comment = Preconditions.checkNotNull(comment);
+      this.comment = Preconditions.checkNotNull(comment, "comment");
       return this;
     }
 
     /**
-     * Initializes value for {@link ValueObject#data() data}.
-     * @param elements elements for data
-     * @return {@code this} builder for chained invocation
+     * Initializes the value for the {@link ValueObject#data() data} attribute.
+     * @param elements The elements for data
+     * @return {@code this} builder for use in a chained invocation
      */
     public final Builder data(long... elements) {
       this.data = elements.clone();
-      initializedBitset |= INITIALIZED_BIT_DATA;
+      initBits &= ~INIT_BIT_DATA;
       return this;
     }
 
     /**
-     * Builds new {@link ImmutableValueObject}.
-     * @return immutable instance of ValueObject
+     * Builds a new {@link ImmutableValueObject ImmutableValueObject}.
+     * @return An immutable instance of ValueObject
+     * @throws java.lang.IllegalStateException if any required attributes are missing
      */
-    public ImmutableValueObject build() {
-      checkRequiredAttributes();
-      return new ImmutableValueObject(this);
-    }
-
-    private boolean idIsSet() {
-      return (initializedBitset & INITIALIZED_BIT_ID) != 0;
-    }
-
-    private boolean nameIsSet() {
-      return (initializedBitset & INITIALIZED_BIT_NAME) != 0;
-    }
-
-    private boolean dataIsSet() {
-      return (initializedBitset & INITIALIZED_BIT_DATA) != 0;
-    }
-
-    private void checkRequiredAttributes() {
-      if (initializedBitset != INITIALIZED_BITSET_ALL) {
+    public ImmutableValueObject build() throws IllegalStateException {
+      if (initBits != 0) {
         throw new IllegalStateException(formatRequiredAttributesMessage());
       }
+      return new ImmutableValueObject(id, name, numbersBuilder.build(), comment, data);
     }
 
     private String formatRequiredAttributesMessage() {
-      Collection<String> attributes = Lists.newArrayList();
-      if (!idIsSet()) {
-        attributes.add("id");
-      }
-      if (!nameIsSet()) {
-        attributes.add("name");
-      }
-      if (!dataIsSet()) {
-        attributes.add("data");
-      }
+      List<String> attributes = Lists.newArrayList();
+      if ((initBits & INIT_BIT_ID) != 0) attributes.add("id");
+      if ((initBits & INIT_BIT_NAME) != 0) attributes.add("name");
+      if ((initBits & INIT_BIT_DATA) != 0) attributes.add("data");
       return "Cannot build ValueObject, some of required attributes are not set " + attributes;
     }
   }
