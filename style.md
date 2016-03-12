@@ -220,12 +220,13 @@ public @interface Builded {}
 But those definitions along is not enough. Create text file as classpath resource having path
 `/META-INF/annotations/org.immutables.value.immutable` and put one or more lines with fully qualified names
 of extension annotations:
+
 ```
 org.example.annotation.Tupled
 org.example.annotation.Builded
 ```
 
-Ok, now compile annotations and the above file as a separate jar and then put it on the same classpath/scope as the annotation processor during build (along with regular compilation(only) classpath). The annotation jar is not needed at runtime.
+Ok, now compile annotations and put the above file as a separate jar and then put it on the same classpath/scope as the annotation processor during build along with regular compilation(only) classpath. The annotation jar is not needed at runtime.
 
 Then we can use this annotation module as compile/annotation-processing dependency. Using Maven just put it in `provided` scope.
 
