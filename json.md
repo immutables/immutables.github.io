@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.1.12{% endcapture %}
+{% capture v %}2.1.14{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -38,8 +38,8 @@ library. It is recommended to use _Jackson_ version 2.4+, but earlier versions c
 
 Integration works by generating a simple `@JsonCreator` factory method and `@JsonProperty`
 annotations on immutable implementations. To enable this, you should use `@JsonSerialize`
-or `@JsonDeserialize` annotations (usually it is safest to use both). Point to an immutable
-implementation class in `as` annotation attributes:
+or `@JsonDeserialize` annotation. Point to an immutable
+implementation class in `as` annotation attribute:
 
 ```java
 import com.fasterxml.jackson.annotation.*;
@@ -54,7 +54,9 @@ interface Val {
 }
 
 ```
-While `ImmutableVal` may not yet generated, the above will compile properly.
+While `ImmutableVal` may not be generated yet, the above will compile properly.
+`as = ImmutableVal.class` attribute have to be added if your codebase predominantly use abstract value
+as a canonical type, if you mostly use immutable type, then it's not required to use `as` attribute.
 You can use `@JsonProperty` to customize JSON field names. You can freely use any other facilities
 of the _Jackson_ library if applicable.
 
@@ -121,6 +123,46 @@ public void run(AppConfiguration configuration, Environment environment) throws 
   environment.getObjectMapper().registerModule(new Jdk8Module());
   ...
 }
+```
+
+### Reducing annotation clutter
+
+You can find some number of examples using _Immutables_ and _Jackson_ where annotations are cluttering definitions, annotations are piling on top of each other in many levels. But there are ways to significantly reduce annotation noise. Firstly, if using meta-annotated [custom style](/style.html) annotation, you can move it to top level class, package (in corresponding `pacakge-info.java` file) or even parent package. Secondly, if you mostly use generated value type, rather that abstract value type, you don't need specify `@JsonDeserialize(as = ImmutableForEverySingleValue.class)`, you can put `@JsonSerialize` on a package or use as meta-annotation along with style annotation to package or immutable type.
+
+Here's modified example taken from _Lagom Framework_ documentation [Immutable.html page](http://www.lagomframework.com/documentation/1.0.x/Immutable.html#Example-of-PersistentEntity-Events).
+
+```java
+@JsonSerialize // Jackson automatic integration, why not?
+@Value.Style(
+    typeAbstract = "Abstract*",
+    typeImmutable = "*",
+    visibility = ImplementationVisibility.PUBLIC)
+@interface MyStyle {} // Custom style
+// ...
+
+@MyStyle //<-- Meta annotated with @JsonSerialize and @Value.Style
+// and applies to nested immutable objects
+interface BlogEvent extends Jsonable {
+
+  @Value.Immutable // <-- looks a lot cleaner, 1 annotation instead of 3
+  interface AbstractPostAdded extends BlogEvent {
+    String getPostId();
+    BodyChanged getContent();
+  }
+
+  @Value.Immutable
+  interface AbstractBodyChanged extends BlogEvent {
+    @Value.Parameter
+    String getBody();
+  }
+
+  @Value.Immutable
+  interface AbstractPostPublished extends BlogEvent {
+    @Value.Parameter
+    String getPostId();
+  }
+}
+
 ```
 
 ----

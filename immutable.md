@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.1.12{% endcapture %}
+{% capture v %}2.1.14{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -255,8 +255,11 @@ Person person = new Person.Builder()
   .build();
 ```
 
-Despite having prettier, concise class names, this is not a complete [hiding of implementation](#hide-implementation).
-You may be interested in seeing for yourself which classes and methods are actually referenced in the calling bytecode.
+
+While `ImmutablePerson` (and `ImmutablePerson.Builder` consequently) is not visible outside of package,
+`Person.Builder` inherits and exposes all public methods defined on `ImmutablePerson.Builder`.
+The interesting fact is that the calling bytecode will reference only `Person.Builder` and not `ImmutablePerson.Builder`. From the above example: `INVOKEVIRTUAL` will target `Person.Builder.name`, `Person.Builder.address` and `Person.Builder.build` methods. Essentially, a generated class becomes implementation
+detail without much boilerplate which is needed to fully [hide implementation](#hide-implementation) behind user-written code.
 
 For other structural and naming style customizations, see the [style guide](/style.html)
 
@@ -983,11 +986,11 @@ even going as far as creating [builders in disguise]().
 The _Immutables_ processor does not support type parameters in the sense that you cannot add type
 variables to an abstract value type and construct parametrized instances. This is definitely a
 limitation and probably will be lifted at some point. However, it's not clear if we have
-to fully support parameterizable immutable objects, given how many headaches it might introduce when
+to fully support parametrizable immutable objects, given how many headaches it might introduce when
 implementing functionality such collection support in builders or [JSON](/json.html#gson)
 serialization etc. Annotation processing provides limited tools to analyze types: If you want
 to go beyond simple cases (wildcards, intersections, bounds, etc), then non-trivial type variable
-resolution must be manually implemented.
+resolution should be implemented.
 
 Having said that, there's also some good news: Generics are supported by creating abstract
 value types as instantiations of parameterized types. Here's example of what's possible with

@@ -125,9 +125,9 @@ Dictionary-based depluralization is based on the assumption that simple `s` trim
 
 ## Other customizations
 
-### Simple annotations
+### Simpler imports
 
-This example can barely be called customization. Let's just say that it is a reminder that you can use
+This example can barely be called a customization. Let it just be a reminder that you can use
 annotations with simple names rather than qualified with umbrella annotations like `@Value`:
 
 ```java
@@ -139,9 +139,6 @@ import org.immutables.value.Value.Parameter;
   @Parameter String getSecond();
 }
 ```
-
-Qualifying annotations is still considered the default style. More over we can see that
-_Immutables_ really inspired some other libraries to use this approach to organize annotation APIs.
 
 <a name="nesting"></a>
 ### Enclosing type
@@ -174,10 +171,98 @@ Edge.builder().build();
 Vertex.builder().build();
 ```
 
-The number of styling options available to customize naming of generated top-level and nested classes.
+There are number of styling options available to customize naming of generated top-level and nested classes.
 It worth to note that style annotation should be placed on a top-level enclosing class or on a package,
 because style of the enclosing class and nested value objects should be the same.
 
 _Note: prior to 2.0, `@Value.Enclosing` was named `@Value.Nested`_
 
 _Note: as of 2.1 we would not advertise the use of `@Value.Enclosing`. It is not deprecated and may be useful as namespacing tool, but still this should be considered as a niche solution, not the one that you should use "by default". Just nesting value types and generating top-level immutable classes in the same package works fine in  many cases._
+
+### Custom immutable annotation
+
+What if you want nice single annotation to express immutable object along with certain style? Or better set of annotation with predefined styles? Let's define two such annotations as a contrived example.
+
+```java
+package org.example.annotation;
+
+import org.immutables.value.Value;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Target;
+
+/**
+ * Tupled annotation will be used to generate simple tuples in reverse-style,
+ * having construction methods of all annotations.
+ */
+@Value.Style( // Tupled annotation will serve as both immutable and meta-annotated style annotation
+    typeAbstract = "*Def",
+    typeImmutable = "*",
+    allParameters = true, // all attributes will become constructor parameters
+                          // as if they are annotated with @Value.Parameter
+    visibility = Value.Style.ImplementationVisibility.PUBLIC, // Generated class will be always public
+    defaults = @Value.Immutable(builder = false)) // Disable copy methods and builder
+public @interface Tupled {}
+...
+
+/**
+ * Builded annotation will generate builder which produces private implementations
+ * of abstract value type.
+ */
+@Target(ElementType.TYPE)
+@Value.Style(
+    typeBuilder = "BuilderFor_*",
+    defaultAsDefault = true, // java 8 default methods will be automatically turned into @Value.Default
+    visibility = Value.Style.ImplementationVisibility.PRIVATE,
+    builderVisibility = Value.Style.BuilderVisibility.PACKAGE) // We will extend builder to make it public
+public @interface Builded {}
+```
+
+But those definitions along is not enough. Create text file as classpath resource having path
+`/META-INF/annotations/org.immutables.value.immutable` and put one or more lines with fully qualified names
+of extension annotations:
+```
+org.example.annotation.Tupled
+org.example.annotation.Builded
+```
+
+Ok, now compile annotations and the above file as a separate jar and then put it on the same classpath/scope as the annotation processor during build (along with regular compilation(only) classpath). The annotation jar is not needed at runtime.
+
+Then we can use this annotation module as compile/annotation-processing dependency. Using Maven just put it in `provided` scope.
+
+
+```java
+package org.example.models;
+
+import org.example.annotation.Tupled;
+import org.example.annotation.Builded;
+
+// Look, custom annotation instead of @Value.Immutable
+// and the style is also attached!
+@Tupled interface RgbDef {
+  double red();
+  double green();
+  double blue();
+}
+// ...
+Rgb color = Rgb.of(0.4, 0.3, 1.0);
+
+// Custom annotation for builder with private immutable implementation.
+@Builded public interface Record {
+  long id();
+  String name();
+
+  default String notes() { // Works as default attribute!
+    return "";
+  }
+
+  // Then we extend package-private builder with public nested builder and expose all
+  // public methods as methods of Record.Builder.
+  class Builder extends BuilderFor_Record {}
+}
+// ...
+Record record = new Record.Builder()
+    .id(123L)
+    .name("Named Record")
+    .notes("Oh, nothing interesting, surely!")
+    .build();
+```
