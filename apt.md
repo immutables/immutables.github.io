@@ -40,11 +40,9 @@ After this, on each `m2e` Maven project import/update, annotation processors wil
 
 ###Manual configuration tutorial
 
-* [Using Java 6 processors in Eclipse](http://kerebus.com/2011/02/using-java-6-processors-in-eclipse/)
-
-Here's a dialog configuration example to manually configure the annotation processor (assuming that it is already installed in the local Maven repository).
-One needs to enable annotation processing in the project settings, and then configure the factory path to point to the annotation processor jar.
-In this example, this is achieved by extending the `M2_REPO` classpath variable (defined by `m2e`).
+Here's a dialog configuration example to manually configure the annotation processor assuming that jar is already installed in the local Maven repository.
+Enable annotation processing in the project settings, and then configure the factory path to point to the annotation processor jar.
+In this example, this is achieved by extending the `M2_REPO` classpath variable defined by `m2e`. But otherwise you can add jars from other places.
 
 <img src="pix/eclipse-annotation-processing.png">
 
