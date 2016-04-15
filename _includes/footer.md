@@ -4,7 +4,7 @@
 - [Inception](/intro.html)
 - [Immutable objects](/immutable.html)
 - [Factory builders](/factory.html)
-- [Functions and Predicates (pre Java 8)](/functional.html)
+- [Functions and Predicates (for Java 7)](/functional.html)
 - [Style customization](/style.html)
 - [JSON serialization](/json.html)
 - [MongoDB repositories](/mongo.html)
