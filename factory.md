@@ -8,6 +8,7 @@ layout: page
 
 Overview
 --------
+
 Do not repeat yourself writing builders for your APIs, with all that overhead of fluent structure and checking.
 Generate builders for static factory methods as easily as you would generate builders for [immutable values](/immutable.html).
 A factory builder can be seen as a form of partial function application - Supply named parameters one by one and evaluate the function at the end.
