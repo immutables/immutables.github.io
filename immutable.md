@@ -35,7 +35,6 @@ Concepts
 --------
 
 <a name="abstract-value"></a>
-
 ### Abstract value type
 
 An Abstract value type is a manually-written non-final (usually abstract) class or
@@ -46,7 +45,6 @@ It is strongly recommended that abstract value types not introduce visible mutab
 Abstract value types are used as the source model for generated code. [Get started!](/getstarted.html).
 
 <a name="attributes"></a>
-
 ### Attributes
 
 An attribute holds a value that cannot be changed after the owning object is created.
