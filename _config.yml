@@ -1,4 +1,0 @@
-name: Immutables
-kramdown:
-  input: GFM
-  hard_wrap: false

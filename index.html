@@ -1,17 +1,38 @@
----
-title: Immutables.org
-layout: default
----
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="keywords" content="java,immutable,object,generate,annotation,mongo,mongodb">
+  <meta name="description" content="Java toolkit based around usage of immutable objects and fluent interfaces">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css">
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>Immutables.org</title>
+  <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-{% capture v %}2.1.18{% endcapture %}
+ga('create', 'UA-47068974-1', 'auto');
+ga('send', 'pageview');
+</script>
+</head>
+<body>
+
 
 <header class="jumbotron">
   <div class="container">
-    <h1 title="The Immutables Java Annotation Processor v{{v}}">Immutables <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></span></h1>
-    {% capture story0 %}{% include story0.md %}{% endcapture %}{{ story0 | markdownify }}
+    <h1 title="The Immutables Java Annotation Processor v2.1.18">Immutables <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></span></h1>
+    <p>Java annotation processors to generate simple, safe and consistent value objects. Do not repeat yourself, try Immutables, the most comprehensive tool in this field!</p>
+
     <a href="/getstarted.html" class="btn btn-primary btn-lg">Get started!</a>
     <a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
-    <span class="label label-info" title="Current version" onclick="location.href='http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C{{v}}%7Cjar'">v{{v}}</span>
+    <span class="label label-info" title="Current version" onclick="location.href='http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.1.18%7Cjar'">v2.1.18</span>
     <a href="https://twitter.com/ImmutablesOrg" class="pull-right">
       <i class="fa fa-twitter"></i> News and announcements</a>
   </div>
@@ -19,76 +40,101 @@ layout: default
 
 <section class="illustration sample0 clearfix">
   <div class="container clearfix">
-    {% capture storySample0 %}{% include storySample0.md %}{% endcapture %}
-    {{ storySample0 | markdownify }}
+    
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+<span class="c1">// Define abstract value type</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ValueObject</span> <span class="o">{</span>
+  <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">counts</span><span class="o">();</span>
+  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Use generated immutable implementation</span>
+<span class="n">ValueObject</span> <span class="n">valueObject</span> <span class="o">=</span>
+    <span class="n">ImmutableValueObject</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;My value&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">addCounts</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">addCounts</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
   </div>
   <div class="container clearfix">
-    {% capture storySample1 %}{% include storySample1.md %}{% endcapture %}
-    {{ storySample1 | markdownify }}
+    
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Or you can configure different @Value.Style</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractItem</span> <span class="o">{</span>
+  <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">();</span>
+  <span class="kd">abstract</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getTags</span><span class="o">();</span>
+  <span class="kd">abstract</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getDescription</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Use generated value object</span>
+<span class="n">Item</span> <span class="n">namelessItem</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;Nameless&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">addTags</span><span class="o">(</span><span class="s">&quot;important&quot;</span><span class="o">,</span> <span class="s">&quot;relevant&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">&quot;Description provided&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+<span class="n">Item</span> <span class="n">namedValue</span> <span class="o">=</span> <span class="n">namelessItem</span><span class="o">.</span><span class="na">withName</span><span class="o">(</span><span class="s">&quot;Named&quot;</span><span class="o">);</span>
+</code></pre></div>
   </div>
 </section>
 
 <section class="promo jumbotron">
   <div class="container clearfix">
     <section class="feature">
-{% capture promo %}
-#### Values and Builders
-With _Immutables_ you can generate state of the art immutable objects and builders.
-Type-safe, null-safe and thread-safe, with no boilerplate. Generate builders for [immutable objects](/immutable.html) and even plain static [factory methods](/factory.html).
-{% endcapture %}
-{{ promo | markdownify }}
+
+<h4>Values and Builders</h4>
+
+<p>With <em>Immutables</em> you can generate state of the art immutable objects and builders.
+Type-safe, null-safe and thread-safe, with no boilerplate. Generate builders for <a href="/immutable.html">immutable objects</a> and even plain static <a href="/factory.html">factory methods</a>.</p>
+
     </section>
 
     <section class="feature">
     <!-- <span class="label label-success" title="No required dependencies. Both Guava and JDK collections are supported">2.0</span> -->
-{% capture promo %}
-#### Easy to use
 
-Just add jar to classpath and use. No required runtime dependencies!
+<h4>Easy to use</h4>
+
+<p>Just add jar to classpath and use. No required runtime dependencies!
 Guava is supported, but not required.
-Works out-of-the box with build tools, integrates into [IDEs](/apt.html). [Get&nbsp;started!](/getstarted.html)
-{% endcapture %}
-{{ promo | markdownify }}
+Works out-of-the box with build tools, integrates into <a href="/apt.html">IDEs</a>. <a href="/getstarted.html">Get&nbsp;started!</a></p>
+
     </section>
 
     <section class="feature">
-{% capture promo %}
-#### Feature packed
 
-Lazy, derived and optional attributes. Comprehensive support for collections as attributes, including Guava collections. Copy with structural sharing. Strict builders. Singleton and interned instances... [and more!](/immutable.html)
-{% endcapture %}
-{{ promo | markdownify }}
+<h4>Feature packed</h4>
+
+<p>Lazy, derived and optional attributes. Comprehensive support for collections as attributes, including Guava collections. Copy with structural sharing. Strict builders. Singleton and interned instances... <a href="/immutable.html">and more!</a></p>
+
     </section>
 
     <section class="feature">
-{% capture promo %}
-#### Clean code
 
-_Immutables_ has much higher standards for code readability than other generators.
-Generated APIs are carefully tuned for the best power-to-weight ratio. No ugly named identifiers. Implementation code is clear, efficient, and have corresponding javadocs. [Take a look](/generated.html)
-{% endcapture %}
-{{ promo | markdownify }}
+<h4>Clean code</h4>
+
+<p><em>Immutables</em> has much higher standards for code readability than other generators.
+Generated APIs are carefully tuned for the best power-to-weight ratio. No ugly named identifiers. Implementation code is clear, efficient, and have corresponding javadocs. <a href="/generated.html">Take a look</a></p>
+
 
     </section>
 
     <section class="feature">
     <!-- <span class="label label-success" title="Comprehensive styling system for generated code">2.0</span> -->
-{% capture promo %}
-#### Flexible
 
-Adapt Immutables to your code conventions and tastes. [Customize](/style.html) `get`, `set`, `with` or whatever prefixes. Describe styles as reusable meta-annotations. Generate as much or as little as you need, expose or hide generated classes.
-{% endcapture %}
-{{ promo | markdownify }}
+<h4>Flexible</h4>
+
+<p>Adapt Immutables to your code conventions and tastes. <a href="/style.html">Customize</a> <code>get</code>, <code>set</code>, <code>with</code> or whatever prefixes. Describe styles as reusable meta-annotations. Generate as much or as little as you need, expose or hide generated classes.</p>
+
 
     </section>
 
     <section class="feature">
-{% capture promo %}
-#### JSON
 
-Immutables are [serialization](/immutable.html#serialization) ready, including JSON and its binary forms. _Jackson_ and _Gson_ libraries are supported. Gson is integrated using generated [TypeAdapters](/typeadapters.html) which use no reflection. [JSON guide](/json.html). [MongoDB](/mongo.html) repositories also included.
-{% endcapture %}
-{{ promo | markdownify }}
+<h4>JSON</h4>
+
+<p>Immutables are <a href="/immutable.html#serialization">serialization</a> ready, including JSON and its binary forms. <em>Jackson</em> and <em>Gson</em> libraries are supported. Gson is integrated using generated <a href="/typeadapters.html">TypeAdapters</a> which use no reflection. <a href="/json.html">JSON guide</a>. <a href="/mongo.html">MongoDB</a> repositories also included.</p>
+
     </section>
     <br>
   </div>
@@ -117,8 +163,31 @@ Immutables are [serialization](/immutable.html#serialization) ready, including J
 
 <footer class="jumbotron">
   <div class="container">
-    {% capture footer %}{% include footer.md %}{% endcapture %}
-    {{ footer | markdownify }}
+    
+    <h2>Guides</h2>
+
+<ul>
+<li><a href="/getstarted.html">Get started!</a></li>
+<li><a href="/intro.html">Inception</a></li>
+<li><a href="/immutable.html">Immutable objects</a></li>
+<li><a href="/factory.html">Factory builders</a></li>
+<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+<li><a href="/style.html">Style customization</a></li>
+<li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2>Get involved</h2>
+
+<ul>
+<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+<li>Ask questions or give feedback and ideas using mailing group <a href="https://groups.google.com/forum/#!forum/immutables">immutables at googlegroups.com</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
   </div>
 
 <!--  <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/ImmutablesOrg" data-widget-id="423956242294267904">Tweets by @ImmutablesOrg</a>
@@ -126,3 +195,8 @@ Immutables are [serialization](/immutable.html#serialization) ready, including J
   -->
 
 </footer>
+
+
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>Using annotation processor in IDE</title>
+  <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-47068974-1', 'auto');
+ga('send', 'pageview');
+</script>
+</head>
+<body class="page">
+<header>
+  <div class="container">
+    <a href="/">Immutables</a> &larr;
+
+    <h1>Using annotation processor in IDE <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></h1>
+  </div>
+</header>
+<aside id="toc"></aside>
+<section class="documentation">
+  <hr>
+
+<h2>Overview</h2>
+
+<p>As of Java 6, annotation processing became a part of the standard Java compiler.
+Java 7 or higher is required to run the <em>Immutables</em> annotation processor.
+The <em>Immutables</em> annotation processor runs under any Java build tool that uses <code>javac</code> as the compiler backend
+(assuming that annotation processing is not disabled in the build tool configuration).
+The <em>Eclipse JDT compiler</em> (ECJ) also supports this annotation processor.</p>
+
+<p>Nowadays, major IDEs support annotation processing almost out of the box.
+However, something usually has to be configured or quirks may exist that prevent the processor from functioning correctly.</p>
+
+<p>The annotation processor that is to be plugged into a given IDE is built as single jar without external dependencies.</p>
+
+<ul>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.1.18%7Cjar">org.immutables:value:2.1.18</a></li>
+</ul>
+
+<hr>
+
+<h2>Eclipse</h2>
+
+<p>If you are using Maven, then <code>m2e</code> should configure annotation processing for you. However, for this to work, the <code>m2e-apt</code> connector should be installed first. Install it from the Eclipse marketplace.</p>
+
+<p><img src="pix/eclipse-marketplace.png"></p>
+
+<p>Enable JDT/APT autoconfiguration from Maven dependencies globally or per project.
+<img src="https://developer.jboss.org/servlet/JiveServlet/downloadImage/38-4947-18599/620-226/m2e-apt-prefs.png"><br>
+<em>(Picture linked from <a href="https://developer.jboss.org/en/tools/blog/2012/05/20/annotation-processing-support-in-m2e-or-m2e-apt-100-is-out">developer.jboss.org</a>)</em></p>
+
+<p>After this, on each <code>m2e</code> Maven project import/update, annotation processors will be configured from the classpath.</p>
+
+<ul>
+<li><a href="https://github.com/jbosstools/m2e-apt">jbosstools/m2e-apt project page</a></li>
+</ul>
+
+<h3>Manual configuration tutorial</h3>
+
+<p>Here&#39;s a dialog configuration example to manually configure the annotation processor assuming that jar is already installed in the local Maven repository.
+Enable annotation processing in the project settings, and then configure the factory path to point to the annotation processor jar.
+In this example, this is achieved by extending the <code>M2_REPO</code> classpath variable defined by <code>m2e</code>. But otherwise you can add jars from other places.</p>
+
+<p><img src="pix/eclipse-annotation-processing.png"></p>
+
+<p><img src="pix/eclipse-factory-path.png"></p>
+
+<p>Use the correct jar from <code>M2_REPO</code>:</p>
+
+<ul>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.1.18%7Cjar">org.immutables:value:2.1.18</a></li>
+</ul>
+
+<hr>
+
+<h2>IntelliJ IDEA</h2>
+
+<p>To configure annotation processing in IntelliJ IDEA, use dialog
+<em>Preferences</em> &gt; <em>Project Settings</em> &gt; <em>Compiler</em> &gt; <em>Annotation Processors</em>.</p>
+
+<p>Obtain annotation processors from the project classpath and specify output directories.</p>
+
+<p><img src="http://restx.io/images/docs/idea-annotation-processor-preferences.png"><br>
+<em>(Picture linked from <a href="http://restx.io">restx.io</a> documentation)</em></p>
+
+<p>After you do this, classes will be generated on each project build. Generated sources will appear and will be visible to search, autocompletion, and so on.</p>
+
+
+</section>
+<footer class="jumbotron">
+  <div class="container">
+    <h2>Guides</h2>
+
+<ul>
+<li><a href="/getstarted.html">Get started!</a></li>
+<li><a href="/intro.html">Inception</a></li>
+<li><a href="/immutable.html">Immutable objects</a></li>
+<li><a href="/factory.html">Factory builders</a></li>
+<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+<li><a href="/style.html">Style customization</a></li>
+<li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2>Get involved</h2>
+
+<ul>
+<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+<li>Ask questions or give feedback and ideas using mailing group <a href="https://groups.google.com/forum/#!forum/immutables">immutables at googlegroups.com</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
+    <!--<div><h2>Posts</h2>
+      <ul>
+        
+      </ul>
+    </div>-->
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({
+    container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

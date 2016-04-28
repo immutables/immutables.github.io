@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>Factory builders</title>
+  <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-47068974-1', 'auto');
+ga('send', 'pageview');
+</script>
+</head>
+<body class="page">
+<header>
+  <div class="container">
+    <a href="/">Immutables</a> &larr;
+
+    <h1>Factory builders <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></h1>
+  </div>
+</header>
+<aside id="toc"></aside>
+<section class="documentation">
+  <h2>Overview</h2>
+
+<p>Do not repeat yourself writing builders for your APIs, with all that overhead of fluent structure and checking.
+Generate builders for static factory methods as easily as you would generate builders for <a href="/immutable.html">immutable values</a>.
+A factory builder can be seen as a form of partial function application - Supply named parameters one by one and evaluate the function at the end.</p>
+
+<p>This handles the common case of constructing immutable objects. However, if extra processing is required during the construction
+(whilst values are being provided to the builder), then factory builders may not be suitable.</p>
+
+<ul>
+<li>In addition to this guide, see the JavaDocs of <a href="https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java">org.immutables.builder.Builder</a></li>
+</ul>
+
+<p>Compile dependencies:</p>
+
+<ul>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.1.18%7Cjar">org.immutables:value:2.1.18</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.1.18%7Cjar">org.immutables:builder:2.1.18</a></li>
+</ul>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.1.18<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>builder<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.1.18<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+<h3>Factory</h3>
+
+<p>Place a <code>@org.immutables.builder.Builder.Factory</code> annotation on a static factory method to generate a builder in the same package.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Builder.Factory</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">sum</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="o">...</span>
+<span class="kt">int</span> <span class="n">sumOf1and2</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SumBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>By default (when not using a custom <a href="/style.html">style</a>), the name of the builder and its visibility modifier are derived from the annotated static factory methods.
+The build method invokes static factory methods and returns a value.
+As with builders generated for immutable objects, builders for factory methods take care of parameter null-checking, conversion to immutable collections, and verify that all attributes are set.</p>
+
+<p>Use a <code>@Value.Style(newBuilder)</code> naming template to customize the name of a builder constuctor.
+By default <code>newBuilder = &quot;new&quot;</code>, which will result in the generated factory builder having a plain <code>public</code> constructor.
+It is sometimes desirable, depending on your organization&#39;s code standards, to instead have a static factory method that produces builders.
+Styles can be applied to classes or packages, but not to individual methods.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// put styles on enclosing class or package</span>
+<span class="nd">@Value.Style</span><span class="o">(</span><span class="n">newBuilder</span> <span class="o">=</span> <span class="s">&quot;newBuilder&quot;</span><span class="o">)</span>
+<span class="kd">class</span> <span class="nc">Factories</span> <span class="o">{</span>
+
+  <span class="nd">@Builder.Factory</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">sum</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="o">...</span>
+<span class="kt">int</span> <span class="n">sumOf1and2</span> <span class="o">=</span> <span class="n">SumBuilder</span><span class="o">.</span><span class="na">newBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>Other features and styles work similarly for factory builders as for immutable objects:</p>
+
+<ul>
+<li><a href="/immutable.html##collection">Array, Collection and Map parameters</a></li>
+<li><a href="/immutable.html#optional">Optional</a> and <a href="/immutable.html#nullable">Nullable</a> parameters</li>
+<li><a href="/immutable.html#strict-builder">Strict builders</a></li>
+<li>Various naming <a href="/style.html">style customizations</a></li>
+</ul>
+
+<p>Note that <code>@Value.Default</code>, <code>@Value.Lazy</code>, <code>@Value.Derived</code>, etc, annotations are <strong>not applicable</strong> to the parameters of factory methods.
+Moreover, they usually don&#39;t make sense for factory builders in the way that they do for immutable value objects.</p>
+
+<p>To have default parameters, use <code>Optional</code> parameters:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Builder.Factory</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">sum</span><span class="o">(</span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">a</span><span class="o">,</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div>
+<h3>Parameters</h3>
+
+<p>Sometimes, it might be preferable to have some factory parameters turned into parameters of the generated builder&#39;s constructor.
+Annotate parameters with <code>@Builder.Parameter</code> to achieve this. Generated builders will then accept the annotated parameters via the
+generated constructor instead of as parameter methods:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Builder.Factory</span>
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">Pet</span> <span class="nf">pet</span><span class="o">(</span>
+    <span class="nd">@Builder.Parameter</span> <span class="n">AnimalKind</span> <span class="n">kind</span><span class="o">,</span>
+    <span class="n">String</span> <span class="n">name</span><span class="o">,</span>
+    <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+  <span class="n">Pet</span> <span class="n">pet</span> <span class="o">=</span> <span class="o">...</span>
+  <span class="k">return</span> <span class="n">pet</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="n">Pet</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">PetBuilder</span><span class="o">(</span><span class="n">AnimalKind</span><span class="o">.</span><span class="na">DOG</span><span class="o">)</span> <span class="c1">// Parameter</span>
+    <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;Fluffy&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">age</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>This is invaluable for statically guaranteeing that required parameters are set.</p>
+
+<h3>Switch parameters</h3>
+
+<p>Switch parameters are a way to provide some syntactic sugar for builders.
+Let&#39;s say you can create objects with different modes, and want the builder to have expressive methods to switch modes.
+Modes could be simple as a <code>boolean</code> <code>ON|OFF</code>, or could be an enumeration such as <code>LIQUID|SOLID|GAS|PLASMA</code>.</p>
+
+<p>Use <code>@Builder.Switch</code> on parameters of <code>enum</code> types to turn regular initialization methods into switch methods:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">enum</span> <span class="n">Color</span> <span class="o">{</span><span class="n">RED</span><span class="o">,</span> <span class="n">YELLOW</span><span class="o">,</span> <span class="n">GREEN</span><span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">TrafficLight</span> <span class="nf">trafficLight</span><span class="o">(</span><span class="nd">@Builder.Switch</span> <span class="n">Color</span> <span class="n">light</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">blink</span><span class="o">)</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="k">new</span> <span class="nf">TrafficLightBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">redLight</span><span class="o">()</span> <span class="c1">// a switch method</span>
+    <span class="o">.</span><span class="na">blink</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span> <span class="c1">// a regular initializer</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>In the above example <code>.redLight()</code>, <code>.yellowLight()</code> or <code>.greenLight()</code> should be invoked to set the color switch parameter.
+Names of switch methods are derived from the combined names of the enum constants and corresponding parameter names.</p>
+
+<p>The builder will check that any corresponding light switch method has been invoked at least once (only once for <a href="/immutable.html#strict-builder">strict builders</a>).
+To make one of the switch states the default, use the <code>enum</code> constant in the annotation&#39;s <code>defaultName</code> attribute:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">enum</span> <span class="n">Color</span> <span class="o">{</span><span class="n">RED</span><span class="o">,</span> <span class="n">YELLOW</span><span class="o">,</span> <span class="n">GREEN</span><span class="o">}</span>
+<span class="kd">enum</span> <span class="n">Blink</span> <span class="o">{</span><span class="n">NONE</span><span class="o">,</span> <span class="n">START</span><span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="n">TrafficLight</span> <span class="nf">trafficLight</span><span class="o">(</span>
+    <span class="nd">@Builder.Switch</span> <span class="n">Color</span> <span class="n">light</span><span class="o">,</span>
+    <span class="nd">@Builder.Switch</span><span class="o">(</span><span class="n">defaultName</span> <span class="o">=</span> <span class="s">&quot;NONE&quot;</span><span class="o">)</span> <span class="n">Blink</span> <span class="n">blinking</span><span class="o">)</span> <span class="o">{</span>
+  <span class="o">...</span>
+<span class="o">}</span>
+
+<span class="k">new</span> <span class="nf">TrafficLightBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">yellowLight</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">startBlinking</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>If the call to <code>.startBlinking()</code> is omitted, the default value <code>Blink.NONE</code> will be passed to factory.</p>
+
+
+</section>
+<footer class="jumbotron">
+  <div class="container">
+    <h2>Guides</h2>
+
+<ul>
+<li><a href="/getstarted.html">Get started!</a></li>
+<li><a href="/intro.html">Inception</a></li>
+<li><a href="/immutable.html">Immutable objects</a></li>
+<li><a href="/factory.html">Factory builders</a></li>
+<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+<li><a href="/style.html">Style customization</a></li>
+<li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2>Get involved</h2>
+
+<ul>
+<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+<li>Ask questions or give feedback and ideas using mailing group <a href="https://groups.google.com/forum/#!forum/immutables">immutables at googlegroups.com</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
+    <!--<div><h2>Posts</h2>
+      <ul>
+        
+      </ul>
+    </div>-->
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({
+    container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

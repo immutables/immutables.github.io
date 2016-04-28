@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>Style customization</title>
+  <script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-47068974-1', 'auto');
+ga('send', 'pageview');
+</script>
+</head>
+<body class="page">
+<header>
+  <div class="container">
+    <a href="/">Immutables</a> &larr;
+
+    <h1>Style customization <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></h1>
+  </div>
+</header>
+<aside id="toc"></aside>
+<section class="documentation">
+  <h2>Overview</h2>
+
+<p>In addition to feature annotations (which are used for specific features), you can customize what
+and how code will be generated for immutable values. The &quot;what&quot; is defined by using attributes
+of the <code>@org.immutables.value.Value.Immutable</code> annotation. The &quot;how&quot; is defined by using styles
+defined by the <code>@org.immutables.value.Value.Style</code> annotation. Custom styles are definitely
+more advanced functionality and the annotation processor cannot guarantee that all possible
+combinations of customizations will work correctly.</p>
+
+<h2>Define style</h2>
+
+<p><code>@Value.Style</code> annotation has a number of attributes to
+customize generated the APIs and implementations. See the JavaDoc for
+<a href="https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L308">Value.Style</a></p>
+
+<p>In nutshell, using styles you can:</p>
+
+<ul>
+<li>Customize prefixes or suffixes of how names of types and attributes are detected.</li>
+<li>Customize prefixes or suffixes of generated types and methods.</li>
+<li>Force builders to be constructed using a constructor rather than a factory method (by setting the naming template to &quot;new&quot;).</li>
+<li>Make an implementation hidden or visible: public, package private or the same as the abstract value type.</li>
+<li>Make construction methods return abstract value types instead of the implementation class.</li>
+<li>Make immutable implementations hidden as private inside a top-level builder.</li>
+<li>Make immutable implementations hidden as private inside a top-level <a href="#nesting">enclosing</a> class.</li>
+<li>Generate <a href="/immutable.html#strict-builder">strict builders</a>.</li>
+<li>Force the generation of JDK-only implementation code, even if Guava is available in classpath.</li>
+<li>Set template &quot;defaults&quot; setting for <code>@Value.Immutable</code> which will then be used for every immutable class.</li>
+</ul>
+
+<p><a name="apply"></a></p>
+
+<h2>Apply style</h2>
+
+<p>A <code>Style</code> can be attached to:</p>
+
+<ul>
+<li>A package, where it will affect all classes in the package
+
+<ul>
+<li>It will also affect nested packages unless overridden</li>
+</ul></li>
+<li>A top-level type, where it will affect this and nested value types</li>
+<li>A nested value type, if this does not contradict top-level style in case of <a href="#nesting">enclosing</a> class.</li>
+<li>Annotation, which in turn will serve as style meta-annotation to annotate types and packages.</li>
+</ul>
+
+<p>A <code>@Value.Style</code> as inline style will win over meta-annotation style.</p>
+
+<p>It is recommended to create one or more style meta-annotations for your projects. Doing this will result in a lot less clutter, and easier maintenance and upgrades.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.RetentionPolicy</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Retention</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+
+<span class="nd">@Target</span><span class="o">({</span><span class="n">ElementType</span><span class="o">.</span><span class="na">PACKAGE</span><span class="o">,</span> <span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">})</span>
+<span class="nd">@Retention</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">CLASS</span><span class="o">)</span> <span class="c1">// Make it class retention for incremental compilation</span>
+<span class="nd">@Value.Style</span><span class="o">(</span>
+    <span class="n">get</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;is*&quot;</span><span class="o">,</span> <span class="s">&quot;get*&quot;</span><span class="o">},</span> <span class="c1">// Detect &#39;get&#39; and &#39;is&#39; prefixes in accessor methods</span>
+    <span class="n">init</span> <span class="o">=</span> <span class="s">&quot;set*&quot;</span><span class="o">,</span> <span class="c1">// Builder initialization methods will have &#39;set&#39; prefix</span>
+    <span class="n">typeAbstract</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;Abstract*&quot;</span><span class="o">},</span> <span class="c1">// &#39;Abstract&#39; prefix will be detected and trimmed</span>
+    <span class="n">typeImmutable</span> <span class="o">=</span> <span class="s">&quot;*&quot;</span><span class="o">,</span> <span class="c1">// No prefix or suffix for generated immutable type</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="s">&quot;new&quot;</span><span class="o">,</span> <span class="c1">// construct builder using &#39;new&#39; instead of factory method</span>
+    <span class="n">build</span> <span class="o">=</span> <span class="s">&quot;create&quot;</span><span class="o">,</span> <span class="c1">// rename &#39;build&#39; method on builder to &#39;create&#39;</span>
+    <span class="n">visibility</span> <span class="o">=</span> <span class="n">ImplementationVisibility</span><span class="o">.</span><span class="na">PUBLIC</span><span class="o">,</span> <span class="c1">// Generated class will be always public</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">false</span><span class="o">))</span> <span class="c1">// Disable copy methods by default</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">MyStyle</span> <span class="o">{}</span>
+<span class="o">...</span>
+
+
+<span class="nd">@Value.Immutable</span> <span class="c1">// if no attributes are specified, then defaults will be used</span>
+<span class="nd">@MyStyle</span> <span class="c1">// This annotation could be also placed on package</span>
+<span class="kd">interface</span> <span class="nc">AbstractItem</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="nf">getId</span><span class="o">();</span>
+  <span class="kt">boolean</span> <span class="nf">isEnabled</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="o">...</span>
+
+<span class="n">Item</span> <span class="n">item</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Item</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">setEnabled</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">create</span><span class="o">();</span>
+</code></pre></div>
+<p>This way you can match the generated code style to your conventions and preferences!</p>
+
+<p>The simplest way to apply styles in manner as close to globally as possible is to annotate the top-level package of your project or module.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// com/mycompany/project/package-info.java</span>
+<span class="nd">@MyStyle</span>
+<span class="kd">public</span> <span class="n">com</span><span class="o">.</span><span class="na">mycompany</span><span class="o">.</span><span class="na">project</span><span class="o">;</span>
+</code></pre></div>
+<p><strong>Things to be aware of</strong></p>
+
+<ul>
+<li>When there are couple of conflicting styles mixed on the same level using meta annotations, then either may be selected arbitrarily. You should not rely on any particular selection order here.</li>
+<li>Styles are not merged in any way.</li>
+<li>Styles are applied at package level, top-level class level, or on a value type itself if it&#39;s nested. Styles will not work if applied at attribute level or declared on intermediate nested types.</li>
+<li>Styles are a sharp tool, expect compilation errors in generated code if style definitions are inaccurate and names overlap, contain inappropriate symbols or Java keywords etc.</li>
+<li>Styles are aggressively cached. If you change some meta-style or parent-package style sometimes you may not see thing correctly compiling until a full clean rebuild or even IDE restart.</li>
+</ul>
+
+<p><a name="depluralization"></a></p>
+
+<h3>Depluralization</h3>
+
+<p><code>Style.depluralize</code> style attribute enables automatic depluralization of attribute names for collection and map attributes used for generating derived method names, such as <code>add*</code> and <code>put*</code>. In order to enable depluralization specify depluralize = true: this will trim trailing &quot;s&quot; suffixes if present to create singular form (&quot;ies&quot; to &quot;y&quot; suffix conversion is also supported).</p>
+
+<p>Exceptions are provided using <code>Style.depluralizeDictionary</code> array of <code>&quot;singular:plural&quot;</code> pairs as alternative to mechanical <code>&quot;*s&quot;</code> depluralization.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Style</span><span class="o">(</span>
+  <span class="n">depluralize</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="c1">// enable feature</span>
+  <span class="n">depluralizeDictionary</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;person:people&quot;</span><span class="o">,</span> <span class="s">&quot;foot:feet&quot;</span><span class="o">})</span> <span class="c1">// specifying dictionary of exceptions</span>
+</code></pre></div>
+<p>When given the dictionary defined as <code>{&quot;person:people&quot;, &quot;foot:feet&quot;}</code> then examples for <code>add*</code> method in builder would be:</p>
+
+<ul>
+<li>boats → addBoat</li>
+<li>people → addPerson</li>
+<li>feet → addFoot</li>
+<li>feetPeople → addFeetPerson</li>
+<li>peopleRepublics → addPeopleRepublic</li>
+</ul>
+
+<p>Dictionary-based depluralization is based on the assumption that simple <code>s</code> trimming will cover most cases, while exceptions, if provided, are likely to be ubiquitous in a problem domain being modelled by value objects. As a reminder, you don&#39;t have to annotate every single value class with bulky style definitions, rather annotate some top-level package or use style as meta annotation (See <a href="#apply">Apply style</a>)</p>
+
+<h2>Other customizations</h2>
+
+<h3>Simpler imports</h3>
+
+<p>This example can barely be called a customization. Let it just be a reminder that you can use
+annotations with simple names rather than qualified with umbrella annotations like <code>@Value</code>:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.value.Value.Immutable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.immutables.value.Value.Parameter</span><span class="o">;</span>
+
+<span class="nd">@Immutable</span> <span class="kd">interface</span> <span class="nc">Value</span> <span class="o">{</span>
+  <span class="nd">@Parameter</span> <span class="kt">int</span> <span class="nf">getFirst</span><span class="o">();</span>
+  <span class="nd">@Parameter</span> <span class="n">String</span> <span class="nf">getSecond</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>
+<p><a name="nesting"></a></p>
+
+<h3>Enclosing type</h3>
+
+<p>When modelling messages and documents, we usually want to have a lot of small value classes in one
+file. In Java this naturally accomplished by nesting those classes under an umbrella top-level
+class. Of course, it is possible to generate immutable subclasses for nested static inner
+classes or interfaces.</p>
+
+<p><code>@Value.Enclosing</code> annotation can be used on a top-level class to provide namespacing for implementation
+classes generated out of nested abstract value types. This can be used as a matter of
+preference or to avoid name clashes of immutable implementation classes which would otherwise
+be generated as top-level classes in the same package.</p>
+
+<p>By default, namespaced implementation classes have simple names without prefixes, an can be
+star-imported for clutter-free usage.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Enclosing</span>
+<span class="kd">class</span> <span class="nc">GraphPrimitives</span> <span class="o">{</span>
+  <span class="nd">@Value.Immutable</span>
+  <span class="kd">interface</span> <span class="nc">Vertex</span> <span class="o">{}</span>
+  <span class="nd">@Value.Immutable</span>
+  <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Edge</span> <span class="o">{}</span>
+<span class="o">}</span>
+<span class="o">...</span>
+<span class="kn">import</span> <span class="nn">...ImmutableGraphPrimitives.*</span><span class="o">;</span>
+<span class="o">...</span>
+<span class="n">Edge</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
+<span class="n">Vertex</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>There are number of styling options available to customize naming of generated top-level and nested classes.
+It worth to note that style annotation should be placed on a top-level enclosing class or on a package,
+because style of the enclosing class and nested value objects should be the same.</p>
+
+<p><em>Note: prior to 2.0, <code>@Value.Enclosing</code> was named <code>@Value.Nested</code></em></p>
+
+<p><em>Note: as of 2.1 we would not advertise the use of <code>@Value.Enclosing</code>. It is not deprecated and may be useful as namespacing tool, but still this should be considered as a niche solution, not the one that you should use &quot;by default&quot;. Just nesting value types and generating top-level immutable classes in the same package works fine in  many cases.</em></p>
+
+<h3>Custom immutable annotation</h3>
+
+<p>What if you want nice single annotation to express immutable object along with certain style? Or better set of annotation with predefined styles? Let&#39;s define two such annotations as a contrived example.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">annotation</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.ElementType</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.lang.annotation.Target</span><span class="o">;</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Tupled annotation will be used to generate simple tuples in reverse-style,</span>
+<span class="cm"> * having construction methods of all annotations.</span>
+<span class="cm"> */</span>
+<span class="nd">@Value.Style</span><span class="o">(</span> <span class="c1">// Tupled annotation will serve as both immutable and meta-annotated style annotation</span>
+    <span class="n">typeAbstract</span> <span class="o">=</span> <span class="s">&quot;*Def&quot;</span><span class="o">,</span>
+    <span class="n">typeImmutable</span> <span class="o">=</span> <span class="s">&quot;*&quot;</span><span class="o">,</span>
+    <span class="n">allParameters</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="c1">// all attributes will become constructor parameters</span>
+                          <span class="c1">// as if they are annotated with @Value.Parameter</span>
+    <span class="n">visibility</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="na">Style</span><span class="o">.</span><span class="na">ImplementationVisibility</span><span class="o">.</span><span class="na">PUBLIC</span><span class="o">,</span> <span class="c1">// Generated class will be always public</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">))</span> <span class="c1">// Disable copy methods and builder</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Tupled</span> <span class="o">{}</span>
+<span class="o">...</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Builded annotation will generate builder which produces private implementations</span>
+<span class="cm"> * of abstract value type.</span>
+<span class="cm"> */</span>
+<span class="nd">@Target</span><span class="o">(</span><span class="n">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
+<span class="nd">@Value.Style</span><span class="o">(</span>
+    <span class="n">typeBuilder</span> <span class="o">=</span> <span class="s">&quot;BuilderFor_*&quot;</span><span class="o">,</span>
+    <span class="n">defaultAsDefault</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span> <span class="c1">// java 8 default methods will be automatically turned into @Value.Default</span>
+    <span class="n">visibility</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="na">Style</span><span class="o">.</span><span class="na">ImplementationVisibility</span><span class="o">.</span><span class="na">PRIVATE</span><span class="o">,</span>
+    <span class="n">builderVisibility</span> <span class="o">=</span> <span class="n">Value</span><span class="o">.</span><span class="na">Style</span><span class="o">.</span><span class="na">BuilderVisibility</span><span class="o">.</span><span class="na">PACKAGE</span><span class="o">)</span> <span class="c1">// We will extend builder to make it public</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">Builded</span> <span class="o">{}</span>
+</code></pre></div>
+<p>But those definitions along is not enough. Create text file as classpath resource having path
+<code>/META-INF/annotations/org.immutables.value.immutable</code> and put one or more lines with fully qualified names
+of extension annotations:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">org.example.annotation.Tupled
+org.example.annotation.Builded
+</code></pre></div>
+<p>Ok, now compile annotations and put the above file as a separate jar and then put it on the same classpath/scope as the annotation processor during build along with regular compilation(only) classpath. The annotation jar is not needed at runtime.</p>
+
+<p>Then we can use this annotation module as compile/annotation-processing dependency. Using Maven just put it in <code>provided</code> scope.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">org</span><span class="o">.</span><span class="na">example</span><span class="o">.</span><span class="na">models</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.example.annotation.Tupled</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.example.annotation.Builded</span><span class="o">;</span>
+
+<span class="c1">// Look, custom annotation instead of @Value.Immutable</span>
+<span class="c1">// and the style is also attached!</span>
+<span class="nd">@Tupled</span> <span class="kd">interface</span> <span class="nc">RgbDef</span> <span class="o">{</span>
+  <span class="kt">double</span> <span class="nf">red</span><span class="o">();</span>
+  <span class="kt">double</span> <span class="nf">green</span><span class="o">();</span>
+  <span class="kt">double</span> <span class="nf">blue</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="c1">// ...</span>
+<span class="n">Rgb</span> <span class="n">color</span> <span class="o">=</span> <span class="n">Rgb</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mf">0.4</span><span class="o">,</span> <span class="mf">0.3</span><span class="o">,</span> <span class="mf">1.0</span><span class="o">);</span>
+
+<span class="c1">// Custom annotation for builder with private immutable implementation.</span>
+<span class="nd">@Builded</span> <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Record</span> <span class="o">{</span>
+  <span class="kt">long</span> <span class="nf">id</span><span class="o">();</span>
+  <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+
+  <span class="k">default</span> <span class="n">String</span> <span class="nf">notes</span><span class="o">()</span> <span class="o">{</span> <span class="c1">// Works as default attribute!</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Then we extend package-private builder with public nested builder and expose all</span>
+  <span class="c1">// public methods as methods of Record.Builder.</span>
+  <span class="kd">class</span> <span class="nc">Builder</span> <span class="kd">extends</span> <span class="n">BuilderFor_Record</span> <span class="o">{}</span>
+<span class="o">}</span>
+<span class="c1">// ...</span>
+<span class="n">Record</span> <span class="n">record</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Record</span><span class="o">.</span><span class="na">Builder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="mi">123L</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;Named Record&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">notes</span><span class="o">(</span><span class="s">&quot;Oh, nothing interesting, surely!&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+
+</section>
+<footer class="jumbotron">
+  <div class="container">
+    <h2>Guides</h2>
+
+<ul>
+<li><a href="/getstarted.html">Get started!</a></li>
+<li><a href="/intro.html">Inception</a></li>
+<li><a href="/immutable.html">Immutable objects</a></li>
+<li><a href="/factory.html">Factory builders</a></li>
+<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+<li><a href="/style.html">Style customization</a></li>
+<li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2>Get involved</h2>
+
+<ul>
+<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+<li>Ask questions or give feedback and ideas using mailing group <a href="https://groups.google.com/forum/#!forum/immutables">immutables at googlegroups.com</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
+    <!--<div><h2>Posts</h2>
+      <ul>
+        
+      </ul>
+    </div>-->
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({
+    container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>
