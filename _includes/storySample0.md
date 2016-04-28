@@ -1,5 +1,5 @@
 
-```java
+~~~java
 import org.immutables.value.Value;
 // Define abstract value type
 @Value.Immutable
@@ -8,9 +8,9 @@ public interface ValueObject {
   List<Integer> counts();
   Optional<String> description();
 }
-```
+~~~
 
-```java
+~~~java
 // Use generated immutable implementation
 ValueObject valueObject =
     ImmutableValueObject.builder()
@@ -18,5 +18,4 @@ ValueObject valueObject =
         .addCounts(1)
         .addCounts(2)
         .build();
-```
-
+~~~
