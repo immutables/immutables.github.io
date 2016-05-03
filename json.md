@@ -127,7 +127,7 @@ public void run(AppConfiguration configuration, Environment environment) throws 
 
 ### Reducing annotation clutter
 
-You can find some number of examples using _Immutables_ and _Jackson_ where annotations are cluttering definitions, annotations are piling on top of each other in many levels. But there are ways to significantly reduce annotation noise. Firstly, if using meta-annotated [custom style](/style.html) annotation, you can move it to top level class, package (in corresponding `pacakge-info.java` file) or even parent package. Secondly, if you mostly use generated value type, rather that abstract value type, you don't need specify `@JsonDeserialize(as = ImmutableForEverySingleValue.class)`, you can put `@JsonSerialize` on a package or use as meta-annotation along with style annotation to package or immutable type.
+You can find some number of examples using _Immutables_ and _Jackson_ where annotations are cluttering definitions, annotations are piling on top of each other in many levels. But there are ways to significantly reduce annotation noise. Firstly, if using meta-annotated [custom style](/style.html) annotation, you can move it to top level class, package (in corresponding `pacakge-info.java` file) or even parent package. Secondly, if you mostly use generated value type, rather that abstract value type, you don't need specify `@JsonDeserialize(as = ImmutableForEverySingleValue.class)`, you can put `@JsonSerialize` as meta-annotation as with style annotation, and you can put custom (meta-annotated) annotation and put it on a type or a package.
 
 Here's modified example taken from _Lagom Framework_ documentation [Immutable.html page](http://www.lagomframework.com/documentation/1.0.x/Immutable.html#Example-of-PersistentEntity-Events).
 
