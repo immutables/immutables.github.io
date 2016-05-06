@@ -987,6 +987,8 @@ even going as far as creating [builders in disguise]().
 <a name="generics"></a>
 ### Generics (not) supported
 
+**Starting with version [2.2-beta] generic parameters are supported. Below is description of limitations imposed by versions 2.1.X and below**
+
 The _Immutables_ processor does not support type parameters in the sense that you cannot add type
 variables to an abstract value type and construct parametrized instances. This is definitely a
 limitation and probably will be lifted at some point. However, it's not clear if we have
@@ -1001,8 +1003,6 @@ value types as instantiations of parameterized types. Here's example of what's p
 _Immutables_:
 
 ```java
-// requires version 2.0.2+ to compile
-
 interface TreeElement<T> {}
 
 interface Node<T> extends TreeElement<T> {
