@@ -994,6 +994,8 @@ even going as far as creating <a href="">builders in disguise</a>.</p>
 
 <h3>Generics (not) supported</h3>
 
+<p><strong>Starting with version [2.2-beta] generic parameters are supported. Below is description of limitations imposed by versions 2.1.X and below</strong></p>
+
 <p>The <em>Immutables</em> processor does not support type parameters in the sense that you cannot add type
 variables to an abstract value type and construct parametrized instances. This is definitely a
 limitation and probably will be lifted at some point. However, it&#39;s not clear if we have
@@ -1006,9 +1008,7 @@ resolution should be implemented.</p>
 <p>Having said that, there&#39;s also some good news: Generics are supported by creating abstract
 value types as instantiations of parameterized types. Here&#39;s example of what&#39;s possible with
 <em>Immutables</em>:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// requires version 2.0.2+ to compile</span>
-
-<span class="kd">interface</span> <span class="nc">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{}</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">interface</span> <span class="nc">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{}</span>
 
 <span class="kd">interface</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
   <span class="n">List</span><span class="o">&lt;</span><span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="nf">elements</span><span class="o">();</span>
