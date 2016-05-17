@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.1.19{% endcapture %}
+{% capture v %}2.2{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -354,6 +354,46 @@ where value objects are adapted to a representation rather than free-form object
 mappings to JSON representations.
 
 To add custom binding for types, other than immutable values, use Gson APIs. Please refer to [Gson reference](https://sites.google.com/site/gson/gson-user-guide#TOC-Custom-Serialization-and-Deserialization)
+
+#### Generic parameters
+
+Generic parameters are supported when some upper level JSON document object specify actual type parameters, so nested document value objects that are parametrized may know exact type used in the context.
+
+Let's say you have value type `Val` with the following definition.
+
+```java
+@Gson.TypeAdapters
+@Value.Immutable
+interface Val<T> {
+  T val();
+  Optional<String> description();
+}
+```
+
+You cannot serialize parametrized type to or from JSON without specifying actual type parameters.
+But if we put parametrized type in a context document which provide actual type parameters we can use our generated type adapters for JSON conversion.
+
+```java
+@Gson.TypeAdapters
+@Value.Immutable
+interface Doc {
+  Val<String> str(); // actual type T is String
+  Val<Integer> inte(); // actual type T is Integer
+  Val<Boolean> bool();  // actual type T is Boolean
+}
+```
+
+```javascript
+{
+  "str": { "val": "StringValue" },
+  "ints": { "val": 124, "description": "Just a number" },
+  "bool": { "val": true, "description": "Just a boolean" },
+}
+```
+
+Actual type parameters might not only be simple types as string, numbers or booleans, but also nested documents or arrays or the mentioned types.
+
+*Note: If generic attributes contain comples nested type variables (think `Set<List<T>>`), then special routines that extract actual type parameters will be referenced in a generated source code, so you will need org.immutable:json artifact packaged as part of your application, not a compile-only dependency*
 
 #### Field names
 By default, the JSON field name is the same as the attribute name.

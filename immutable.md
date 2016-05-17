@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.1.19{% endcapture %}
+{% capture v %}2.2{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -985,55 +985,34 @@ The naming conventions of modifiable classes can be changed using [styles](/styl
 even going as far as creating [builders in disguise]().
 
 <a name="generics"></a>
-### Generics (not) supported
+### Generics are fully supported!
 
-**Starting with version [2.2-beta] generic parameters are supported. Below is description of limitations imposed by versions 2.1.X and below**
-
-The _Immutables_ processor does not support type parameters in the sense that you cannot add type
-variables to an abstract value type and construct parametrized instances. This is definitely a
-limitation and probably will be lifted at some point. However, it's not clear if we have
-to fully support parametrizable immutable objects, given how many headaches it might introduce when
-implementing functionality such collection support in builders or [JSON](/json.html#gson)
-serialization etc. Annotation processing provides limited tools to analyze types: If you want
-to go beyond simple cases (wildcards, intersections, bounds, etc), then non-trivial type variable
-resolution should be implemented.
-
-Having said that, there's also some good news: Generics are supported by creating abstract
-value types as instantiations of parameterized types. Here's example of what's possible with
-_Immutables_:
+Starting with version 2.2 generic parameters are supported and can have upper bounds specified in needed.
 
 ```java
 interface TreeElement<T> {}
 
-interface Node<T> extends TreeElement<T> {
+@Value.Immutable
+interface Node<T extends Serializable> extends TreeElement<T> {
   List<TreeElement<T>> elements();
 }
 
-interface Leaf<T> extends TreeElement<T> {
+@Value.Immutable
+interface Leaf<T extends Serializable> extends TreeElement<T> {
   @Value.Parameter T value();
 }
 
-@Value.Immutable
-interface StringNode extends Node<String> {}
-
-@Value.Immutable
-interface StringLeaf extends Leaf<String> {}
-
 TreeElement<String> tree =
-    ImmutableStringNode.builder()
-        .addElements(ImmutableStringLeaf.of("A"))
-        .addElements(ImmutableStringLeaf.of("B"))
+    ImmutableNode.<String>builder()
+        .addElements(ImmutableLeaf.of("A"))
+        .addElements(ImmutableLeaf.of("B"))
         .addElements(
-            ImmutableStringNode.builder()
-                .addElements(ImmutableStringLeaf.of("C"))
-                .addElements(ImmutableStringLeaf.of("D"))
+            ImmutableNode.<String>builder()
+                .addElements(ImmutableLeaf.of("C"))
+                .addElements(ImmutableLeaf.of("D"))
                 .build())
         .build();
 ```
-
-Note that inherited attributes are generated with the correct type variable substitutions. While
-not perfect, this is still very useful, and in some cases even better than fully-erased generic
-types.
 
 See [Wrapper types](#wrapper-types) for other examples illustrating the use of generics.
 
