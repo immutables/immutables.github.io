@@ -178,8 +178,8 @@ of the <em>Jackson</em> library if applicable.</p>
 <h3>Dependencies</h3>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.1.19%7Cjar">org.immutables:value:2.1.19</a></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cgson%7C2.1.19%7Cjar">org.immutables:gson:2.1.19</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.2%7Cjar">org.immutables:value:2.2</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cgson%7C2.2%7Cjar">org.immutables:gson:2.2</a></li>
 </ul>
 
 <p>Gson integration requires the <code>com.google.gson:gson</code> compile and runtime modules.
@@ -194,14 +194,14 @@ Optionally, the <code>org.immutables:gson</code> module can also be used at runt
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>gson<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.1.19<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.2<span class="nt">&lt;/version&gt;</span>
   <span class="c">&lt;!-- If you don&#39;t need runtime capabilities - make it compile-only</span>
 <span class="c">  &lt;scope&gt;provided&lt;/scope&gt;--&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.1.19<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.2<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
@@ -362,6 +362,37 @@ where value objects are adapted to a representation rather than free-form object
 mappings to JSON representations.</p>
 
 <p>To add custom binding for types, other than immutable values, use Gson APIs. Please refer to <a href="https://sites.google.com/site/gson/gson-user-guide#TOC-Custom-Serialization-and-Deserialization">Gson reference</a></p>
+
+<h4>Generic parameters</h4>
+
+<p>Generic parameters are supported when some upper level JSON document object specify actual type parameters, so nested document value objects that are parametrized may know exact type used in the context.</p>
+
+<p>Let&#39;s say you have value type <code>Val</code> with the following definition.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Gson.TypeAdapters</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">Val</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="n">T</span> <span class="nf">val</span><span class="o">();</span>
+  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>You cannot serialize parametrized type to or from JSON without specifying actual type parameters.
+But if we put parametrized type in a context document which provide actual type parameters we can use our generated type adapters for JSON conversion.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Gson.TypeAdapters</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">Doc</span> <span class="o">{</span>
+  <span class="n">Val</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">str</span><span class="o">();</span> <span class="c1">// actual type T is String</span>
+  <span class="n">Val</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">inte</span><span class="o">();</span> <span class="c1">// actual type T is Integer</span>
+  <span class="n">Val</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="o">&gt;</span> <span class="nf">bool</span><span class="o">();</span>  <span class="c1">// actual type T is Boolean</span>
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="p">{</span>
+  <span class="s2">&quot;str&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;val&quot;</span><span class="o">:</span> <span class="s2">&quot;StringValue&quot;</span> <span class="p">},</span>
+  <span class="s2">&quot;ints&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;val&quot;</span><span class="o">:</span> <span class="mi">124</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Just a number&quot;</span> <span class="p">},</span>
+  <span class="s2">&quot;bool&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;val&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Just a boolean&quot;</span> <span class="p">},</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Actual type parameters might not only be simple types as string, numbers or booleans, but also nested documents or arrays or the mentioned types.</p>
+
+<p><em>Note: If generic attributes contain comples nested type variables (think <code>Set&lt;List&lt;T&gt;&gt;</code>), then special routines that extract actual type parameters will be referenced in a generated source code, so you will need org.immutable:json artifact packaged as part of your application, not a compile-only dependency</em></p>
 
 <h4>Field names</h4>
 

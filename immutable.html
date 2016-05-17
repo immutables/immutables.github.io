@@ -932,7 +932,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.1.19%7Cjar">org.immutables:serial:2.1.19</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.2%7Cjar">org.immutables:serial:2.2</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
@@ -992,53 +992,32 @@ even going as far as creating <a href="">builders in disguise</a>.</p>
 
 <p><a name="generics"></a></p>
 
-<h3>Generics (not) supported</h3>
+<h3>Generics are fully supported!</h3>
 
-<p><strong>Starting with version [2.2-beta] generic parameters are supported. Below is description of limitations imposed by versions 2.1.X and below</strong></p>
-
-<p>The <em>Immutables</em> processor does not support type parameters in the sense that you cannot add type
-variables to an abstract value type and construct parametrized instances. This is definitely a
-limitation and probably will be lifted at some point. However, it&#39;s not clear if we have
-to fully support parametrizable immutable objects, given how many headaches it might introduce when
-implementing functionality such collection support in builders or <a href="/json.html#gson">JSON</a>
-serialization etc. Annotation processing provides limited tools to analyze types: If you want
-to go beyond simple cases (wildcards, intersections, bounds, etc), then non-trivial type variable
-resolution should be implemented.</p>
-
-<p>Having said that, there&#39;s also some good news: Generics are supported by creating abstract
-value types as instantiations of parameterized types. Here&#39;s example of what&#39;s possible with
-<em>Immutables</em>:</p>
+<p>Starting with version 2.2 generic parameters are supported and can have upper bounds specified in needed.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">interface</span> <span class="nc">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{}</span>
 
-<span class="kd">interface</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">Node</span><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
   <span class="n">List</span><span class="o">&lt;</span><span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&gt;</span> <span class="nf">elements</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="kd">interface</span> <span class="nc">Leaf</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">Leaf</span><span class="o">&lt;</span><span class="n">T</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
   <span class="nd">@Value.Parameter</span> <span class="n">T</span> <span class="nf">value</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="nd">@Value.Immutable</span>
-<span class="kd">interface</span> <span class="nc">StringNode</span> <span class="kd">extends</span> <span class="n">Node</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{}</span>
-
-<span class="nd">@Value.Immutable</span>
-<span class="kd">interface</span> <span class="nc">StringLeaf</span> <span class="kd">extends</span> <span class="n">Leaf</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="o">{}</span>
-
 <span class="n">TreeElement</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">tree</span> <span class="o">=</span>
-    <span class="n">ImmutableStringNode</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
-        <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableStringLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">))</span>
-        <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableStringLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">))</span>
+    <span class="n">ImmutableNode</span><span class="o">.&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">))</span>
+        <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">))</span>
         <span class="o">.</span><span class="na">addElements</span><span class="o">(</span>
-            <span class="n">ImmutableStringNode</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
-                <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableStringLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;C&quot;</span><span class="o">))</span>
-                <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableStringLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;D&quot;</span><span class="o">))</span>
+            <span class="n">ImmutableNode</span><span class="o">.&lt;</span><span class="n">String</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">()</span>
+                <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;C&quot;</span><span class="o">))</span>
+                <span class="o">.</span><span class="na">addElements</span><span class="o">(</span><span class="n">ImmutableLeaf</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;D&quot;</span><span class="o">))</span>
                 <span class="o">.</span><span class="na">build</span><span class="o">())</span>
         <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div>
-<p>Note that inherited attributes are generated with the correct type variable substitutions. While
-not perfect, this is still very useful, and in some cases even better than fully-erased generic
-types.</p>
-
 <p>See <a href="#wrapper-types">Wrapper types</a> for other examples illustrating the use of generics.</p>
 
 <p><a name="warnings"></a></p>
