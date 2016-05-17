@@ -547,13 +547,13 @@ construction, this initializer method will be called to retrieve a default value
 
 <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">anonymous44</span><span class="o">.</span><span class="na">name</span><span class="o">();</span> <span class="c1">// Anonymous_44</span>
 </code></pre></div>
-<p>From version <code>2.1</code> onwards, a default attribute initializer method&#39;s body can refer to other default
+<p>Since version <code>2.1</code>, a default attribute initializer method&#39;s body can refer to other default
 or derived attributes as long as this does not introduce initialization cycles.
 If a cycle is introduced, then an <code>IllegalStateException</code> will be thrown pointing
 to attributes which form a cycle.</p>
 
 <p>There&#39;s no need to use <code>@Value.Default</code> to return empty collections as collection attributes are empty by default if not initialized.
-If you use <code>@Value.Default</code> on <a href="#collection">collection attributes</a> it will turn it into nothing-special attribute; no &quot;addition&quot; initializers will be generated on the builder.</p>
+Since version <code>2.2</code>. <code>@Value.Default</code> and <code>@Nullable</code> <a href="#collection">collection attributes</a> are supported so you can provide default value if no values have been provided but empty collection or <code>null</code> (if nullable) can be set.</p>
 
 <p>For immutable <a href="#annotations">annotation</a> types, default attributes are defined by using the
 <code>default</code> keyword and will have corresponding default constant values initialized if not set.</p>
