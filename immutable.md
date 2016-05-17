@@ -532,13 +532,13 @@ PlayerInfo anonymous44 = ImmutablePlayerInfo.of(44);
 String name = anonymous44.name(); // Anonymous_44
 ```
 
-From version `2.1` onwards, a default attribute initializer method's body can refer to other default
+Since version `2.1`, a default attribute initializer method's body can refer to other default
 or derived attributes as long as this does not introduce initialization cycles.
 If a cycle is introduced, then an `IllegalStateException` will be thrown pointing
 to attributes which form a cycle.
 
 There's no need to use `@Value.Default` to return empty collections as collection attributes are empty by default if not initialized.
-If you use `@Value.Default` on [collection attributes](#collection) it will turn it into nothing-special attribute; no "addition" initializers will be generated on the builder.
+Since version `2.2`. `@Value.Default` and `@Nullable` [collection attributes](#collection) are supported so you can provide default value if no values have been provided but empty collection or `null` (if nullable) can be set.
 
 For immutable [annotation](#annotations) types, default attributes are defined by using the
 `default` keyword and will have corresponding default constant values initialized if not set.
