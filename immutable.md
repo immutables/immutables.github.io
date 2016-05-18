@@ -987,7 +987,7 @@ even going as far as creating [builders in disguise]().
 <a name="generics"></a>
 ### Generics are fully supported!
 
-Starting with version 2.2 generic parameters are supported and can have upper bounds specified in needed.
+Starting with version 2.2 generic parameters are supported and can have upper bounds specified if needed.
 
 ```java
 interface TreeElement<T> {}
