@@ -3,7 +3,7 @@ title: 'Functions and Predicates'
 layout: page
 ---
 
-{% capture v %}2.2.2{% endcapture %}
+{% capture v %}2.2.5{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ### Overview
