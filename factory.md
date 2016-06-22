@@ -3,7 +3,7 @@ title: 'Factory builders'
 layout: page
 ---
 
-{% capture v %}2.2.7{% endcapture %}
+{% capture v %}2.2.8{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
