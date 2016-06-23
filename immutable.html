@@ -1092,6 +1092,8 @@ wrapper types are easy to create and use, then fewer accidental errors will end 
 
 <span class="n">VehicleMake</span> <span class="n">make</span> <span class="o">=</span> <span class="n">VehicleMake</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;Honda&quot;</span><span class="o">);</span>
 </code></pre></div>
+<p>You can make it so only <code>@Wrapped</code> is needed without corresponding <code>@Value.Immutable</code> annotation, if you follow the recipe for <a href="http://immutables.github.io/style.html#custom-immutable-annotation">custom immutable annotations</a>.</p>
+
 <p><a name="tuples"></a></p>
 
 <h3>Tuple style</h3>
@@ -1117,6 +1119,8 @@ The key style here is <code>allParameters</code> which automatically makes const
 
 <span class="n">Complex</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ComplexTuple</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">1</span><span class="n">d</span><span class="o">,</span> <span class="mi">0</span><span class="n">d</span><span class="o">);</span>
 </code></pre></div>
+<p>You can make it so only <code>@Tuple</code> is needed without corresponding <code>@Value.Immutable</code> annotation, if you follow the recipe for <a href="http://immutables.github.io/style.html#custom-immutable-annotation">custom immutable annotations</a>.</p>
+
 <h3>Expressive factory methods</h3>
 
 <p>There were feature requests to customize the names of constructor methods and, in addition, provide construction hooks.
