@@ -1090,6 +1090,8 @@ VehicleMake make = VehicleMake.of("Honda");
 
 ```
 
+You can make it so only `@Wrapped` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
+
 <a name="tuples"></a>
 ### Tuple style
 
@@ -1116,6 +1118,8 @@ public interface Complex {
 
 Complex c = ComplexTuple.of(1d, 0d);
 ```
+
+You can make it so only `@Tuple` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
 
 ### Expressive factory methods
 
