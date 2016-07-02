@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}2.2.8{% endcapture %}
+{% capture v %}2.2.9{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -30,26 +30,6 @@ In Maven, the dependency can be declared in the "provided" scope, or made "optio
 
 The _Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend (assuming that annotation processing is not disabled in build tool configuration).
 The _Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using annotation processor in IDE](/apt.html).
-
-**Note:** There's known issue with the interaction between the incremental compilation feature of `javac` and annotation processing.
-Build tools like Maven are also affected by this bug. Typically, commands such as `mvn clean compile` will resolve any such problems by a forcing full build.
-Disabling incremental compilation is also an option:
-
-```xml
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-compiler-plugin</artifactId>
-  <version>3.3</version>
-  <configuration>
-    <compilerVersion>1.8</compilerVersion>
-    <source>1.8</source>
-    <target>1.8</target>
-    <!-- Prevents an endPosTable exception during compilation -->
-    <useIncrementalCompilation>false</useIncrementalCompilation>
-  </configuration>
-</plugin>
-```
-Search phrase: ["java.lang.IllegalStateException: endPosTable already set"](https://www.google.com/search?q=java.lang.IllegalStateException%3A+endPosTable+already+set)
 
 ## Create immutable object
 
@@ -169,3 +149,42 @@ dependencies {
 ```
 
 <a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
+
+## Troubleshooting
+
+There's known issue with the interaction between the incremental compilation feature of `javac` and annotation processing.
+Build tools like Maven are also affected by this bug. Typically, commands such as `mvn clean compile` will resolve any such problems by a forcing full build.
+Disabling incremental compilation is also an option:
+
+```xml
+
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.3</version>
+  <configuration>
+    <compilerVersion>1.8</compilerVersion>
+    <source>1.8</source>
+    <target>1.8</target>
+    <!-- Prevents an endPosTable exception during compilation -->
+    <useIncrementalCompilation>false</useIncrementalCompilation>
+  </configuration>
+</plugin>
+```
+
+Search phrase: ["java.lang.IllegalStateException: endPosTable already set"](https://www.google.com/search?q=java.lang.IllegalStateException%3A+endPosTable+already+set)
+
+Sometimes there are too many compilation errors due to generated files not found, that may hinder real annotation processing errors when max error limit is reached. The limit can be configured for javac as `-Xmaxerrs 1000000`. For Maven it could be set as `...
+    <compilerArguments><Xmaxerrs>1000000</Xmaxerrs></compilerArguments></configuration>` for `maven-compiler-plugin`.
+
+In case of some spurious errors Some internal annotation processing errors may be not clearly reported for Maven, you may rerun build with `-X` debug output and, possibly, quite verbose compiler configuration:
+
+```xml
+<compilerArgs>
+  <arg>-verbose</arg>
+  <arg>-XprintRounds</arg>
+  <arg>-XprintProcessorInfo</arg>
+  <arg>-Xlint</arg>
+  <arg>-J-verbose</arg>
+</compilerArgs>
+```
