@@ -191,7 +191,7 @@ values.</p>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div>
 <p>The <code>from</code> method on builders is a much more sound and powerful alternative than having <code>toBuilder()</code> (or alike) on immutable values. For <a href="#strict-builder">strict builders</a>, <code>from</code>
-methods are not generated as they&#39;re prone to errors.</p>
+methods are not generated as they&#39;re prone to errors. If value object inherits abstract accessor definitions from super-types, than it would be possible to copy from super-type instance (of any implementation type) those attributes which are applicable. Generated <code>from</code> method will have overloads for each super-type from which we can get attribute values we inherit. Just to note: types parameterized with generics and accessors with covariant return type overrides will be excluded from such &quot;from super-type&quot; initialization.</p>
 
 <p>If a particular builder has become redundant due to the presence of a <a href="#constructor">constructor</a>,
 generation of the builder can be disabled using the <code>@Value.Immutable(builder = false)</code>
@@ -932,7 +932,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.2.10%7Cjar">org.immutables:serial:2.2.10</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.2.11%7Cjar">org.immutables:serial:2.2.11</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
@@ -1026,7 +1026,7 @@ even going as far as creating <a href="">builders in disguise</a>.</p>
 
 <p>The <em>Immutables</em> annotation processor have dozens of checks and issues errors and warning where it&#39;s impossible to generate certain elements or certain features are error prone and discouraged. When you use <code>@Nullable</code> on a primitive or when one <code>Value.Immutable</code> type extends another <code>Value.Immutable</code>, you&#39;ll get an error. For missing, superfluous or ignored annotations or discouraged combinations, you will get warnings. You can suppress such warnings using <code>SuppressWarnings(&quot;immutables&quot;)</code> or <code>SuppressWarnings(&quot;all&quot;)</code> on an element or its enclosing elements.</p>
 
-<p>See also <a href="https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L695">Style.generateSuppressAllWarnings</a> style attribute to adjust warnings in the generated code.</p>
+<p>See also <a href="https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java">Style.generateSuppressAllWarnings</a> style attribute to adjust warnings in the generated code.</p>
 
 <hr>
 

@@ -86,24 +86,58 @@ code less clear than its imperative equivalent.  </p>
         <span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">name</span><span class="o">())</span>
         <span class="o">.</span><span class="na">toList</span><span class="o">();</span>
 </code></pre></div>
+<h3>Generate functions with bound parameters</h3>
+
+<p><code>@Functional.BindParameters</code> annotation can be place on non-accessor methods of abstract value type to generate function to which parameters can be bound.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Xyz</span> <span class="o">{</span>
+  <span class="nd">@Functional</span>
+  <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">getX</span><span class="o">();</span>
+
+  <span class="nd">@Functional.BindParameters</span>
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">computeZ</span><span class="o">(</span><span class="n">String</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="nf">getX</span><span class="o">()</span> <span class="o">+</span> <span class="n">y</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+<span class="o">...</span>
+<span class="c1">// Generated functions</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">XyzFunctions</span> <span class="o">{</span>
+  <span class="o">...</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Xyz</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">computeZ</span><span class="o">(</span><span class="n">String</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Xyz</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Xyz</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">computeZ</span><span class="o">(</span><span class="n">y</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&quot;XyzFunctions.computeZ(y)&quot;</span><span class="o">;</span>
+      <span class="o">}</span>
+    <span class="o">};</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+<span class="o">...</span>
+<span class="c1">// use as</span>
+<span class="n">Function</span><span class="o">&lt;</span><span class="n">Xyz</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">fn</span> <span class="o">=</span> <span class="n">XyzFunctions</span><span class="o">.</span><span class="na">computeZ</span><span class="o">(</span><span class="s">&quot;Y&quot;</span><span class="o">);</span>
+</code></pre></div>
 <h3>Dependencies</h3>
 
 <p>This feature has the following compile-time dependencies in addition to a runtime dependency on Guava:</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.2.10%7Cjar">org.immutables:value:2.2.10</a></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cfunc%7C2.2.10%7Cjar">org.immutables:func:2.2.10</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.2.11%7Cjar">org.immutables:value:2.2.11</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cfunc%7C2.2.11%7Cjar">org.immutables:func:2.2.11</a></li>
 </ul>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.2.10<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.2.11<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>func<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.2.10<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.2.11<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
