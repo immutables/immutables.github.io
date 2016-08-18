@@ -3,7 +3,7 @@ title: 'Functions and Predicates'
 layout: page
 ---
 
-{% capture v %}2.2.10{% endcapture %}
+{% capture v %}2.2.12{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ### Overview
@@ -76,6 +76,43 @@ List<String> frenchSpeakerNames =
         .filter(speaksFrench())
         .transform(name())
         .toList();
+```
+
+### Generate functions with bound parameters
+
+`@Functional.BindParameters` annotation can be place on non-accessor methods of abstract value type to generate function to which parameters can be bound.
+
+```java
+@Value.Immutable
+public abstract class Xyz {
+  @Functional
+  public abstract String getX();
+
+  @Functional.BindParameters
+  public String computeZ(String y) {
+    return getX() + y;
+  }
+}
+...
+// Generated functions
+public final class XyzFunctions {
+  ...
+  public static Function<Xyz, String> computeZ(String y) {
+    return new Function<Xyz, String>() {
+      @Override
+      public String apply(Xyz input) {
+        return input.computeZ(y);
+      }
+      @Override
+      public String toString() {
+        return "XyzFunctions.computeZ(y)";
+      }
+    };
+  }
+}
+...
+// use as
+Function<Xyz, String> fn = XyzFunctions.computeZ("Y");
 ```
 
 ### Dependencies

@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.2.10{% endcapture %}
+{% capture v %}2.2.12{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -168,7 +168,7 @@ ImmutableValue.builder()
 ```
 
 The `from` method on builders is a much more sound and powerful alternative than having `toBuilder()` (or alike) on immutable values. For [strict builders](#strict-builder), `from`
-methods are not generated as they're prone to errors.
+methods are not generated as they're prone to errors. If value object inherits abstract accessor definitions from super-types, than it would be possible to copy from super-type instance (of any implementation type) those attributes which are applicable. Generated `from` method will have overloads for each super-type from which we can get attribute values we inherit. Just to note: types parameterized with generics and accessors with covariant return type overrides will be excluded from such "from super-type" initialization.
 
 If a particular builder has become redundant due to the presence of a [constructor](#constructor),
 generation of the builder can be disabled using the `@Value.Immutable(builder = false)`
@@ -1021,7 +1021,7 @@ See [Wrapper types](#wrapper-types) for other examples illustrating the use of g
 
 The _Immutables_ annotation processor have dozens of checks and issues errors and warning where it's impossible to generate certain elements or certain features are error prone and discouraged. When you use `@Nullable` on a primitive or when one `Value.Immutable` type extends another `Value.Immutable`, you'll get an error. For missing, superfluous or ignored annotations or discouraged combinations, you will get warnings. You can suppress such warnings using `SuppressWarnings("immutables")` or `SuppressWarnings("all")` on an element or its enclosing elements.
 
-See also [Style.generateSuppressAllWarnings](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L695) style attribute to adjust warnings in the generated code.
+See also [Style.generateSuppressAllWarnings](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java) style attribute to adjust warnings in the generated code.
 
 --------
 Patterns
