@@ -434,7 +434,8 @@ As of _Gson_ v2.5 `SerializedName` is applicable to methods and renders _Immutab
 
 <a name="field-naming-strategy"></a>
 When running on an Oracle JVM, there's an option to enable field naming strategy support.
-Use `@Gson.TypeAdapters(fieldNamingStrategy = true)` to enable generation of code which uses a field naming strategy. See Javadoc for [Gson.TypeAdapters#fieldNamingStrategy](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78)
+Use `@Gson.TypeAdapters(fieldNamingStrategy = true)` to enable generation of code which uses a field naming strategy. See Javadoc for [Gson.TypeAdapters#fieldNamingStrategy](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78).
+This feature is not supported on Android and other Java runtimes because of heavy use of reflection hacks to workaround Gson's limitations to make this work.
 
 #### Ignoring attributes
 
