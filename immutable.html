@@ -903,7 +903,7 @@ implementations will be generated which behave according to the specification. Y
 expect array, <a href="#default-attribute">default attributes</a>, and all other features to work
 in the same way as for regular immutable objects.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
-<span class="kd">public</span> <span class="nd">@inteface</span> <span class="n">MyAnnotation</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">MyAnnotation</span> <span class="o">{</span>
   <span class="n">String</span><span class="o">[]</span> <span class="nf">value</span><span class="o">();</span>
   <span class="kt">boolean</span> <span class="nf">enable</span><span class="o">()</span> <span class="k">default</span> <span class="kc">true</span><span class="o">;</span>
 <span class="o">}</span>
