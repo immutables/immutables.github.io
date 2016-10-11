@@ -898,7 +898,7 @@ in the same way as for regular immutable objects.
 
 ```java
 @Value.Immutable
-public @inteface MyAnnotation {
+public @interface MyAnnotation {
   String[] value();
   boolean enable() default true;
 }
