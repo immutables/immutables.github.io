@@ -46,19 +46,19 @@ A factory builder can be seen as a form of partial function application - Supply
 <p>Compile dependencies:</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.2%7Cjar">org.immutables:value:2.3.2</a></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.3.2%7Cjar">org.immutables:builder:2.3.2</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.7%7Cjar">org.immutables:value:2.3.7</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.3.7%7Cjar">org.immutables:builder:2.3.7</a></li>
 </ul>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.2<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.7<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>builder<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.2<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.7<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
@@ -118,6 +118,31 @@ Moreover, they usually don&#39;t make sense for factory builders in the way that
   <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
 <span class="o">}</span>
 </code></pre></div>
+<h3>POJO Constructors</h3>
+
+<p>You can generate builders for POJO constructors in the same way as for the factory methods: put <code>@Builder.Constructor</code> annotation on a public constructor. <em>Note: it&#39;s only supported for top-level types.</em></p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">Sum</span> <span class="o">{</span>
+  <span class="kd">final</span> <span class="kt">int</span> <span class="n">result</span><span class="o">;</span>
+  <span class="nd">@Builder.Constructor</span>
+  <span class="n">Sum</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">result</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+<span class="o">...</span> <span class="c1">// use generated builder</span>
+<span class="n">Sum</span> <span class="n">sum</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SumBuilder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="mi">111</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="mi">222</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>You can even generate builders for preexisting POJOs from different packages using <code>Include</code> annotation. Discovery routine is not very smart, so it will use the first public constructor found.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// use package-info.java for packages</span>
+<span class="c1">// or place Include on a class</span>
+<span class="c1">// within package</span>
+<span class="nd">@Builder.Include</span><span class="o">({</span><span class="n">other</span><span class="o">.</span><span class="na">pack</span><span class="o">.</span><span class="na">PojoOne</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">other</span><span class="o">.</span><span class="na">pack</span><span class="o">.</span><span class="na">PojoAnother</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+<span class="kn">package</span> <span class="n">my</span><span class="o">.</span><span class="na">pack</span><span class="o">;</span>
+</code></pre></div>
+<p>Style annotations put on a class or a package can be used to customize generated builders.</p>
+
 <h3>Parameters</h3>
 
 <p>Sometimes, it might be preferable to have some factory parameters turned into parameters of the generated builder&#39;s constructor.

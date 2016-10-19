@@ -312,6 +312,37 @@ of previously set values.</p>
 <p>Note that it is not recommended to use <code>@Value.Style</code> directly on abstract value type; use it directly only during experimentation.
 The preferred method to use <code>Style</code> annotations is to create meta-annotations as described in the <a href="/style.html">style guide</a>.</p>
 
+<h3>Staged builder</h3>
+
+<p>The experimental new feature (since 2.3.2) allows you to enable generation of &quot;staged builders&quot; (aka &quot;telescopic builders&quot;). The mode is activated using <code>@Value.Style(stagedBuilder = true)</code> style attribute. A staged builder is a compile-time safe way to ensure that all required attributes are set. The API, composed of stage interfaces, forces initialization of mandatory attributes in stages, one by one, guiding via code-completion and making it impossible to even call <code>build()</code> before all are set. This guarantees that final <code>build()</code> call will not throw <code>IllegalStateException</code> for missing attributes. All remaining optional, nullable and collection attributes can be initialized on a final stage in any order. An addition, removal or change of the source order of the required attributes will cause compilation error for all builder usages and have to be corrected.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Style</span><span class="o">(</span><span class="n">stagedBuilder</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+    <span class="kt">int</span> <span class="nf">age</span><span class="o">();</span>
+    <span class="kt">boolean</span> <span class="nf">isEmployed</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="o">...</span>
+<span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;Billy Bounce&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">age</span><span class="o">(</span><span class="mi">33</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">isEmployed</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+<span class="o">...</span>
+<span class="c1">// under the hood</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">ImmutablePerson</span> <span class="kd">implements</span> <span class="n">Person</span> <span class="o">{</span>
+  <span class="o">...</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="n">NameBuildStage</span> <span class="nf">builder</span><span class="o">()</span> <span class="o">{</span> <span class="o">...</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">NameBuildStage</span> <span class="o">{</span> <span class="n">AgeBuildStage</span> <span class="nf">name</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AgeBuildStage</span> <span class="o">{</span> <span class="n">IsEmployedBuildStage</span> <span class="nf">age</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">);</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IsEmployedBuildStage</span> <span class="o">{</span> <span class="n">BuildFinal</span> <span class="nf">isEmployed</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">isEmployed</span><span class="o">);</span> <span class="o">}</span>
+  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">BuildFinal</span> <span class="o">{</span> <span class="n">ImmutablePerson</span> <span class="nf">build</span><span class="o">();</span> <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>The price to pay for the additional compile-time safety is the increased count of java interfaces, generated per each required attribute. If staged builders are used extensively, this may lead to the increased memory/disc footprint and can affect class-loading times.</p>
+
+<p>The staged builder mode also implies <a href="#strict-builder">strict builder</a> mode.</p>
+
 <p><a name="constructor"></a></p>
 
 <h3>Constructor method</h3>
@@ -631,6 +662,22 @@ attribute.</p>
 
 <span class="n">obj</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span> <span class="c1">// NullAccepted{i1=null, l2=null}</span>
 </code></pre></div>
+<h4>Nulls in collection</h4>
+
+<p>As already mentioned, neither collection, nor its elements are supposed to be <code>null</code>. But for the reason of compatibility with the third party libraries or services you may need to allow or to skip (i.e. throw away silently) nulls. Collection attributes could be marked as <a href="#nullable">@Nullable</a>, but what about collection elements? In this cases you can mark attribute with special annotations: <code>@AllowNulls</code> or <code>@SkipNulls</code>. These annotations are not supplied by <em>Immutables</em> and any annotations matching by a simple name will take effect — we call this approach BYOA (Bring Your Own Annotations). Please note, that Guava immutable collections do not support nulls, so this feature is only enabled when JDK collections are used, i.e. when Guava not available or <code>@Style(jdkOnly = true)</code>.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Style</span><span class="o">(</span><span class="n">jdkOnly</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">NullElements</span> <span class="o">{</span>
+  <span class="c1">// collection elements</span>
+  <span class="nd">@AllowNulls</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Void</span><span class="o">&gt;</span> <span class="nf">al</span><span class="o">();</span>
+  <span class="nd">@SkipNulls</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">sk</span><span class="o">();</span>
+  <span class="c1">// map values (but not keys)</span>
+  <span class="nd">@AllowNulls</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">bl</span><span class="o">();</span>
+  <span class="nd">@SkipNulls</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">sm</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>It also possible to use <code>@Nullable</code>, <code>@AllowNulls</code>, <code>@SkipNulls</code> as Java 8 type annotation, like <code>List&lt;@Nullable Obj&gt;</code>, but it may not work depending on compiler (works in <em>ECJ</em> and <em>ErrorProne</em>, but not in plain <em>Javac</em>).</p>
+
 <p><a name="lazy-attribute"></a></p>
 
 <h3>Lazy attributes</h3>
@@ -903,7 +950,7 @@ implementations will be generated which behave according to the specification. Y
 expect array, <a href="#default-attribute">default attributes</a>, and all other features to work
 in the same way as for regular immutable objects.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
-<span class="kd">public</span> <span class="nd">@inteface</span> <span class="n">MyAnnotation</span> <span class="o">{</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">MyAnnotation</span> <span class="o">{</span>
   <span class="n">String</span><span class="o">[]</span> <span class="nf">value</span><span class="o">();</span>
   <span class="kt">boolean</span> <span class="nf">enable</span><span class="o">()</span> <span class="k">default</span> <span class="kc">true</span><span class="o">;</span>
 <span class="o">}</span>
@@ -933,7 +980,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.3.2%7Cjar">org.immutables:serial:2.3.2</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.3.7%7Cjar">org.immutables:serial:2.3.7</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
