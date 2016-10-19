@@ -761,9 +761,40 @@ objects may be constructed with values and later validated for correctness regar
 rules in some context: Precondition checking should not be used to validate against such rules,
 but should be used to preserve consistency and guarantee that instances will be usable.
 
-Precondition check methods are executed when immutable objects are _instantiated and all attributes are initialized_,
-but _before being returned to a caller_. Any instance that fails the precondition
-checks is made unreachable to a caller due to an exception being raised.
+Precondition check methods are executed when immutable objects are _instantiated and all attributes are initialized_, but _before being returned to a caller_. Any instance that fails the precondition checks is made unreachable to a caller due to an exception being raised.
+
+#### Normalization
+
+There's additional variant of using `@Value.Check` annotation to compute normalized value. But implementation might be brittle and error-prone. If you declare return type of validation method with the return type specified as abstract value type, this validation method will also be able to return substitute "normalized" instance. Normalized instance should always be of the immutable implementations type, otherwise {@link ClassCastException} will occur during construction.
+
+_Be warned that it's easy to introduce unresolvable recursion, if normalization is implemented without proper or with conflicting checks. Always return `this` if value do not require normalization._
+
+```java
+@Value.Immutable
+public interface Normalized {
+  int value();
+
+  @Value.Check
+  default Normalized normalize() {
+    if (value() == Integer.MIN_VALUE) {
+      return ImmutableNormalized.builder()
+          .value(0)
+          .build();
+    }
+    if (value() < 0) {
+      return ImmutableNormalized.builder()
+          .value(-value())
+          .build();
+    }
+    return this;
+  }
+}
+
+int shouldBePositive2 = ImmutableNormalized.builder()
+    .value(-2)
+    .build()
+    .value();
+```
 
 <a name="copy-methods"></a>
 ### Copy methods
