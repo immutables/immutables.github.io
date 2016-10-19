@@ -1205,6 +1205,32 @@ Complex c = ComplexTuple.of(1d, 0d);
 
 You can make it so only `@Tuple` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
 
+<a name="deepImmutablesDetection"></a>
+### Wrapper/Tupple initializers inlined as alternative setters with Deep Immutables Detection
+
+When both the Wrapper (i.e. single) and the Tupple (i.e. multiple) value objects are used in another @Immutable, it can be useful to have short-cuts to avoid having to explicitly build the trivial contained inner value object when constructing the outer object.  This is possible with the `deepImmutablesDetection` style:
+
+```java
+@Value.Immutable
+@Value.Style(deepImmutablesDetection = true, depluralize = true)
+public interface Line {
+  List<Point> points();
+}
+
+@Value.Immutable
+@Value.Style(allParameters = true)
+public interface Point {
+  int x();
+  int y();
+}
+
+ImmutableLine line = ImmutableLine.builder()
+  .addPoint(1, 2) // implicit addPoint(ImmutablePoint.of(1, 2)) 
+  .addPoint(4, 5)
+  .build();
+}
+```
+
 ### Expressive factory methods
 
 There were feature requests to customize the names of constructor methods and, in addition, provide construction hooks.
