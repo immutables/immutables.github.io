@@ -764,10 +764,38 @@ objects may be constructed with values and later validated for correctness regar
 rules in some context: Precondition checking should not be used to validate against such rules,
 but should be used to preserve consistency and guarantee that instances will be usable.</p>
 
-<p>Precondition check methods are executed when immutable objects are <em>instantiated and all attributes are initialized</em>,
-but <em>before being returned to a caller</em>. Any instance that fails the precondition
-checks is made unreachable to a caller due to an exception being raised.</p>
+<p>Precondition check methods are executed when immutable objects are <em>instantiated and all attributes are initialized</em>, but <em>before being returned to a caller</em>. Any instance that fails the precondition checks is made unreachable to a caller due to an exception being raised.</p>
 
+<h4>Normalization</h4>
+
+<p>There&#39;s additional variant of using <code>@Value.Check</code> annotation to compute normalized value. But implementation might be brittle and error-prone. If you declare return type of validation method with the return type specified as abstract value type, this validation method will also be able to return substitute &quot;normalized&quot; instance. Normalized instance should always be of the immutable implementations type, otherwise {@link ClassCastException} will occur during construction.</p>
+
+<p><em>Be warned that it&#39;s easy to introduce unresolvable recursion, if normalization is implemented without proper or with conflicting checks. Always return <code>this</code> if value do not require normalization.</em></p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Normalized</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="nf">value</span><span class="o">();</span>
+
+  <span class="nd">@Value.Check</span>
+  <span class="k">default</span> <span class="n">Normalized</span> <span class="nf">normalize</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">value</span><span class="o">()</span> <span class="o">==</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">ImmutableNormalized</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+          <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">value</span><span class="o">()</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="n">ImmutableNormalized</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+          <span class="o">.</span><span class="na">value</span><span class="o">(-</span><span class="n">value</span><span class="o">())</span>
+          <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kt">int</span> <span class="n">shouldBePositive2</span> <span class="o">=</span> <span class="n">ImmutableNormalized</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">value</span><span class="o">(-</span><span class="mi">2</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">value</span><span class="o">();</span>
+</code></pre></div>
 <p><a name="copy-methods"></a></p>
 
 <h3>Copy methods</h3>
