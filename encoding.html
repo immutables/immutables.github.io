@@ -45,12 +45,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p><strong>Let&#39;s create encoding for the <code>com.google.common.collect.ImmutableTable</code></strong></p>
 
 <p>We&#39;ll start by creating modules for our encoding. We will use one module to create encoding itself, and another one to use apply it to generated objects.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">encoding-defs/
++-src/ (think of it as as src/main/java, but simpler ;)
+| +-encoding/ (simply a package)
+|   +-TableEncoding.java (encoding file)
++-pom.xml
 
-<p>Compile dependencies:</p>
+encoding-use/
++-src/
+| +-uses/
+|   +-UseTable.java (value object that is using the encoding)
++-pom.xml
+</code></pre></div>
+<p>We&#39;ll progress by gradually editing files and compiling projects. If you need more detailed examples on how to setup the build etc.</p>
+
+<p>Here&#39;s the Immutable modules we will use</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.7%7Cjar">org.immutables:value:2.3.7</a></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.3.7%7Cjar">org.immutables:encode:2.3.7</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.7%7Cjar">org.immutables:value:2.3.7</a>
+
+<ul>
+<li>the annotation processor used to compile encodings and value objects</li>
+</ul></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.3.7%7Cjar">org.immutables:encode:2.3.7</a>
+
+<ul>
+<li>the annotation API for creation of</li>
+</ul></li>
 </ul>
 
 <p>Advanced customization</p>
@@ -67,6 +88,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
+<h3>How it works</h3>
+
 <h2>Reference</h2>
 
 <h3>How To...</h3>
@@ -75,8 +98,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <p>Annotations are not supported yet
 Parser/processor limitations</p>
-
-<h3>Design</h3>
 
 
 </section>
