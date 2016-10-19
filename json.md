@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.3.2{% endcapture %}
+{% capture v %}2.3.7{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -36,7 +36,7 @@ Overall _Jackson_ doesn't require any serious code generation to be flexible and
 on the JVM. No additional dependencies are required except for _Immutables_ processor and _Jackson_
 library. It is recommended to use _Jackson_ version 2.4+, but earlier versions can work also.
 
-Integration works by generating a simple `@JsonCreator` factory method and `@JsonProperty`
+Integration works by generating `@JsonCreator` factory method and puts `@JsonProperty`
 annotations on immutable implementations. To enable this, you should use `@JsonSerialize`
 or `@JsonDeserialize` annotation. Point to an immutable
 implementation class in `as` annotation attribute:
@@ -74,11 +74,35 @@ String json = objectMapper.writeValueAsString(
   "b": "B" }
 ```
 
-Make sure that _Jackson_ can serialize any other type that is used as attribute type.
+Recently (since 2.3.7) we've added an alternative way of Jackson integration using builder. It works when you point `@JsonDeserialize(builder)` to a generated or "extending" builder. The example will make it clear:
+
+```java
+@Value.Immutable
+@Value.Style(builder = "new") // builder has to have constructor
+@JsonDeserialize(builder = ImmutableVal.Builder.class)
+interface Val {
+  int a();
+  @JsonProperty("b") String second();
+}
+
+// or using extending builder
+@Value.Immutable
+@JsonDeserialize(builder = Val.Builder.class)
+interface Val {
+  int a();
+  @JsonProperty("b") String second();
+  class Builder extends ImmutableVal.Builder {}
+}
+```
+
+Using the approach shown above, generated builders will have attributes annotated with `@JsonProperty` so deserialization will work properly.
 
 **Things to be aware of**
 
+- Make sure that _Jackson_ can serialize any other type that is used as attribute type.
 - Not all Jackson annotations are propagated by default to the generated code. You can use `Value.Style.additionalJsonAnnotations` style attribute to specify such annotation types.
+- Use `Value.Style.jacksonIntegration = false` (since 2.3.7) to disable any out-of-the-box integration triggered `@JsonSerialize`/`@JsonDeserialize`, may help if integration is getting in the way
+- Use `Value.Style.forceJacksonPropertyNames = false` to not use literal names in generated `@JsonProperty` annotations. While somewhat fragile, an absence of the literal names enables the usage of naming strategies and built-in Jackson conventions.
 
 ### Jackson-Guava
 

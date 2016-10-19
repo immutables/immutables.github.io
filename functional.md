@@ -3,7 +3,7 @@ title: 'Functions and Predicates'
 layout: page
 ---
 
-{% capture v %}2.3.2{% endcapture %}
+{% capture v %}2.3.7{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ### Overview
@@ -30,8 +30,7 @@ ImmutableList<String> names = FluentIterables.from(people)
     .transform(new PersonNameFunction());
 ```
 
-However, without lambdas, writing `Function`s and `Predicate`s is verbose and often results in functional
-code less clear than its imperative equivalent.  
+However, without lambdas, writing `Function`s and `Predicate`s is verbose and often results in functional code less clear than its imperative equivalent.  
 
 ### Generate functions and predicates
 

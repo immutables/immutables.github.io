@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.3.2{% endcapture %}
+{% capture v %}2.3.7{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -299,6 +299,40 @@ No methods to reset collections are generated on strict builders. Additionally, 
 
 Note that it is not recommended to use `@Value.Style` directly on abstract value type; use it directly only during experimentation.
 The preferred method to use `Style` annotations is to create meta-annotations as described in the [style guide](/style.html).
+
+### Staged builder
+
+The experimental new feature (since 2.3.2) allows you to enable generation of "staged builders" (aka "telescopic builders"). The mode is activated using `@Value.Style(stagedBuilder = true)` style attribute. A staged builder is a compile-time safe way to ensure that all required attributes are set. The API, composed of stage interfaces, forces initialization of mandatory attributes in stages, one by one, guiding via code-completion and making it impossible to even call `build()` before all are set. This guarantees that final `build()` call will not throw `IllegalStateException` for missing attributes. All remaining optional, nullable and collection attributes can be initialized on a final stage in any order. An addition, removal or change of the source order of the required attributes will cause compilation error for all builder usages and have to be corrected.
+
+```java
+@Value.Style(stagedBuilder = true)
+@Value.Immutable
+public interface Person {
+	String name();
+	int age();
+	boolean isEmployed();
+}
+...
+ImmutablePerson.builder()
+    .name("Billy Bounce")
+    .age(33)
+    .isEmployed(false)
+    .build();
+...
+// under the hood
+public final class ImmutablePerson implements Person {
+  ...
+  public static NameBuildStage builder() { ... }
+  public interface NameBuildStage { AgeBuildStage name(String name); }
+  public interface AgeBuildStage { IsEmployedBuildStage age(int age); }
+  public interface IsEmployedBuildStage { BuildFinal isEmployed(boolean isEmployed); }
+  public interface BuildFinal { ImmutablePerson build(); }
+}
+```
+
+The price to pay for the additional compile-time safety is the increased count of java interfaces, generated per each required attribute. If staged builders are used extensively, this may lead to the increased memory/disc footprint and can affect class-loading times.
+
+The staged builder mode also implies [strict builder](#strict-builder) mode.
 
 <a name="constructor"></a>
 ### Constructor method
@@ -620,6 +654,25 @@ NullAccepted obj = ImmutableNullAccepted.builder()
 
 obj.toString(); // NullAccepted{i1=null, l2=null}
 ```
+
+#### Nulls in collection
+
+As already mentioned, neither collection, nor its elements are supposed to be `null`. But for the reason of compatibility with the third party libraries or services you may need to allow or to skip (i.e. throw away silently) nulls. Collection attributes could be marked as [@Nullable](#nullable), but what about collection elements? In this cases you can mark attribute with special annotations: `@AllowNulls` or `@SkipNulls`. These annotations are not supplied by _Immutables_ and any annotations matching by a simple name will take effect — we call this approach BYOA (Bring Your Own Annotations). Please note, that Guava immutable collections do not support nulls, so this feature is only enabled when JDK collections are used, i.e. when Guava not available or `@Style(jdkOnly = true)`.
+
+```java
+@Value.Style(jdkOnly = true)
+@Value.Immutable
+public interface NullElements {
+  // collection elements
+  @AllowNulls List<Void> al();
+  @SkipNulls List<String> sk();
+  // map values (but not keys)
+  @AllowNulls Map<String, Integer> bl();
+  @SkipNulls Map<String, Integer> sm();
+}
+```
+
+It also possible to use `@Nullable`, `@AllowNulls`, `@SkipNulls` as Java 8 type annotation, like `List<@Nullable Obj>`, but it may not work depending on compiler (works in _ECJ_ and _ErrorProne_, but not in plain _Javac_).
 
 <a name="lazy-attribute"></a>
 ### Lazy attributes

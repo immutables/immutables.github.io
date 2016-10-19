@@ -3,7 +3,7 @@ title: 'Factory builders'
 layout: page
 ---
 
-{% capture v %}2.3.2{% endcapture %}
+{% capture v %}2.3.7{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -100,6 +100,37 @@ public static int sum(Optional<Integer> a, Optional<Integer> b) {
   return a.or(0) + b.or(0);
 }
 ```
+
+### POJO Constructors
+
+You can generate builders for POJO constructors in the same way as for the factory methods: put `@Builder.Constructor` annotation on a public constructor. _Note: it's only supported for top-level types._
+
+```java
+class Sum {
+  final int result;
+  @Builder.Constructor
+  Sum(int a, int b) {
+    this.result = a + b;
+  }
+}
+... // use generated builder
+Sum sum = new SumBuilder()
+    .a(111)
+    .b(222)
+    .build();
+```
+
+You can even generate builders for preexisting POJOs from different packages using `Include` annotation. Discovery routine is not very smart, so it will use the first public constructor found.
+
+```java
+// use package-info.java for packages
+// or place Include on a class
+// within package
+@Builder.Include({other.pack.PojoOne.class, other.pack.PojoAnother.class})
+package my.pack;
+```
+
+Style annotations put on a class or a package can be used to customize generated builders.
 
 ### Parameters
 
