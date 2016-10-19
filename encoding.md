@@ -23,10 +23,28 @@ __Let's create encoding for the `com.google.common.collect.ImmutableTable`__
 
 We'll start by creating modules for our encoding. We will use one module to create encoding itself, and another one to use apply it to generated objects.
 
-Compile dependencies:
+```
+encoding-defs/
++-src/ (think of it as as src/main/java, but simpler ;)
+| +-encoding/ (simply a package)
+|   +-TableEncoding.java (encoding file)
++-pom.xml
+
+encoding-use/
++-src/
+| +-uses/
+|   +-UseTable.java (value object that is using the encoding)
++-pom.xml
+```
+
+We'll progress by gradually editing files and compiling projects. If you need more detailed examples on how to setup the build etc.
+
+Here's the Immutable modules we will use
 
 - [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+  + the annotation processor used to compile encodings and value objects
 - [org.immutables:encode:{{v}}]({{ depUri }}|encoding|{{ v }}|jar)
+  + the annotation API for creation of
 
 Advanced customization
 
@@ -46,12 +64,13 @@ Advanced customization
 </dependency>
 ```
 
+### How it works
+
 Reference
 ---------
+
 ### How To...
 
 ### Limitations
 Annotations are not supported yet
 Parser/processor limitations
-
-### Design
