@@ -162,6 +162,8 @@ required at runtime). The above example with the alternative dependencies could 
 
 <h2>Troubleshooting</h2>
 
+<p>Immutables itself and the surrounding ecosystem of build tools, compilers and even JVM may contain bugs. Please, try to upgrade to the latest stable version of tools you use if possible and report any issues found.</p>
+
 <p>There&#39;s known issue with the interaction between the incremental compilation feature of <code>javac</code> and annotation processing.
 Build tools like Maven are also affected by this bug. Typically, commands such as <code>mvn clean compile</code> will resolve any such problems by a forcing full build.
 Disabling incremental compilation is also an option:</p>
