@@ -152,6 +152,8 @@ dependencies {
 
 ## Troubleshooting
 
+Immutables itself and the surrounding ecosystem of build tools, compilers and even JVM may contain bugs. Please, try to upgrade to the latest stable version of tools you use if possible and report any issues found.
+
 There's known issue with the interaction between the incremental compilation feature of `javac` and annotation processing.
 Build tools like Maven are also affected by this bug. Typically, commands such as `mvn clean compile` will resolve any such problems by a forcing full build.
 Disabling incremental compilation is also an option:
