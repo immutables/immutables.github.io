@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.3.7{% endcapture %}
+{% capture v %}2.3.9{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -765,9 +765,9 @@ Precondition check methods are executed when immutable objects are _instantiated
 
 #### Normalization
 
-There's additional variant of using `@Value.Check` annotation to compute normalized value. But implementation might be brittle and error-prone. If you declare return type of validation method with the return type specified as abstract value type, this validation method will also be able to return substitute "normalized" instance. Normalized instance should always be of the immutable implementations type, otherwise {@link ClassCastException} will occur during construction.
+There's additional variant of using `@Value.Check` annotation to compute normalized value. If you declare return type of validation method with the return type specified as abstract value type, this validation method will also be able to return substitute "normalized" instance. Normalized instance should always be of the immutable implementations type, otherwise `ClassCastException` will occur during construction.
 
-_Be warned that it's easy to introduce unresolvable recursion, if normalization is implemented without proper or with conflicting checks. Always return `this` if value do not require normalization._
+_Be warned that it's easy to introduce unresolvable recursion, if normalization is implemented without proper checks or with conflicting checks. Always return `this` if a value do not require normalization._
 
 ```java
 @Value.Immutable
@@ -1225,7 +1225,7 @@ public interface Point {
 }
 
 ImmutableLine line = ImmutableLine.builder()
-  .addPoint(1, 2) // implicit addPoint(ImmutablePoint.of(1, 2)) 
+  .addPoint(1, 2) // implicit addPoint(ImmutablePoint.of(1, 2))
   .addPoint(4, 5)
   .build();
 }
