@@ -768,9 +768,9 @@ but should be used to preserve consistency and guarantee that instances will be 
 
 <h4>Normalization</h4>
 
-<p>There&#39;s additional variant of using <code>@Value.Check</code> annotation to compute normalized value. But implementation might be brittle and error-prone. If you declare return type of validation method with the return type specified as abstract value type, this validation method will also be able to return substitute &quot;normalized&quot; instance. Normalized instance should always be of the immutable implementations type, otherwise {@link ClassCastException} will occur during construction.</p>
+<p>There&#39;s additional variant of using <code>@Value.Check</code> annotation to compute normalized value. If you declare return type of validation method with the return type specified as abstract value type, this validation method will also be able to return substitute &quot;normalized&quot; instance. Normalized instance should always be of the immutable implementations type, otherwise <code>ClassCastException</code> will occur during construction.</p>
 
-<p><em>Be warned that it&#39;s easy to introduce unresolvable recursion, if normalization is implemented without proper or with conflicting checks. Always return <code>this</code> if value do not require normalization.</em></p>
+<p><em>Be warned that it&#39;s easy to introduce unresolvable recursion, if normalization is implemented without proper checks or with conflicting checks. Always return <code>this</code> if a value do not require normalization.</em></p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Normalized</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="nf">value</span><span class="o">();</span>
@@ -1008,7 +1008,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.3.7%7Cjar">org.immutables:serial:2.3.7</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.3.9%7Cjar">org.immutables:serial:2.3.9</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
@@ -1216,7 +1216,7 @@ The key style here is <code>allParameters</code> which automatically makes const
 <span class="o">}</span>
 
 <span class="n">ImmutableLine</span> <span class="n">line</span> <span class="o">=</span> <span class="n">ImmutableLine</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
-  <span class="o">.</span><span class="na">addPoint</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span> <span class="c1">// implicit addPoint(ImmutablePoint.of(1, 2)) </span>
+  <span class="o">.</span><span class="na">addPoint</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span> <span class="c1">// implicit addPoint(ImmutablePoint.of(1, 2))</span>
   <span class="o">.</span><span class="na">addPoint</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span>
   <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 <span class="o">}</span>

@@ -32,19 +32,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section class="documentation">
   <h2>Introduction</h2>
 
-<p>The <em>Immutables</em> annotation processor supports not only plain <a href="immutable.html#attributes">attribute</a> accessors but also provides addition conveniences when using special types like collections, maps, optional types. For instance, generated builders contain methods to add collection elements one by one or add optional element without having to wrap it explicitly (See <a href="immutable.html#array-collection-and-map-attributes">collection</a>, <a href="http://immutables.github.io/immutable.html#optional-attributes">optional</a> etc). But this built-in support is limited only to a handful of predefined classes and interfaces, such as <code>List</code>, <code>Map</code>, <code>Optional</code>, <code>Multimap</code>, <code>ImmutableSet</code>...</p>
+<p>The <em>Immutables</em> annotation processor supports not only plain <a href="immutable.html#attributes">attribute</a> accessors but also provides additional conveniences when using special types like collections, maps, optional types. For instance, generated builders contain methods to add collection elements one by one or add optional element without having to wrap it explicitly (See <a href="immutable.html#array-collection-and-map-attributes">collection</a>, <a href="http://immutables.github.io/immutable.html#optional-attributes">optional</a> etc). But this built-in support is limited only to a handful of predefined classes and interfaces, such as <code>List</code>, <code>Map</code>, <code>Optional</code>, <code>Multimap</code>, <code>ImmutableSet</code>...</p>
 
 <p>Obviously, it would desirable to have support for a variety of popular immutable collection libraries or custom made wrapper types in a way similar to those supported out of the box. Or, for example, the way optional types are handled may be not the way how you would encode it. Luckily, we have this covered!</p>
 
-<p>Brand new, experimental functionality allows you to create encoding classes: annotated java classes which serve as examples, snippets of code to be generated. Yes, don&#39;t need to dive into annotation processing API, nor craft code-generation templates! Just use plain java code with some reasonable limitations and rules to describe how to embed attributes of particular type into generated immutable class. Encoding classes are compiled to metadata annotations which can be packed as reusable jar libraries of annotation processor extensions.</p>
+<p>Brand new, experimental functionality allows you to create encoding classes: annotated java classes which serve as examples, snippets of code to be generated. Yes, don&#39;t need to dive into annotation processing API, nor craft obscure code-generation templates! Just use plain java code (with some reasonable limitations and rules) to describe how to embed attributes of particular type into generated immutable class. Encoding classes are compiled to metadata annotations which can be packed as reusable jar libraries of annotation processor extensions.</p>
 
 <h2>Tutorial</h2>
+
+<h3>Setting up projects</h3>
 
 <p>We&#39;ll dive straight into practical example which will demonstrate typical use case as well as the most important pieces of the functionality. You can skip to the <a href="#howto">How to</a> if looking for specific recipes.</p>
 
 <p><strong>Let&#39;s create encoding for the <code>com.google.common.collect.ImmutableTable</code></strong></p>
 
-<p>We&#39;ll start by creating modules for our encoding. We will use one module to create encoding itself, and another one to use apply it to generated objects.</p>
+<p>We&#39;ll start by creating modules for our encoding. We will use one module to create encoding itself, and another one to use apply it to generated objects. (<a href="#why-separate">See why need for separate modules</a>)</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">encoding-defs/
 +-src/ (think of it as as src/main/java, but simpler ;)
 | +-encoding/ (simply a package)
@@ -57,38 +59,142 @@ encoding-use/
 |   +-UseTable.java (value object that is using the encoding)
 +-pom.xml
 </code></pre></div>
-<p>We&#39;ll progress by gradually editing files and compiling projects. If you need more detailed examples on how to setup the build etc.</p>
+<p>We&#39;ll progress by gradually editing files and compiling projects.</p>
 
 <p>Here&#39;s the Immutable modules we will use</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.7%7Cjar">org.immutables:value:2.3.7</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.9%7Cjar">org.immutables:value:2.3.9</a>
 
 <ul>
 <li>the annotation processor used to compile encodings and value objects</li>
 </ul></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.3.7%7Cjar">org.immutables:encode:2.3.7</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.3.9%7Cjar">org.immutables:encode:2.3.9</a>
 
 <ul>
-<li>the annotation API for creation of</li>
+<li>the annotation API to define encoding classes</li>
 </ul></li>
 </ul>
 
-<p>Advanced customization</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+<p>Maven dependencies will look like following snippets:</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="c">&lt;!-- dependencies for &#39;encoding-def&#39; module --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="c">&lt;!-- the annotation processor, compile only --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>encode<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.7<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
+  <span class="c">&lt;!-- annotation to encodings, compile only, don&#39;t need to reexport transitively --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>builder<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.7<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>encode<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="c">&lt;!-- we&#39;ll encode ImmutableTable, so we need guava dependency, while user of the encoding will have to reference at least Table/ImmutableTable we can skip reexport,</span>
+<span class="c">      relying on the using module have it&#39;s own guava dependency --&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.google.guava<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>guava<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>20.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div><div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="c">&lt;!-- dependencies for &#39;encoding-use&#39; module --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="c">&lt;!-- the annotation processor, compile only --&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="c">&lt;!-- Use encoding defined in &#39;encoding-def&#39; --&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.immutables.sample<span class="nt">&lt;/groupId&gt;</span> <span class="c">&lt;!-- or whatever group you choose for sibling sample projects --&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>encoding-def<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1-SNAPSHOT<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- whatever version we use for sample modules --&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="c">&lt;!-- compile and runtime dependency on Guava as we use Table/ImmutableTable classes --&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>com.google.guava<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>guava<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>20.0<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
-<h3>How it works</h3>
+<p>I trust you can figure out corresponding configuration for Gradle or other build systems (but it would be great if people could contribute it to this tutorial!).</p>
+
+<p>If you need more detailed setup examples on how to setup the build, please, <a href="https://github.com/immutables/samples">see complete sample projects encoding-*</a>.</p>
+
+<h3>First steps</h3>
+
+<p>Let&#39;s create package and class for the <code>Table</code> encoding. It could be <code>public</code>, but there&#39;s no need for it to be visible outside, so package-private visibility is most appropriate.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">encoding</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.immutables.encode.Encoding</span><span class="o">;</span>
+
+<span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">TableEncoding</span> <span class="o">{</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>Once compiled (by saying &quot;compiled&quot; we will usually mean something straightforward like <code>mvn clean install</code>), there will be an error reported:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">[ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[6,1] @Encoding.Impl field is bare minimum to be declared. Please add implementation field declaration
+</code></pre></div>
+<p>Ok, so the bare minimum to be declared is a so called implementation field. Indeed, the system need to know some minimum information about what we&#39;re actually encoding. We have to declare the type we trying to handle as well as how we would store it instances of it internally. Luckily, this is straightforward, here&#39;s how we will define implementation field:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">encoding</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.immutables.encode.Encoding</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableTable</span><span class="o">;</span>
+
+<span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">TableEncoding</span> <span class="o">{</span>
+  <span class="nd">@Encoding.Impl</span>
+  <span class="kd">private</span> <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">field</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>And it compiles now successfully! But wait, what do we have achieved? To answer this, let&#39;s actually use our encoding. Create <code>uses/UseTable.java</code> in <code>encoding-use</code> module like this.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">uses</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableTable</span><span class="o">;</span>
+
+<span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">UseTable</span> <span class="o">{</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">values</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>If we compile this, <code>ImmutableUseTable</code> type will be generated, but looking at the generated code you won&#39;t see anything changed, or anything that looks like specially encoded. We need to activate encoding in order for it to have any effect on the generated code.</p>
+
+<p>The trick is that encoding we&#39;ve created generates activation annotation which has all the encoding definition code &quot;compiled&quot; and attached to it as metadata. Looking at the generated sources for our <code>encoding-def</code> module, you&#39;ll see following annotation class:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// this is the sample listing of the generated file</span>
+<span class="c1">// target/generated-sources/annotations/encoding/TableEncodingEnabled.java</span>
+<span class="kn">package</span> <span class="n">encoding</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.immutables.encode.EncodingMetadata</span><span class="o">;</span>
+
+<span class="nd">@EncodingMetadata</span><span class="o">(</span>
+  <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;encoding.TableEncoding&quot;</span><span class="o">,</span>
+  <span class="n">imports</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="o">},</span>
+  <span class="n">typeParams</span> <span class="o">=</span> <span class="o">{},</span>
+  <span class="n">elements</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="nd">@EncodingMetadata.Element</span><span class="o">(</span>
+      <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;value&quot;</span><span class="o">,</span>
+      <span class="n">tags</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;IMPL&quot;</span><span class="o">,</span> <span class="s">&quot;PRIVATE&quot;</span><span class="o">,</span> <span class="s">&quot;FINAL&quot;</span><span class="o">,</span> <span class="s">&quot;FIELD&quot;</span><span class="o">},</span>
+      <span class="n">naming</span> <span class="o">=</span> <span class="s">&quot;*&quot;</span><span class="o">,</span>
+ <span class="c1">// ... many lines skipped here</span>
+ <span class="c1">// ...</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="n">TableEncodingEnabled</span> <span class="o">{}</span>
+</code></pre></div>
+<p>Use <code>TableEncodingEnabled</code> annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation: imaging having special &quot;stereotype&quot; annotation which is itself annotated with <code>*Enabled</code> annotations as well as any relevant <code>Value.Style</code> annotation. All in all, placing encoding activation annotation follows the same rules as <a href="style.html#apply-style">applying styles</a></p>
+
+<p>As placing encoding annotation on the type directly is pretty lame (in the sense of cluttering value objects with configuration), we&#39;ll place it on the <code>uses</code> package affecting all value types in the package.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// create encoding-use/src/uses/package-info.java</span>
+<span class="nd">@encoding.TableEncodingEnabled</span> <span class="c1">// &lt;-- this will activate the encoding</span>
+<span class="kn">package</span> <span class="n">uses</span><span class="o">;</span>
+</code></pre></div>
+<p>If we re-compile <code>encoding-use</code> module at this point, I really hope ше it compile correctly and the encoding will be applied, so you&#39;ll see the generated <code>ImmutableUseTable.java</code> changed a bit, but not much, but  </p>
+
+<h2>How it works</h2>
 
 <h2>Reference</h2>
 
