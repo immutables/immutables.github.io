@@ -17,13 +17,13 @@ Brand new, experimental functionality allows you to create encoding classes: ann
 Tutorial
 --------
 
-### Setting up projects
-
-We'll dive straight into practical example which will demonstrate typical use case as well as the most important pieces of the functionality. You can skip to the [How to](#howto) if looking for specific recipes.
+We'll dive straight into practical example which will demonstrate typical use case as well as the most important pieces of the functionality in a step-by-step fashion. You can skip to the [How to](#howto) if looking for specific recipes.
 
 __Let's create encoding for the `com.google.common.collect.ImmutableTable`__
 
-We'll start by creating modules for our encoding. We will use one module to create encoding itself, and another one to use apply it to generated objects. ([See why need for separate modules](#why-separate))
+### Setting up projects
+
+Start by creating modules for our encoding. One module to create encoding itself, and another one to use apply it to generated objects. ([See why need for separate modules](#why-separate))
 
 ```
 encoding-defs/
@@ -103,7 +103,7 @@ I trust you can figure out corresponding configuration for Gradle or other build
 
 If you need more detailed setup examples on how to setup the build, please, [see complete sample projects encoding-*](https://github.com/immutables/samples).
 
-### First steps
+### First encoding
 
 Let's create package and class for the `Table` encoding. It could be `public`, but there's no need for it to be visible outside, so package-private visibility is most appropriate.
 
@@ -138,7 +138,7 @@ class TableEncoding {
 }
 ```
 
-And it compiles now successfully! But wait, what do we have achieved? To answer this, let's actually use our encoding. Create `uses/UseTable.java` in `encoding-use` module like this.
+And it compiles now successfully! But wait, what do we have achieved? Before answering this, let's actually use our encoding. Create `uses/UseTable.java` in `encoding-use` module like shown below:
 
 ```java
 package uses;
@@ -174,11 +174,10 @@ import org.immutables.encode.EncodingMetadata;
       tags = {"IMPL", "PRIVATE", "FINAL", "FIELD"},
       naming = "*",
  // ... many lines skipped here
- // ...
 public @interface TableEncodingEnabled {}
 ```
 
-Use `TableEncodingEnabled` annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation: imaging having special "stereotype" annotation which is itself annotated with `*Enabled` annotations as well as any relevant `Value.Style` annotation. All in all, placing encoding activation annotation follows the same rules as [applying styles](style.html#apply-style)
+Use `TableEncodingEnabled` annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation: imagine having special "stereotype" annotation which is itself annotated with `*Enabled` annotations as well as any relevant `Value.Style` annotation. All in all, placing encoding activation annotation follows the same rules as [applying styles](style.html#apply-style)
 
 As placing encoding annotation on the type directly is pretty lame (in the sense of cluttering value objects with configuration), we'll place it on the `uses` package affecting all value types in the package.
 
@@ -188,7 +187,131 @@ As placing encoding annotation on the type directly is pretty lame (in the sense
 package uses;
 ```
 
-If we re-compile `encoding-use` module at this point, I really hope ше it compile correctly and the encoding will be applied, so you'll see the generated `ImmutableUseTable.java` changed a bit, but not much, but  
+After successful re-compilation of `encoding-use` module we are ready to see we achieved to apply our minimal encoding of `ImmutableTable<String,String,String>`. Indeed, generated code of `ImmutableUseTable.java` is a little bit different internally from what was generated before we've applied the encoding. The great thing is that we've able to properly setup projects and apply encoding, but, otherwise, we are yet to see anything useful about an encodings: there are no externally observable changes. We have to start creating useful definitions on top of the minimal encoding to unleash the power.
+
+### Type parameters
+
+The first thing that should bother us is that the encoding only applies to `ImmutableTable<String,String,String>`, i.e. exactly to the specified type arguments. If we add another accessor which will use `Integer` type arguments, the encoding will not be applied.
+
+```java
+@Value.Immutable
+interface UseTable {
+  ImmutableTable<String, String, String> values(); // <-- encoding applied
+  ImmutableTable<Integer, Integer, Integer> intValues(); // <-- default code is generated
+}
+```
+
+To make encoding flexible about type arguments we'll use generic parameters on encoding.
+
+```java
+package encoding;
+
+import org.immutables.encode.Encoding;
+import com.google.common.collect.ImmutableTable;
+
+@Encoding
+class TableEncoding<R, C, V> {  // <-- introduce type parameters
+  @Encoding.Impl
+  private ImmutableTable<R, C, V> field; // <-- use them anywhere we reference the type
+}
+```
+
+After recompiling both `encoding-def` and `encoding-use` modules, both accessors of the `ImmutableUseTable` class will be also implemented by our encoding. And so `TableEncoding` will be applied to any type arguments of `ImmutableTable` in a scope where it's applied. You can also safely assume that encoding will also capture any `ImmutableTable` arguments which themselves are type variables. If we parametrize `UseTable`, our encoding will still apply:
+
+```java
+@Value.Immutable
+interface UseTable<V> { // <-- introduce type variable
+  ImmutableTable<String, String, V> values(); // <-- encoding applied
+  ImmutableTable<Integer, Integer, V> intValues(); // <-- encoding applied
+}
+```
+
+### Exposed type and accessors
+
+It's not uncommon to see value interfaces (or abstract classes) implemented by both immutable and mutable classes. While we'll leave mutable implementations out of this discussion, but, at minimum, we'll want to apply `ImmutableTable` encoding as implementation to attributes exposed as `com.google.common.collect.Table` interface. The encoding we've created contains only the implementation field. The type, to which the encoding applies to, is derived directly from the field. Fortunately, we're able to specify more general types for encoding as long as they are compatible.
+
+The recipe is following: create no-arg accessors with target return types and use `@Encoding.Expose` annotation to mark these accessors. The names of the accessors are irrelevant as long as they are unambiguous. And in our case, it should be obvious that they would return the value of the `value` fields. Here's how our encoding would look like after adding `Expose` accessors:
+
+```java
+package encoding;
+
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
+import org.immutables.encode.Encoding;
+
+@Encoding
+class TableEncoding<R, C, V> {
+  @Encoding.Impl
+  private ImmutableTable<R, C, V> field;
+
+  @Encoding.Expose
+  ImmutableTable<R, C, V> getImmutableTable() {
+    return field; // <-- this is how our accessor would be implemented
+  }
+
+  @Encoding.Expose
+  Table<R, C, V> getTable() {
+    return field; // <-- this is how our accessor would be implemented
+  }
+}
+```
+
+Important point about this is that as we define at least one such _expose_ accessor, no type would be derived from the field. In our case we created two accessors: for `Table` and `ImmutableTable`. There's no handling of inheritance during matching encoding to types, so if we want an encoding to apply both an interface and an immutable implementation (like `Table` and `ImmutableTable`), we have to declare all such accessors. The actual names of fields and accessors will follow attribute names in the using class, it's only required that encoding have them unambiguous. The annotation processor then can, more or less safely, extrapolate implementation code like `return field;` to generate Java source code for accessors in an immutable class.
+
+```java
+// Changing UseTable to use "Table" interface for one of the accessors
+// The encoding will be applied to both.
+@Value.Immutable
+interface UseTable<V> {
+  ImmutableTable<String, String, V> values(); // <-- use immutable class
+  Table<Integer, Integer, V> intValues(); // <-- use interface
+}
+```
+
+However, that is not yet fully working solution, there's a compilation error in generated code:
+
+```
+[ERROR] ../sample/encoding-use/target/generated-sources/annotations/uses/ImmutableUseTable.java:[156,35] incompatible types: com.google.common.collect.Table<java.lang.Integer,java.lang.Integer,V> cannot be converted to com.google.common.collect.ImmutableTable<java.lang.Integer,java.lang.Integer,V>
+```
+
+The missing piece is the special routine that initializes `ImmutableTable field` with the value of `Table`. This requirement comes from the code that copies object in builder. Having received an instance of `UseTable` and invoking `Table intValues()` to get the value, which is then used to initialize in builder `ImmutableTable field`. While it's possible to craft object to avoid this code to be generated (setting `Value.Immutable(copy=false)`), we've yet to solve the underlying problem: the need to initialize immutable field from the instance of more general type having unknown implementation. Notice how you would use regular `List<T>` with _Immutables_ processor: you can to initialize attribute values with `Iterable<? extends T>`. We need similar capability to describe the most general type we can convert to `ImmutableTable`. And we have such!
+
+The annotation `@Encoding.Of` is used to mark static conversion method. Method is bound to the following restrictions:
+
+* It must be static and therefore should have the same type parameters as encoding (if there are such).
+* The return type should match the type of implementation field.
+* It should have single parameter to accept value. What is important, any _exposed_ accessor type should be assignable to that parameter type, and the processor can generate code which can get from value from a getter and pass to an initializer.
+
+For our case `Table<? extends R, ? extends C, ? extends V>` is most general type to accept as initializing value.
+
+```java
+@Encoding
+class TableEncoding<R, C, V> {
+  @Encoding.Impl
+  private ImmutableTable<R, C, V> value;
+
+  @Encoding.Expose
+  ImmutableTable<R, C, V> getImmutableTable() {
+    return value;
+  }
+
+  @Encoding.Expose
+  Table<R, C, V> getTable() {
+    return value;
+  }
+
+  @Encoding.Of
+  static <R, C, V> ImmutableTable<R, C, V> init(Table<? extends R, ? extends C, ? extends V> table) {
+    return ImmutableTable.copyOf(table); // <-- We rely on `copyOf` to cast or defensively copy
+  }
+}
+```
+
+Recompile both modules and watch how the code from our encoding is being "implanted" into the generated code in `ImmutableUseTable.java`. You can play with adding trivial changes to the way accessors or conversion method are implemented in the encoding and see how implementation code of `ImmutableTable` changes accordingly.
+
+### Customizing builder implementation
+
+There's already some geeky stuff happening internally, but nothing interesting so far in terms of convenience and utility that our encoding is called to provide. That's because we haven't got to customizing builder code. Default implementation of....
 
 How it works
 ------------
