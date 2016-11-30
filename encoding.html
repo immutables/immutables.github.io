@@ -40,13 +40,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <h2>Tutorial</h2>
 
-<h3>Setting up projects</h3>
-
-<p>We&#39;ll dive straight into practical example which will demonstrate typical use case as well as the most important pieces of the functionality. You can skip to the <a href="#howto">How to</a> if looking for specific recipes.</p>
+<p>We&#39;ll dive straight into practical example which will demonstrate typical use case as well as the most important pieces of the functionality in a step-by-step fashion. You can skip to the <a href="#howto">How to</a> if looking for specific recipes.</p>
 
 <p><strong>Let&#39;s create encoding for the <code>com.google.common.collect.ImmutableTable</code></strong></p>
 
-<p>We&#39;ll start by creating modules for our encoding. We will use one module to create encoding itself, and another one to use apply it to generated objects. (<a href="#why-separate">See why need for separate modules</a>)</p>
+<h3>Setting up projects</h3>
+
+<p>Start by creating modules for our encoding. One module to create encoding itself, and another one to use apply it to generated objects. (<a href="#why-separate">See why need for separate modules</a>)</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">encoding-defs/
 +-src/ (think of it as as src/main/java, but simpler ;)
 | +-encoding/ (simply a package)
@@ -125,7 +125,7 @@ encoding-use/
 
 <p>If you need more detailed setup examples on how to setup the build, please, <a href="https://github.com/immutables/samples">see complete sample projects encoding-*</a>.</p>
 
-<h3>First steps</h3>
+<h3>First encoding</h3>
 
 <p>Let&#39;s create package and class for the <code>Table</code> encoding. It could be <code>public</code>, but there&#39;s no need for it to be visible outside, so package-private visibility is most appropriate.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">encoding</span><span class="o">;</span>
@@ -151,7 +151,7 @@ encoding-use/
   <span class="kd">private</span> <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">field</span><span class="o">;</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>And it compiles now successfully! But wait, what do we have achieved? To answer this, let&#39;s actually use our encoding. Create <code>uses/UseTable.java</code> in <code>encoding-use</code> module like this.</p>
+<p>And it compiles now successfully! But wait, what do we have achieved? Before answering this, let&#39;s actually use our encoding. Create <code>uses/UseTable.java</code> in <code>encoding-use</code> module like shown below:</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">uses</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
@@ -182,17 +182,121 @@ encoding-use/
       <span class="n">tags</span> <span class="o">=</span> <span class="o">{</span><span class="s">&quot;IMPL&quot;</span><span class="o">,</span> <span class="s">&quot;PRIVATE&quot;</span><span class="o">,</span> <span class="s">&quot;FINAL&quot;</span><span class="o">,</span> <span class="s">&quot;FIELD&quot;</span><span class="o">},</span>
       <span class="n">naming</span> <span class="o">=</span> <span class="s">&quot;*&quot;</span><span class="o">,</span>
  <span class="c1">// ... many lines skipped here</span>
- <span class="c1">// ...</span>
 <span class="kd">public</span> <span class="nd">@interface</span> <span class="n">TableEncodingEnabled</span> <span class="o">{}</span>
 </code></pre></div>
-<p>Use <code>TableEncodingEnabled</code> annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation: imaging having special &quot;stereotype&quot; annotation which is itself annotated with <code>*Enabled</code> annotations as well as any relevant <code>Value.Style</code> annotation. All in all, placing encoding activation annotation follows the same rules as <a href="style.html#apply-style">applying styles</a></p>
+<p>Use <code>TableEncodingEnabled</code> annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation: imagine having special &quot;stereotype&quot; annotation which is itself annotated with <code>*Enabled</code> annotations as well as any relevant <code>Value.Style</code> annotation. All in all, placing encoding activation annotation follows the same rules as <a href="style.html#apply-style">applying styles</a></p>
 
 <p>As placing encoding annotation on the type directly is pretty lame (in the sense of cluttering value objects with configuration), we&#39;ll place it on the <code>uses</code> package affecting all value types in the package.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// create encoding-use/src/uses/package-info.java</span>
 <span class="nd">@encoding.TableEncodingEnabled</span> <span class="c1">// &lt;-- this will activate the encoding</span>
 <span class="kn">package</span> <span class="n">uses</span><span class="o">;</span>
 </code></pre></div>
-<p>If we re-compile <code>encoding-use</code> module at this point, I really hope ше it compile correctly and the encoding will be applied, so you&#39;ll see the generated <code>ImmutableUseTable.java</code> changed a bit, but not much, but  </p>
+<p>After successful re-compilation of <code>encoding-use</code> module we are ready to see we achieved to apply our minimal encoding of <code>ImmutableTable&lt;String,String,String&gt;</code>. Indeed, generated code of <code>ImmutableUseTable.java</code> is a little bit different internally from what was generated before we&#39;ve applied the encoding. The great thing is that we&#39;ve able to properly setup projects and apply encoding, but, otherwise, we are yet to see anything useful about an encodings: there are no externally observable changes. We have to start creating useful definitions on top of the minimal encoding to unleash the power.</p>
+
+<h3>Type parameters</h3>
+
+<p>The first thing that should bother us is that the encoding only applies to <code>ImmutableTable&lt;String,String,String&gt;</code>, i.e. exactly to the specified type arguments. If we add another accessor which will use <code>Integer</code> type arguments, the encoding will not be applied.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">UseTable</span> <span class="o">{</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="nf">values</span><span class="o">();</span> <span class="c1">// &lt;-- encoding applied</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">intValues</span><span class="o">();</span> <span class="c1">// &lt;-- default code is generated</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>To make encoding flexible about type arguments we&#39;ll use generic parameters on encoding.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">encoding</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.immutables.encode.Encoding</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableTable</span><span class="o">;</span>
+
+<span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">TableEncoding</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>  <span class="c1">// &lt;-- introduce type parameters</span>
+  <span class="nd">@Encoding.Impl</span>
+  <span class="kd">private</span> <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">field</span><span class="o">;</span> <span class="c1">// &lt;-- use them anywhere we reference the type</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>After recompiling both <code>encoding-def</code> and <code>encoding-use</code> modules, both accessors of the <code>ImmutableUseTable</code> class will be also implemented by our encoding. And so <code>TableEncoding</code> will be applied to any type arguments of <code>ImmutableTable</code> in a scope where it&#39;s applied. You can also safely assume that encoding will also capture any <code>ImmutableTable</code> arguments which themselves are type variables. If we parametrize <code>UseTable</code>, our encoding will still apply:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">UseTable</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span> <span class="c1">// &lt;-- introduce type variable</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">values</span><span class="o">();</span> <span class="c1">// &lt;-- encoding applied</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">intValues</span><span class="o">();</span> <span class="c1">// &lt;-- encoding applied</span>
+<span class="o">}</span>
+</code></pre></div>
+<h3>Exposed type and accessors</h3>
+
+<p>It&#39;s not uncommon to see value interfaces (or abstract classes) implemented by both immutable and mutable classes. While we&#39;ll leave mutable implementations out of this discussion, but, at minimum, we&#39;ll want to apply <code>ImmutableTable</code> encoding as implementation to attributes exposed as <code>com.google.common.collect.Table</code> interface. The encoding we&#39;ve created contains only the implementation field. The type, to which the encoding applies to, is derived directly from the field. Fortunately, we&#39;re able to specify more general types for encoding as long as they are compatible.</p>
+
+<p>The recipe is following: create no-arg accessors with target return types and use <code>@Encoding.Expose</code> annotation to mark these accessors. The names of the accessors are irrelevant as long as they are unambiguous. And in our case, it should be obvious that they would return the value of the <code>value</code> fields. Here&#39;s how our encoding would look like after adding <code>Expose</code> accessors:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">encoding</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableTable</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.google.common.collect.Table</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.immutables.encode.Encoding</span><span class="o">;</span>
+
+<span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">TableEncoding</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="nd">@Encoding.Impl</span>
+  <span class="kd">private</span> <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">field</span><span class="o">;</span>
+
+  <span class="nd">@Encoding.Expose</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">getImmutableTable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">field</span><span class="o">;</span> <span class="c1">// &lt;-- this is how our accessor would be implemented</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Encoding.Expose</span>
+  <span class="n">Table</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">getTable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">field</span><span class="o">;</span> <span class="c1">// &lt;-- this is how our accessor would be implemented</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>Important point about this is that as we define at least one such <em>expose</em> accessor, no type would be derived from the field. In our case we created two accessors: for <code>Table</code> and <code>ImmutableTable</code>. There&#39;s no handling of inheritance during matching encoding to types, so if we want an encoding to apply both an interface and an immutable implementation (like <code>Table</code> and <code>ImmutableTable</code>), we have to declare all such accessors. The actual names of fields and accessors will follow attribute names in the using class, it&#39;s only required that encoding have them unambiguous. The annotation processor then can, more or less safely, extrapolate implementation code like <code>return field;</code> to generate Java source code for accessors in an immutable class.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Changing UseTable to use &quot;Table&quot; interface for one of the accessors</span>
+<span class="c1">// The encoding will be applied to both.</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">interface</span> <span class="nc">UseTable</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">values</span><span class="o">();</span> <span class="c1">// &lt;-- use immutable class</span>
+  <span class="n">Table</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Integer</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">intValues</span><span class="o">();</span> <span class="c1">// &lt;-- use interface</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>However, that is not yet fully working solution, there&#39;s a compilation error in generated code:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">[ERROR] ../sample/encoding-use/target/generated-sources/annotations/uses/ImmutableUseTable.java:[156,35] incompatible types: com.google.common.collect.Table&lt;java.lang.Integer,java.lang.Integer,V&gt; cannot be converted to com.google.common.collect.ImmutableTable&lt;java.lang.Integer,java.lang.Integer,V&gt;
+</code></pre></div>
+<p>The missing piece is the special routine that initializes <code>ImmutableTable field</code> with the value of <code>Table</code>. This requirement comes from the code that copies object in builder. Having received an instance of <code>UseTable</code> and invoking <code>Table intValues()</code> to get the value, which is then used to initialize in builder <code>ImmutableTable field</code>. While it&#39;s possible to craft object to avoid this code to be generated (setting <code>Value.Immutable(copy=false)</code>), we&#39;ve yet to solve the underlying problem: the need to initialize immutable field from the instance of more general type having unknown implementation. Notice how you would use regular <code>List&lt;T&gt;</code> with <em>Immutables</em> processor: you can to initialize attribute values with <code>Iterable&lt;? extends T&gt;</code>. We need similar capability to describe the most general type we can convert to <code>ImmutableTable</code>. And we have such!</p>
+
+<p>The annotation <code>@Encoding.Of</code> is used to mark static conversion method. Method is bound to the following restrictions:</p>
+
+<ul>
+<li>It must be static and therefore should have the same type parameters as encoding (if there are such).</li>
+<li>The return type should match the type of implementation field.</li>
+<li>It should have single parameter to accept value. What is important, any <em>exposed</em> accessor type should be assignable to that parameter type, and the processor can generate code which can get from value from a getter and pass to an initializer.</li>
+</ul>
+
+<p>For our case <code>Table&lt;? extends R, ? extends C, ? extends V&gt;</code> is most general type to accept as initializing value.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">TableEncoding</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="nd">@Encoding.Impl</span>
+  <span class="kd">private</span> <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">value</span><span class="o">;</span>
+
+  <span class="nd">@Encoding.Expose</span>
+  <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">getImmutableTable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Encoding.Expose</span>
+  <span class="n">Table</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">getTable</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Encoding.Of</span>
+  <span class="kd">static</span> <span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">ImmutableTable</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">init</span><span class="o">(</span><span class="n">Table</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">R</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">C</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">table</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">ImmutableTable</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">table</span><span class="o">);</span> <span class="c1">// &lt;-- We rely on `copyOf` to cast or defensively copy</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>Recompile both modules and watch how the code from our encoding is being &quot;implanted&quot; into the generated code in <code>ImmutableUseTable.java</code>. You can play with adding trivial changes to the way accessors or conversion method are implemented in the encoding and see how implementation code of <code>ImmutableTable</code> changes accordingly.</p>
+
+<h3>Customizing builder implementation</h3>
+
+<p>There&#39;s already some geeky stuff happening internally, but nothing interesting so far in terms of convenience and utility that our encoding is called to provide. That&#39;s because we haven&#39;t got to customizing builder code. Default implementation of....</p>
 
 <h2>How it works</h2>
 
