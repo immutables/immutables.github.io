@@ -1402,13 +1402,13 @@ Then, it can be used safely as an attribute:
 
 ```java
 @Value.Immutable
-interface Value {
+interface Val {
   int number();
   Confidential confidential();
 }
 ...
 // toString
-"Value{number=1, confidential=<NON DISCLOSED>}"
+"Val{number=1, confidential=<NON DISCLOSED>}"
 ```
 
 See also [auxiliary attributes](#auxiliary) for similar functionality.
