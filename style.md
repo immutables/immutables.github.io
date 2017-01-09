@@ -140,6 +140,30 @@ import org.immutables.value.Value.Parameter;
 }
 ```
 
+### "is" prefix and custom getters
+
+As "strange" as it sounds, but out-of-the-box only `get`-prefixed or no-prefix accessors are supported. The `isEmpty()` accessor will be considered as `isEmpty` attribute, not as one called `empty`. Yep, Immutables is not a JavaBean-compliant toolkit and don't expect it to be. However, styles allows you to specify arbitrary prefixes (or even suffixes) to be recognized as part of attribute accessors. Most folks that want to use familiar `get` and `is` prefixes simply use `@Value.Style(get = {"get*", "is*"})` configured for a parent-package or as a meta-annotation.
+
+```java
+@Value.Immutable
+@Value.Style(get = {"get*", "is*", "*Whatever"}, init = "set*")
+interface Val {
+  int getProp();
+  boolean isEmpty();
+  String fooWhatever();
+
+  static void demo() {
+    Val v = ImmutableVal.builder()
+      .setProp(1)
+      .setEmpty(true)
+      .setFoo("whatever")
+      .build();
+
+    v.toString();// Val{prop=1, empty=true, foo=whatever}
+  }
+}
+```
+
 <a name="nesting"></a>
 ### Enclosing type
 

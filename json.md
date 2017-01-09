@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.3.9{% endcapture %}
+{% capture v %}2.4.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -101,6 +101,7 @@ Using the approach shown above, generated builders will have attributes annotate
 
 - Make sure that _Jackson_ can serialize any other type that is used as attribute type.
 - Not all Jackson annotations are propagated by default to the generated code. You can use `Value.Style.additionalJsonAnnotations` style attribute to specify such annotation types.
+- If using `@JsonIgnore`, you should explicitly make an attribute non-mandatory. In Immutables, an attribute can be declared as non-mandatory via `@Nullable`, `Optional` or `@Value.Default` which are all different in their effect and we do not derive anything automatically.
 - Use `Value.Style.jacksonIntegration = false` (since 2.3.7) to disable any out-of-the-box integration triggered `@JsonSerialize`/`@JsonDeserialize`, may help if integration is getting in the way
 - Use `Value.Style.forceJacksonPropertyNames = false` to not use literal names in generated `@JsonProperty` annotations. While somewhat fragile, an absence of the literal names enables the usage of naming strategies and built-in Jackson conventions.
 

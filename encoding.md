@@ -3,7 +3,7 @@ title: 'Encoding custom types'
 layout: page
 ---
 
-{% capture v %}2.3.9{% endcapture %}
+{% capture v %}2.4.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Introduction
@@ -105,7 +105,7 @@ If you need more detailed setup examples on how to setup the build, please, [see
 
 ### First encoding
 
-Let's create package and class for the `Table` encoding. It could be `public`, but there's no need for it to be visible outside, so package-private visibility is most appropriate.
+Let's create package and class for the `Table` encoding. It could be `public`, but there's no need for it to be visible outside, so package-private visibility is most appropriate. (Going forward, there will be lot of places where package-private visibility will be used, but when actual code is generated `public` or whatever appropriate will be used)
 
 ```java
 package encoding;
@@ -177,7 +177,7 @@ import org.immutables.encode.EncodingMetadata;
 public @interface TableEncodingEnabled {}
 ```
 
-Use `TableEncodingEnabled` annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation: imagine having special "stereotype" annotation which is itself annotated with `*Enabled` annotations as well as any relevant `Value.Style` annotation. All in all, placing encoding activation annotation follows the same rules as [applying styles](style.html#apply-style)
+Use `TableEncodingEnabled` annotation to activate encoding. It can be placed on the value type itself or on the package affecting all value types in the package. Placed parent package it will affect all nested packages in a current compilation module. The activation annotation can be used also as meta-annotation, see [enabling encoding via meta-annotations](#meta-annotations).
 
 As placing encoding annotation on the type directly is pretty lame (in the sense of cluttering value objects with configuration), we'll place it on the `uses` package affecting all value types in the package.
 
@@ -309,18 +309,162 @@ class TableEncoding<R, C, V> {
 
 Recompile both modules and watch how the code from our encoding is being "implanted" into the generated code in `ImmutableUseTable.java`. You can play with adding trivial changes to the way accessors or conversion method are implemented in the encoding and see how implementation code of `ImmutableTable` changes accordingly.
 
-### Customizing builder implementation
+### Customizing builder
 
-There's already some geeky stuff happening internally, but nothing interesting so far in terms of convenience and utility that our encoding is called to provide. That's because we haven't got to customizing builder code. Default implementation of....
+There's already some geeky stuff happening internally, but nothing interesting so far in terms of convenience and utility that our encoding is called to provide. That's because we haven't got to customizing builder code. And now we are going to describe builder with the encoding. An encoding describes with exemplary code how a single instance ("instantiation") of attribute will be embedded into immutable class. Similarly, a nested builder is used to describe how an attribute is built by providing illustrative fragments of code. When there are no builder declaration in the encoding, the code for the builder is trivially derived from implementation field (or `@Encoding.Of` conversion method) and requires that attributes would always be initialized using builder. Once encoding builder is defined, it's all up to encoding to control all the aspects of how to build values. Hopefully it's not very complicated to do that.
+
+Start with defining static nested class for a builder part, annotate it with `@Encoding.Builder` and replicate any type parameters if any (they should be identical to the ones of encoding).
+
+```java
+@Encoding
+class TableEncoding<R, C, V> {
+  @Encoding.Impl
+  private ImmutableTable<R, C, V> value;
+  // ... methods skipped for brevity
+
+  @Encoding.Builder  // <-- put annotation
+  static class Builder<R, C, V> { // <-- copy type parameters from the encoding
+
+  }
+}
+```
+
+While a good start, we'll get compilation error:
+
+```
+[ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[28,10] @Encoding.Builder must have no arg method @Encoding.Build. It is used to describe how to get built instance
+```
+
+Here's how to add it:
+
+```java
+//... only nested builder is shown
+@Encoding.Builder
+static class Builder<R, C, V> {
+  @Encoding.Build
+  ImmutableTable<R, C, V> build() {
+    return ImmutableTable.of(); // <-- maybe return empty table on each build?
+  }
+}
+```
+
+Even that is not enough. The next compilation error still shows missing elements:
+
+```
+[ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[28,10] One of builder init methods should be a copy method, i.e. it should be annotated @Encoding.Init @Encoding.Copy and be able to accept values of type which exposed accessor returns
+```
+
+This is similar how we defined conversion (`@Encoding.Of`) method, but now well have to do initialization for the builder. Apparently, we are better off creating more complete, realistic builder encoding that would compile and work. Please, follow code comments for extra details.
+
+```java
+//... only nested builder is shown
+@Encoding.Builder
+static class Builder<R, C, V> {
+  // we're introducing field to hold intermediate value field
+  // And we're even initialize it with default value: empty table
+  private ImmutableTable<R, C, V> buildValue = ImmutableTable.of();
+  // This field is nothing special, because you can have as many
+  // helper builder fields per attribute as you want and their names
+  // just have to be unambiguous, no patterns special to follow.
+
+  @Encoding.Init // <-- specify builder initializer method
+  @Encoding.Copy // <-- marks it as "canonical" copy method
+  // For copy init methods, the name of a method is irrelevant
+  // as generated methods are following a name of a corresponding attribute
+  // and naming styles applied elsewhere
+  public void set(Table<? extends R, ? extends C, ? extends V> table) {
+    // As in the case with conversion method, we accept more general type
+    // and safely copy it to our field
+    // if you would restrict null values it is better to do it here to fail
+    // fast, but in our case `ImmutableTable.copyOf` takes care of everything.
+    this.buildValue = ImmutableTable.copyOf(table);
+    // please note, that we don't have to `return this;` like we usually do
+    // in builder initializers. Here we have just a void method, but generated
+    // initializers will actually return builder for chained invocation,
+    // so this is covered.
+  }
+
+  @Encoding.Build // <-- marks build finalization method
+  // the method name is irrelevant
+  // the return value should match implementation field type
+  ImmutableTable<R, C, V> build() {
+    // We return whatever we have as of now.
+    // buildValue field was initialized with empty table and
+    // can be only reassigned to proper ImmutableTable value
+    // so we don't check anything here. But if we would like to check for null
+    // or other invariants, we would do this here and throw IllegalStateException
+    // explaining why attribute value cannot be build.
+    return buildValue;
+  }
+}
+```
+
+Such encoding will compile and work. The annotation processor will generate builder code which behave almost as the default code, but with one difference: as we've initialized builder field with empty table, build method will not complain if call to "set" initializer was omitted during construction, there attributes value will be empty table unless initialized to some other value. While another uninteresting example, I believe it was necessary to demonstrate very basic structure the builder might have and provide explaining comments.
+
+Of course, a builder for our `TableEncoding` should have convenient methods to build `ImmutableTable` and with the next attempt we'll cover this by using `ImmutableTable.Builder` as a implementation helper. Please, follow code comments for extra details.
+
+```java
+//... only nested builder is shown
+@Encoding.Builder
+static class Builder<R, C, V> {
+  // holding internal builder
+  private ImmutableTable.Builder<R, C, V> builder = ImmutableTable.<R, C, V>builder();
+
+  @Encoding.Init // defines additional initializer method
+  // the method name matters here as it would became prefix of
+  // the generated initializer method, for an attribute named 'foo',
+  // a generated will be named 'putFoo'
+  void put(R row, C column, V value) {
+    // here, table builder handles checks for us
+    builder.put(row, column, value);
+  }
+
+  @Encoding.Init // defines additional initializer method
+  // for an attribute named 'bar', a generated initializer will be named 'putAllBar'
+  void putAll(Table<? extends R, ? extends C, ? extends V> table) {
+    // here, table builder handles all checks for us
+    builder.putAll(table);
+  }
+
+  @Encoding.Init
+  @Encoding.Copy // canonical copy-initializer, sets/overwrites table
+  // for init-copy initializers, generated method name is derived
+  // from attribute name and current style
+  public void set(Table<? extends R, ? extends C, ? extends V> table) {
+    // reassigning builder as set supposed to
+    builder = ImmutableTable.<R, C, V>builder().putAll(table);
+  }
+
+  @Encoding.Build
+  ImmutableTable<R, C, V> build() {
+    // this is straightforward
+    // just build table from whatever we have accumulated in builder
+    return builder.build();
+  }
+}
+```
+
+Rec
 
 How it works
 ------------
 
-Reference
+How To...
 ---------
+### Virtual fields
 
-### How To...
+<a name="meta-annotations"></a>
+### Enabling encoding via meta-annotations
 
-### Limitations
-Annotations are not supported yet
-Parser/processor limitations
+The activation annotation can be used also as meta-annotation: imagine having special "stereotype" annotation which is itself annotated with `*Enabled` annotations as well as any relevant `Value.Style` annotation. All in all, placing encoding activation annotation follows the same rules as [applying styles](style.html#apply-style)
+
+
+### Adding helper methods
+### Customize naming
+### Customize with methods
+### Getting attribute name
+
+Limitations
+-----------
+### Annotations are not supported yet
+### Parser/processor limitations (method references)
