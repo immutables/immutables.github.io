@@ -33,7 +33,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <p>Example generated code for <em>Gson</em> type adapters</p>
 
 <h3>Document types</h3>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.google.common.collect.Multiset</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.google.common.collect.Multiset</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.collect.SetMultimap</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.collect.ListMultimap</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
@@ -75,7 +75,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="o">}</span>
 </code></pre></div>
 <p>Below is a source code of generated <code>TypeAdapterFactory</code></p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableMultiset</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableMultiset</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableSet</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.collect.ListMultimap</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.collect.SetMultimap</span><span class="o">;</span>
@@ -104,13 +104,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <span class="nd">@Override</span>
   <span class="kd">public</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">create</span><span class="o">(</span><span class="n">Gson</span> <span class="n">gson</span><span class="o">,</span> <span class="n">TypeToken</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">InrTypeAdapter</span><span class="o">.</span><span class="na">adapts</span><span class="o">(</span><span class="n">type</span><span class="o">))</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="o">(</span><span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="k">new</span> <span class="nf">InrTypeAdapter</span><span class="o">(</span><span class="n">gson</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="k">new</span> <span class="n">InrTypeAdapter</span><span class="o">(</span><span class="n">gson</span><span class="o">);</span>
     <span class="o">}</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">AdaptTypeAdapter</span><span class="o">.</span><span class="na">adapts</span><span class="o">(</span><span class="n">type</span><span class="o">))</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="o">(</span><span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="k">new</span> <span class="nf">AdaptTypeAdapter</span><span class="o">(</span><span class="n">gson</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="k">new</span> <span class="n">AdaptTypeAdapter</span><span class="o">(</span><span class="n">gson</span><span class="o">);</span>
     <span class="o">}</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">NstTypeAdapter</span><span class="o">.</span><span class="na">adapts</span><span class="o">(</span><span class="n">type</span><span class="o">))</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="o">(</span><span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="k">new</span> <span class="nf">NstTypeAdapter</span><span class="o">(</span><span class="n">gson</span><span class="o">);</span>
+      <span class="k">return</span> <span class="o">(</span><span class="n">TypeAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;)</span> <span class="k">new</span> <span class="n">NstTypeAdapter</span><span class="o">(</span><span class="n">gson</span><span class="o">);</span>
     <span class="o">}</span>
     <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
   <span class="o">}</span>
@@ -148,7 +148,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="n">Adapt</span><span class="o">.</span><span class="na">Inr</span> <span class="nf">read</span><span class="o">(</span><span class="n">JsonReader</span> <span class="n">in</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="nf">readInr</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">readInr</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">writeInr</span><span class="o">(</span><span class="n">JsonWriter</span> <span class="n">out</span><span class="o">,</span> <span class="n">Adapt</span><span class="o">.</span><span class="na">Inr</span> <span class="n">instance</span><span class="o">)</span>
@@ -295,7 +295,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <span class="n">elements</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">nextString</span><span class="o">());</span>
         <span class="o">}</span>
         <span class="n">in</span><span class="o">.</span><span class="na">endArray</span><span class="o">();</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">in</span><span class="o">.</span><span class="na">nextNull</span><span class="o">();</span>
       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
         <span class="n">elements</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">nextString</span><span class="o">());</span>
@@ -312,7 +312,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <span class="n">builder</span><span class="o">.</span><span class="na">addList</span><span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">nextInt</span><span class="o">());</span>
         <span class="o">}</span>
         <span class="n">in</span><span class="o">.</span><span class="na">endArray</span><span class="o">();</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">in</span><span class="o">.</span><span class="na">nextNull</span><span class="o">();</span>
       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
         <span class="n">builder</span><span class="o">.</span><span class="na">addList</span><span class="o">(</span><span class="n">in</span><span class="o">.</span><span class="na">nextInt</span><span class="o">());</span>
@@ -411,7 +411,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="n">Adapt</span> <span class="nf">read</span><span class="o">(</span><span class="n">JsonReader</span> <span class="n">in</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="nf">readAdapt</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">readAdapt</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">writeAdapt</span><span class="o">(</span><span class="n">JsonWriter</span> <span class="n">out</span><span class="o">,</span> <span class="n">Adapt</span> <span class="n">instance</span><span class="o">)</span>
@@ -451,7 +451,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <span class="n">elements</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
         <span class="o">}</span>
         <span class="n">in</span><span class="o">.</span><span class="na">endArray</span><span class="o">();</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">in</span><span class="o">.</span><span class="na">nextNull</span><span class="o">();</span>
       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
         <span class="n">Adapt</span><span class="o">.</span><span class="na">Inr</span> <span class="n">value</span> <span class="o">=</span> <span class="n">setTypeAdapter</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
@@ -471,7 +471,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <span class="n">elements</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
         <span class="o">}</span>
         <span class="n">in</span><span class="o">.</span><span class="na">endArray</span><span class="o">();</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">JsonToken</span><span class="o">.</span><span class="na">NULL</span><span class="o">)</span> <span class="o">{</span>
         <span class="n">in</span><span class="o">.</span><span class="na">nextNull</span><span class="o">();</span>
       <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
         <span class="n">Adapt</span><span class="o">.</span><span class="na">Nst</span> <span class="n">value</span> <span class="o">=</span> <span class="n">bagTypeAdapter</span><span class="o">.</span><span class="na">read</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
@@ -500,7 +500,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="nd">@Override</span>
     <span class="kd">public</span> <span class="n">Adapt</span><span class="o">.</span><span class="na">Nst</span> <span class="nf">read</span><span class="o">(</span><span class="n">JsonReader</span> <span class="n">in</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-      <span class="k">return</span> <span class="nf">readNst</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">readNst</span><span class="o">(</span><span class="n">in</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kt">void</span> <span class="nf">writeNst</span><span class="o">(</span><span class="n">JsonWriter</span> <span class="n">out</span><span class="o">,</span> <span class="n">Adapt</span><span class="o">.</span><span class="na">Nst</span> <span class="n">instance</span><span class="o">)</span>

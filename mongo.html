@@ -55,7 +55,7 @@ is to provide the best possible API that matches well for storing documents expr
 
 <p>Generated repositories wrap the infrastructure of the official Java driver, but there are couple of places where operations are handled more efficiently in <em>Immutables</em>.
 Repositories employ BSON marshaling which uses the same infrastructure for <a href="/json.html">JSON marshaling</a> using the excellent <a href="https://github.com/michel-kraemer/bson4jackson">bson4jackson</a> data-format adapter.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Define repository for collection &quot;items&quot;.</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Define repository for collection &quot;items&quot;.</span>
 <span class="nd">@Value.Immutable</span>
 <span class="nd">@Mongo.Repository</span><span class="o">(</span><span class="s">&quot;items&quot;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Item</span> <span class="o">{</span>
@@ -67,7 +67,7 @@ Repositories employ BSON marshaling which uses the same infrastructure for <a hr
 <span class="o">}</span>
 
 <span class="c1">// Instantiate generated repository</span>
-<span class="n">ItemRepository</span> <span class="n">items</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ItemRepository</span><span class="o">(</span>
+<span class="n">ItemRepository</span> <span class="n">items</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ItemRepository</span><span class="o">(</span>
     <span class="n">RepositorySetup</span><span class="o">.</span><span class="na">forUri</span><span class="o">(</span><span class="s">&quot;mongodb://localhost/test&quot;</span><span class="o">));</span>
 
 <span class="c1">// Create item</span>
@@ -106,7 +106,7 @@ Repositories employ BSON marshaling which uses the same infrastructure for <a hr
 <p><a name="dependencies"></a></p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cmongo%7C2.3.9%7Cjar">org.immutables:mongo:2.3.9</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cmongo%7C2.4.0%7Cjar">org.immutables:mongo:2.4.0</a>
 
 <ul>
 <li>Compile and runtime utilities used during marshaling</li>
@@ -119,16 +119,16 @@ Repositories employ BSON marshaling which uses the same infrastructure for <a hr
 <p><strong>Note:</strong> Current release works with versions <code>2.12+</code> of the MongoDB Java driver - version <code>3.0</code> and up is not yet supported.</p>
 
 <p>Snippet of Maven dependencies:</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>mongo<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
 <h3>Enable repository generation</h3>
@@ -141,7 +141,7 @@ as a class with a <code>Repository</code> suffix in the same package.</p>
 <p>By default, the mapped collection name is derived from abstract value class name: For a
 <code>UserDocument</code> class, the collection name will be <code>userDocument</code>. However, the name is customizable
 using a <code>value</code> annotation attribute:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.mongo.Mongo</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">org.immutables.mongo.Mongo</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
 
 <span class="nd">@Value.Immutable</span>
@@ -162,14 +162,14 @@ and a configured <code>com.google.gson.Gson</code> instance.</p>
 <p>Luckily, to get started (and for simpler applications), there&#39;s an easy way to create a setup
 using <code>RepositorySetup.forUri</code> factory method. Pass a MongoDB connection string and a setup
 will be created with default settings.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">RepositorySetup</span> <span class="n">setup</span> <span class="o">=</span> <span class="n">RepositorySetup</span><span class="o">.</span><span class="na">forUri</span><span class="o">(</span><span class="s">&quot;mongodb://localhost/test&quot;</span><span class="o">);</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">RepositorySetup</span> <span class="n">setup</span> <span class="o">=</span> <span class="n">RepositorySetup</span><span class="o">.</span><span class="na">forUri</span><span class="o">(</span><span class="s">&quot;mongodb://localhost/test&quot;</span><span class="o">);</span>
 </code></pre></div>
 <p>To get a test database running on the default port on a local machine, just launch <code>mongod</code>.</p>
 
 <p>To fully customize setting use <code>RepositorySetup</code> builder:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">MongoClient</span> <span class="n">mongoClient</span> <span class="o">=</span> <span class="o">...</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">MongoClient</span> <span class="n">mongoClient</span> <span class="o">=</span> <span class="o">...</span>
 <span class="n">ListeningExecutorService</span> <span class="n">executor</span> <span class="o">=</span> <span class="o">...</span>
-<span class="n">GsonBuilder</span> <span class="n">gsonBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">GsonBuilder</span><span class="o">();</span>
+<span class="n">GsonBuilder</span> <span class="n">gsonBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GsonBuilder</span><span class="o">();</span>
 <span class="o">...</span>
 
 <span class="n">RepositorySetup</span> <span class="n">setup</span> <span class="o">=</span> <span class="n">RepositorySetup</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
@@ -185,7 +185,7 @@ will be created with default settings.</p>
 <p>It is highly recommended to have explicit <code>_id</code> field for MongoDB documents. Use the <code>@Mongo.Id</code>
 annotation to declare an <code>id</code> attribute. The <code>@Mongo.Id</code> annotation acts as an alias to
 <code>@Gson.Named(&quot;_id&quot;)</code>, which can also be used.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
 <span class="nd">@Gson.TypeAdapters</span>
 <span class="nd">@Mongo.Repository</span><span class="o">(</span><span class="s">&quot;user&quot;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">UserDocument</span> <span class="o">{</span>
@@ -202,7 +202,7 @@ generated marshaled as <code>_id</code> (annotated with <code>@Gson.Named(&quot;
 do this, <em>Immutables</em> provides the wrapper type <code>org.immutables.mongo.types.Id</code>. Use the static
 factory methods of <code>org.immutables.mongo.types.Id</code> class to construct instances that correspond
 to MongoDB&#39; <code>ObjectID</code>. Here&#39;s example of an auto-generated identifier:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.immutables.gson.Gson</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.immutables.mongo.Mongo</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.immutables.mongo.types.Id</span><span class="o">;</span>
@@ -237,7 +237,7 @@ as shown in <a href="json.html#adapter-registration">GSON guide</a>.</p>
 <h2>Operations</h2>
 
 <h4>Sample document repository</h4>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Value.Immutable</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
 <span class="nd">@Gson.TypeAdapters</span>
 <span class="nd">@Mongo.Repository</span><span class="o">(</span><span class="s">&quot;posts&quot;</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">PostDocument</span> <span class="o">{</span>
@@ -252,13 +252,13 @@ as shown in <a href="json.html#adapter-registration">GSON guide</a>.</p>
 <span class="o">}</span>
 
 <span class="c1">// Instantiate generated repository</span>
-<span class="n">PostDocumentRepository</span> <span class="n">posts</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">PostDocumentRepository</span><span class="o">(</span>
+<span class="n">PostDocumentRepository</span> <span class="n">posts</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PostDocumentRepository</span><span class="o">(</span>
     <span class="n">RepositorySetup</span><span class="o">.</span><span class="na">forUri</span><span class="o">(</span><span class="s">&quot;mongodb://localhost/test&quot;</span><span class="o">));</span>
 </code></pre></div>
 <h3>Insert documents</h3>
 
 <p>Insert single or iterable of documents using <code>insert</code> methods.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">posts</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">posts</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span>
     <span class="n">ImmutablePostDocument</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
         <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
         <span class="o">.</span><span class="na">content</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">)</span>
@@ -282,7 +282,7 @@ as shown in <a href="json.html#adapter-registration">GSON guide</a>.</p>
 <h3>Upsert document</h3>
 
 <p>Update or insert full document content by <code>_id</code> using the <code>upsert</code> method:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">posts</span><span class="o">.</span><span class="na">upsert</span><span class="o">(</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">posts</span><span class="o">.</span><span class="na">upsert</span><span class="o">(</span>
     <span class="n">ImmutablePostDocument</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
         <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
         <span class="o">.</span><span class="na">content</span><span class="o">(</span><span class="s">&quot;a1&quot;</span><span class="o">)</span>
@@ -303,7 +303,7 @@ as shown in <a href="json.html#adapter-registration">GSON guide</a>.</p>
 the document. Empty criteria objects are obtained by using the <code>criteria()</code> static factory method on a generated repository.
 Criteria objects are immutable and can be stored as constants or otherwise safely passed around.
 Criteria objects have methods corresponding to document attributes and relevant constraints.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Criteria</span> <span class="n">where</span> <span class="o">=</span> <span class="n">posts</span><span class="o">.</span><span class="na">criteria</span><span class="o">();</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Criteria</span> <span class="n">where</span> <span class="o">=</span> <span class="n">posts</span><span class="o">.</span><span class="na">criteria</span><span class="o">();</span>
 
 <span class="n">List</span><span class="o">&lt;</span><span class="n">PostDocument</span><span class="o">&gt;</span> <span class="n">documents</span> <span class="o">=</span>
     <span class="n">posts</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">where</span><span class="o">.</span><span class="na">contentStartsWith</span><span class="o">(</span><span class="s">&quot;a&quot;</span><span class="o">))</span>
@@ -338,7 +338,7 @@ of result.</p>
 <h4>Simple find methods</h4>
 
 <p>For convenience, there are methods to lookup by <code>_id</code> and to find all documents. These methods do not need criteria objects.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">posts</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="na">fetchFirst</span><span class="o">();</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">posts</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="na">fetchFirst</span><span class="o">();</span>
 
 <span class="c1">// Fetch all? Ok</span>
 <span class="n">posts</span><span class="o">.</span><span class="na">findAll</span><span class="o">().</span><span class="na">fetchAll</span><span class="o">();</span>
@@ -352,7 +352,7 @@ in Java.</p>
 document objects created during unmarshaling, a repository only allows the exclusion of optional fields such
 as <a href="immutable.html#collection">collection attributes</a> and <a href="immutable.html#optional">optional attributes</a>.
 Use <code>exclude*</code> methods on <code>Finder</code> objects to configure attribute exclusion.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kt">boolean</span> <span class="n">isTrue</span> <span class="o">=</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kt">boolean</span> <span class="n">isTrue</span> <span class="o">=</span>
     <span class="n">posts</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
         <span class="o">.</span><span class="na">excludeRatings</span><span class="o">()</span>
         <span class="o">.</span><span class="na">fetchFirst</span><span class="o">()</span>
@@ -364,7 +364,7 @@ Use <code>exclude*</code> methods on <code>Finder</code> objects to configure at
 
 <p>Use <code>Finder</code> to specify ordering by attributes and direction. Ordering is used for fetching results as well
 as finding the first matching object to modify.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">posts</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">where</span><span class="o">.</span><span class="na">contentNot</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">))</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">posts</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">where</span><span class="o">.</span><span class="na">contentNot</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">))</span>
     <span class="o">.</span><span class="na">orderByContent</span><span class="o">()</span>
     <span class="o">.</span><span class="na">orderByIdDesceding</span><span class="o">()</span>
     <span class="o">.</span><span class="na">deleteFirst</span><span class="o">();</span>
@@ -378,7 +378,7 @@ as finding the first matching object to modify.</p>
 <p>Looking for delete operations? Well, we found good place for them, but probably not a very obvious one!</p>
 
 <p>Delete operations are defined on the same <code>Finder</code> object:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">posts</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">deleteFirst</span><span class="o">();</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">posts</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="na">deleteFirst</span><span class="o">();</span>
 
 <span class="kt">int</span> <span class="n">deletedDocumentsCount</span> <span class="o">=</span> <span class="n">posts</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">where</span><span class="o">.</span><span class="na">content</span><span class="o">(</span><span class="s">&quot;&quot;</span><span class="o">))</span>
     <span class="o">.</span><span class="na">deleteAll</span><span class="o">()</span>
@@ -392,7 +392,7 @@ as finding the first matching object to modify.</p>
 <p>Update, find, and modify operations support incremental updates of the documents matching a criteria.
 Incremental update operations are used to update particular fields. Some fields may need to be initialized
 if a document is to be created via upsert operation.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="n">Optional</span><span class="o">&lt;</span><span class="n">PostDocument</span><span class="o">&gt;</span> <span class="n">updatedDocument</span> <span class="o">=</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">PostDocument</span><span class="o">&gt;</span> <span class="n">updatedDocument</span> <span class="o">=</span>
     <span class="n">posts</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
         <span class="o">.</span><span class="na">andModifyFirst</span><span class="o">()</span>
         <span class="o">.</span><span class="na">addRatings</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
@@ -417,7 +417,7 @@ if a document is to be created via upsert operation.</p>
 <p>If you want to ensure indices using code rather than the administrative tools,
 you can use an <code>Indexer</code> object, which ensures indexing with particular fields.
 See the methods of <code>Indexer</code> object.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Compound index on content and ratings</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Compound index on content and ratings</span>
 <span class="n">posts</span><span class="o">.</span><span class="na">index</span><span class="o">()</span>
     <span class="o">.</span><span class="na">withContent</span><span class="o">()</span>
     <span class="o">.</span><span class="na">withRatings</span><span class="o">()</span>

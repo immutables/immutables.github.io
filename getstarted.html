@@ -37,7 +37,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>Add the required dependencies for basic immutable object generation:</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.9%7Cjar">org.immutables:value:2.3.9</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.4.0%7Cjar">org.immutables:value:2.4.0</a>
 
 <ul>
 <li>Compile-only annotation processing tool. All in one artifact: annotations, processor with properly repackaged embedded dependencies.</li>
@@ -45,10 +45,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </ul>
 
 <p>Snippet of Maven dependencies:</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
@@ -61,7 +61,7 @@ The <em>Eclipse JDT compiler</em> (ECJ) also supports this annotation processor.
 
 <p>Assuming that required dependencies were added, create an abstract class with abstract accessor methods.
 You can do the same by annotating with interfaces or even annotations (<code>@interface</code>):</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">info</span><span class="o">.</span><span class="na">sample</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">package</span> <span class="nn">info.sample</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.Set</span><span class="o">;</span>
@@ -76,7 +76,7 @@ You can do the same by annotating with interfaces or even annotations (<code>@in
 <span class="o">}</span>
 </code></pre></div>
 <p>It is now possible to generate and then use the generated immutable implementation:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="n">info</span><span class="o">.</span><span class="na">sample</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">package</span> <span class="nn">info.sample</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 
@@ -111,7 +111,7 @@ See the sample <a href="/generated.html">generated code</a> for an example of wh
 
 <p>An annotation processor plugin should be configured for the Android build.
 Although <em>Immutables</em> annotation processing works with <code>javac</code> without specific a configuration, a plugin is required to ensure that output directories, dependency scopes and other miscellaneous details are being set up correctly. We&#39;ve found that the <code>android-apt</code> plugin works well for this, including interaction with Android Studio.</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">buildscript</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">buildscript</span> <span class="p">{</span>
   <span class="nx">repositories</span> <span class="p">{</span>
     <span class="nx">jcenter</span><span class="p">()</span>
   <span class="p">}</span>
@@ -128,34 +128,34 @@ Although <em>Immutables</em> annotation processing works with <code>javac</code>
 <h4>Adding Immutables dependencies</h4>
 
 <p>The <em>Immutables</em> annotation processor should be added to the special <code>apt</code> scope (declared by the <code>android-apt</code> plugin) and to the compile-time-only <code>provided</code> scope (declared by the Android Gradle plugins).</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">apply</span> <span class="nx">plugin</span><span class="o">:</span> <span class="s2">&quot;com.android.application&quot;</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">apply</span> <span class="nx">plugin</span><span class="o">:</span> <span class="s2">&quot;com.android.application&quot;</span>
 <span class="nx">apply</span> <span class="nx">plugin</span><span class="o">:</span> <span class="s2">&quot;android-apt&quot;</span>
 <span class="c1">// ...</span>
 <span class="nx">dependencies</span> <span class="p">{</span>
   <span class="nx">compile</span> <span class="nx">fileTree</span><span class="p">(</span><span class="nx">dir</span><span class="o">:</span> <span class="s2">&quot;libs&quot;</span><span class="p">,</span> <span class="nx">include</span><span class="o">:</span> <span class="p">[</span><span class="s2">&quot;*.jar&quot;</span><span class="p">])</span>
-  <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.3.9&quot;</span> <span class="c1">// &lt;-- for annotation processor</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.3.9&quot;</span> <span class="c1">// &lt;-- for annotation API</span>
+  <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.4.0&quot;</span> <span class="c1">// &lt;-- for annotation processor</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.4.0&quot;</span> <span class="c1">// &lt;-- for annotation API</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Other compile-only dependencies applicable to Android should be added in the <code>provided</code> scope. Jar files with annotations such as <a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.3.9%7Cjar">org.immutables:builder:2.3.9</a> (see <a href="factory.html">Factory Builders</a>) or <a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cgson%7C2.3.9%7Cjar">org.immutables:gson:2.3.9</a> (see <a href="json.html#gson">GSON support</a>) don&#39;t have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the <code>gson</code> module provides optional runtime classes which are not suitable for Android apps.</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">dependencies</span> <span class="p">{</span>
+<p>Other compile-only dependencies applicable to Android should be added in the <code>provided</code> scope. Jar files with annotations such as <a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.4.0%7Cjar">org.immutables:builder:2.4.0</a> (see <a href="factory.html">Factory Builders</a>) or <a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cgson%7C2.4.0%7Cjar">org.immutables:gson:2.4.0</a> (see <a href="json.html#gson">GSON support</a>) don&#39;t have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the <code>gson</code> module provides optional runtime classes which are not suitable for Android apps.</p>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">dependencies</span> <span class="p">{</span>
   <span class="c1">// ...</span>
-  <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.3.9&quot;</span> <span class="c1">// for annotation processor</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.3.9&quot;</span> <span class="c1">// for annotations</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:builder:2.3.9&quot;</span> <span class="c1">// for annotations</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:gson:2.3.9&quot;</span> <span class="c1">// for annotations</span>
+  <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.4.0&quot;</span> <span class="c1">// for annotation processor</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.4.0&quot;</span> <span class="c1">// for annotations</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:builder:2.4.0&quot;</span> <span class="c1">// for annotations</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:gson:2.4.0&quot;</span> <span class="c1">// for annotations</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Since version <code>2.0.19</code>, for some combined annotation and runtime artifacts there are separate annotation-only artifacts available.
 For example, the <code>value</code> and <code>gson</code> modules have additional artifacts with <code>annotations</code> classifiers. This allows for the reduction of dependencies and
 avoids lint warnings about using certain types that are not available on Android (despite not being
 required at runtime). The above example with the alternative dependencies could be rewritten as:</p>
-<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span class="nx">dependencies</span> <span class="p">{</span>
+<div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">dependencies</span> <span class="p">{</span>
   <span class="c1">// ...</span>
-  <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.3.9&quot;</span> <span class="c1">// for annotation processor</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.3.9:annotations&quot;</span> <span class="c1">// annotation-only artifact</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:builder:2.3.9&quot;</span> <span class="c1">// there are only annotations anyway</span>
-  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:gson:2.3.9:annotations&quot;</span> <span class="c1">// annotation-only artifact</span>
+  <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.4.0&quot;</span> <span class="c1">// for annotation processor</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.4.0:annotations&quot;</span> <span class="c1">// annotation-only artifact</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:builder:2.4.0&quot;</span> <span class="c1">// there are only annotations anyway</span>
+  <span class="nx">provided</span> <span class="s2">&quot;org.immutables:gson:2.4.0:annotations&quot;</span> <span class="c1">// annotation-only artifact</span>
 <span class="p">}</span>
 </code></pre></div>
 <p><a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a></p>
@@ -167,7 +167,7 @@ required at runtime). The above example with the alternative dependencies could 
 <p>There&#39;s known issue with the interaction between the incremental compilation feature of <code>javac</code> and annotation processing.
 Build tools like Maven are also affected by this bug. Typically, commands such as <code>mvn clean compile</code> will resolve any such problems by a forcing full build.
 Disabling incremental compilation is also an option:</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;plugin&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;plugin&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>maven-compiler-plugin<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>3.3<span class="nt">&lt;/version&gt;</span>
@@ -186,7 +186,7 @@ Disabling incremental compilation is also an option:</p>
     &lt;compilerArguments&gt;&lt;Xmaxerrs&gt;1000000&lt;/Xmaxerrs&gt;&lt;/compilerArguments&gt;&lt;/configuration&gt;</code> for <code>maven-compiler-plugin</code>.</p>
 
 <p>In case of some spurious errors Some internal annotation processing errors may be not clearly reported for Maven, you may rerun build with <code>-X</code> debug output and, possibly, quite verbose compiler configuration:</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;compilerArgs&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;compilerArgs&gt;</span>
   <span class="nt">&lt;arg&gt;</span>-verbose<span class="nt">&lt;/arg&gt;</span>
   <span class="nt">&lt;arg&gt;</span>-XprintRounds<span class="nt">&lt;/arg&gt;</span>
   <span class="nt">&lt;arg&gt;</span>-XprintProcessorInfo<span class="nt">&lt;/arg&gt;</span>

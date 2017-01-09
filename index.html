@@ -28,12 +28,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <header class="jumbotron">
   <div class="container">
-    <h1 title="The Immutables Java Annotation Processor v2.3.9">Immutables <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></span></h1>
+    <h1 title="The Immutables Java Annotation Processor v2.4.0">Immutables <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></span></h1>
     <p>Java annotation processors to generate simple, safe and consistent value objects. Do not repeat yourself, try Immutables, the most comprehensive tool in this field!</p>
 
     <a href="/getstarted.html" class="btn btn-primary btn-lg">Get started!</a>
     <a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
-    <span class="label label-info" style="cursor: pointer" title="Current stable version jar" onclick="location.href='http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.9%7Cjar'">v2.3.9</span>
+    <span class="label label-info" style="cursor: pointer" title="Current stable version jar" onclick="location.href='http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.4.0%7Cjar'">v2.4.0</span>
 
     <a href="https://twitter.com/ImmutablesOrg" class="pull-right">
       <i class="fa fa-twitter"></i> News and announcements</a>
@@ -43,7 +43,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section class="illustration sample0 clearfix">
   <div class="container clearfix">
     
-    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
 <span class="c1">// Define abstract value type</span>
 <span class="nd">@Value.Immutable</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ValueObject</span> <span class="o">{</span>
@@ -51,7 +51,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">counts</span><span class="o">();</span>
   <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Use generated immutable implementation</span>
+</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Use generated immutable implementation</span>
 <span class="n">ValueObject</span> <span class="n">valueObject</span> <span class="o">=</span>
     <span class="n">ImmutableValueObject</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
         <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;My value&quot;</span><span class="o">)</span>
@@ -62,14 +62,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   <div class="container clearfix">
     
-    <div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Or you can configure different @Value.Style</span>
+    <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Or you can configure different @Value.Style</span>
 <span class="nd">@Value.Immutable</span>
 <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractItem</span> <span class="o">{</span>
   <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">();</span>
   <span class="kd">abstract</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getTags</span><span class="o">();</span>
   <span class="kd">abstract</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getDescription</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// Use generated value object</span>
+</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Use generated value object</span>
 <span class="n">Item</span> <span class="n">namelessItem</span> <span class="o">=</span> <span class="n">Item</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
     <span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">&quot;Nameless&quot;</span><span class="o">)</span>
     <span class="o">.</span><span class="na">addTags</span><span class="o">(</span><span class="s">&quot;important&quot;</span><span class="o">,</span> <span class="s">&quot;relevant&quot;</span><span class="o">)</span>

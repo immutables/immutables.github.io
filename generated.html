@@ -37,7 +37,7 @@ and there are no Guava or JSR-305 annotations libraries in the classpath.
 <code>@Parameter</code> annotation is used to specify constructor parameters so that <a href="/immutable.html#constructor">constructor method</a> is generated.</p>
 
 <h3>Minimal tuple</h3>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
 
 <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Tuple</span> <span class="o">{</span>
@@ -46,7 +46,7 @@ and there are no Guava or JSR-305 annotations libraries in the classpath.
 <span class="o">}</span>
 </code></pre></div>
 <p>The source code of the generated immutable implementation:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">java.util.Objects</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">java.util.Objects</span><span class="o">;</span>
 
 <span class="cm">/**</span>
 <span class="cm"> * Immutable implementation of {@link Tuple}.</span>
@@ -129,7 +129,7 @@ and there are no Guava or JSR-305 annotations libraries in the classpath.
 <span class="cm">   * @return An immutable Tuple instance</span>
 <span class="cm">   */</span>
   <span class="kd">public</span> <span class="kd">static</span> <span class="n">ImmutableTuple</span> <span class="nf">of</span><span class="o">(</span><span class="kt">int</span> <span class="n">index</span><span class="o">,</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableTuple</span><span class="o">(</span><span class="n">index</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableTuple</span><span class="o">(</span><span class="n">index</span><span class="o">,</span> <span class="n">name</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
@@ -139,7 +139,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <h3>Typical value object</h3>
 
 <p>Here&#39;s a more typical example of a value object with a builder and copy methods. Google Guava is present in classpath.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.google.common.base.Optional</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.google.common.base.Optional</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.List</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
 
@@ -153,7 +153,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="o">}</span>
 </code></pre></div>
 <p>You will probably agree that the code below would have been painful to write by hand:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kn">import</span> <span class="nn">com.google.common.base.MoreObjects</span><span class="o">;</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.google.common.base.MoreObjects</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.base.Optional</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.base.Preconditions</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.common.collect.ImmutableList</span><span class="o">;</span>
@@ -245,7 +245,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">   */</span>
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withId</span><span class="o">(</span><span class="kt">long</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">==</span> <span class="n">value</span><span class="o">)</span> <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="cm">/**</span>
@@ -256,7 +256,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">   */</span>
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withName</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">value</span><span class="o">))</span> <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span>
         <span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span>
         <span class="n">Preconditions</span><span class="o">.</span><span class="na">checkNotNull</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="s">&quot;name&quot;</span><span class="o">),</span>
         <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span>
@@ -271,7 +271,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">   */</span>
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withNumbers</span><span class="o">(</span><span class="n">Number</span><span class="o">...</span> <span class="n">elements</span><span class="o">)</span> <span class="o">{</span>
     <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Number</span><span class="o">&gt;</span> <span class="n">newValue</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">elements</span><span class="o">);</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="n">newValue</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="n">newValue</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="cm">/**</span>
@@ -283,7 +283,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withNumbers</span><span class="o">(</span><span class="n">Iterable</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">elements</span><span class="o">)</span> <span class="o">{</span>
     <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">numbers</span> <span class="o">==</span> <span class="n">elements</span><span class="o">)</span> <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
     <span class="n">ImmutableList</span><span class="o">&lt;</span><span class="n">Number</span><span class="o">&gt;</span> <span class="n">newValue</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">copyOf</span><span class="o">(</span><span class="n">elements</span><span class="o">);</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="n">newValue</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="n">newValue</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="cm">/**</span>
@@ -293,7 +293,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">   */</span>
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withComment</span><span class="o">(</span><span class="n">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
     <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">newValue</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">value</span><span class="o">);</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="n">newValue</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="n">newValue</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="cm">/**</span>
@@ -305,7 +305,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withComment</span><span class="o">(</span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">optional</span><span class="o">)</span> <span class="o">{</span>
     <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">value</span> <span class="o">=</span> <span class="n">Preconditions</span><span class="o">.</span><span class="na">checkNotNull</span><span class="o">(</span><span class="n">optional</span><span class="o">,</span> <span class="s">&quot;comment&quot;</span><span class="o">);</span>
     <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">comment</span> <span class="o">==</span> <span class="n">value</span><span class="o">)</span> <span class="k">return</span> <span class="k">this</span><span class="o">;</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">data</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="cm">/**</span>
@@ -316,7 +316,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">   */</span>
   <span class="kd">public</span> <span class="kd">final</span> <span class="n">ImmutableValueObject</span> <span class="nf">withData</span><span class="o">(</span><span class="kt">long</span><span class="o">...</span> <span class="n">elements</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">long</span><span class="o">[]</span> <span class="n">newValue</span> <span class="o">=</span> <span class="n">elements</span><span class="o">.</span><span class="na">clone</span><span class="o">();</span>
-    <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="n">newValue</span><span class="o">);</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">id</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">numbers</span><span class="o">,</span> <span class="k">this</span><span class="o">.</span><span class="na">comment</span><span class="o">,</span> <span class="n">newValue</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="cm">/**</span>
@@ -402,9 +402,9 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">   */</span>
   <span class="nd">@NotThreadSafe</span>
   <span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Builder</span> <span class="o">{</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">INIT_BIT_ID</span> <span class="o">=</span> <span class="mh">0x1</span><span class="n">L</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">INIT_BIT_NAME</span> <span class="o">=</span> <span class="mh">0x2</span><span class="n">L</span><span class="o">;</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">INIT_BIT_DATA</span> <span class="o">=</span> <span class="mh">0x4</span><span class="n">L</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">INIT_BIT_ID</span> <span class="o">=</span> <span class="mh">0x1L</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">INIT_BIT_NAME</span> <span class="o">=</span> <span class="mh">0x2L</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">long</span> <span class="n">INIT_BIT_DATA</span> <span class="o">=</span> <span class="mh">0x4L</span><span class="o">;</span>
     <span class="kd">private</span> <span class="kt">long</span> <span class="n">initBits</span> <span class="o">=</span> <span class="mh">0x7</span><span class="o">;</span>
 
     <span class="kd">private</span> <span class="kt">long</span> <span class="n">id</span><span class="o">;</span>
@@ -486,7 +486,7 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">     */</span>
     <span class="kd">public</span> <span class="kd">final</span> <span class="n">Builder</span> <span class="nf">numbers</span><span class="o">(</span><span class="n">Iterable</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">Number</span><span class="o">&gt;</span> <span class="n">elements</span><span class="o">)</span> <span class="o">{</span>
       <span class="n">numbersBuilder</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">builder</span><span class="o">();</span>
-      <span class="k">return</span> <span class="nf">addAllNumbers</span><span class="o">(</span><span class="n">elements</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">addAllNumbers</span><span class="o">(</span><span class="n">elements</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="cm">/**</span>
@@ -537,9 +537,9 @@ See the <a href="/style.html">Style guide</a> for examples of how this can be co
 <span class="cm">     */</span>
     <span class="kd">public</span> <span class="n">ImmutableValueObject</span> <span class="nf">build</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IllegalStateException</span> <span class="o">{</span>
       <span class="k">if</span> <span class="o">(</span><span class="n">initBits</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">throw</span> <span class="k">new</span> <span class="nf">IllegalStateException</span><span class="o">(</span><span class="n">formatRequiredAttributesMessage</span><span class="o">());</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="n">IllegalStateException</span><span class="o">(</span><span class="n">formatRequiredAttributesMessage</span><span class="o">());</span>
       <span class="o">}</span>
-      <span class="k">return</span> <span class="k">new</span> <span class="nf">ImmutableValueObject</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">name</span><span class="o">,</span> <span class="n">numbersBuilder</span><span class="o">.</span><span class="na">build</span><span class="o">(),</span> <span class="n">comment</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="n">ImmutableValueObject</span><span class="o">(</span><span class="n">id</span><span class="o">,</span> <span class="n">name</span><span class="o">,</span> <span class="n">numbersBuilder</span><span class="o">.</span><span class="na">build</span><span class="o">(),</span> <span class="n">comment</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="n">String</span> <span class="nf">formatRequiredAttributesMessage</span><span class="o">()</span> <span class="o">{</span>

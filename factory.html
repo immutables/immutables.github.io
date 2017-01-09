@@ -46,32 +46,32 @@ A factory builder can be seen as a form of partial function application - Supply
 <p>Compile dependencies:</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.3.9%7Cjar">org.immutables:value:2.3.9</a></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.3.9%7Cjar">org.immutables:builder:2.3.9</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.4.0%7Cjar">org.immutables:value:2.4.0</a></li>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.4.0%7Cjar">org.immutables:builder:2.4.0</a></li>
 </ul>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>builder<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.3.9<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
 <h3>Factory</h3>
 
 <p>Place a <code>@org.immutables.builder.Builder.Factory</code> annotation on a static factory method to generate a builder in the same package.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Builder.Factory</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Builder.Factory</span>
 <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">sum</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>
 <span class="o">}</span>
 
 <span class="o">...</span>
-<span class="kt">int</span> <span class="n">sumOf1and2</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SumBuilder</span><span class="o">()</span>
+<span class="kt">int</span> <span class="n">sumOf1and2</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SumBuilder</span><span class="o">()</span>
     <span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
     <span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
@@ -84,7 +84,7 @@ As with builders generated for immutable objects, builders for factory methods t
 By default <code>newBuilder = &quot;new&quot;</code>, which will result in the generated factory builder having a plain <code>public</code> constructor.
 It is sometimes desirable, depending on your organization&#39;s code standards, to instead have a static factory method that produces builders.
 Styles can be applied to classes or packages, but not to individual methods.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// put styles on enclosing class or package</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// put styles on enclosing class or package</span>
 <span class="nd">@Value.Style</span><span class="o">(</span><span class="n">newBuilder</span> <span class="o">=</span> <span class="s">&quot;newBuilder&quot;</span><span class="o">)</span>
 <span class="kd">class</span> <span class="nc">Factories</span> <span class="o">{</span>
 
@@ -113,7 +113,7 @@ Styles can be applied to classes or packages, but not to individual methods.</p>
 Moreover, they usually don&#39;t make sense for factory builders in the way that they do for immutable value objects.</p>
 
 <p>To have default parameters, use <code>Optional</code> parameters:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Builder.Factory</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Builder.Factory</span>
 <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">sum</span><span class="o">(</span><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">a</span><span class="o">,</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
 <span class="o">}</span>
@@ -121,7 +121,7 @@ Moreover, they usually don&#39;t make sense for factory builders in the way that
 <h3>POJO Constructors</h3>
 
 <p>You can generate builders for POJO constructors in the same way as for the factory methods: put <code>@Builder.Constructor</code> annotation on a public constructor. <em>Note: it&#39;s only supported for top-level types.</em></p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">class</span> <span class="nc">Sum</span> <span class="o">{</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">class</span> <span class="nc">Sum</span> <span class="o">{</span>
   <span class="kd">final</span> <span class="kt">int</span> <span class="n">result</span><span class="o">;</span>
   <span class="nd">@Builder.Constructor</span>
   <span class="n">Sum</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
@@ -129,17 +129,17 @@ Moreover, they usually don&#39;t make sense for factory builders in the way that
   <span class="o">}</span>
 <span class="o">}</span>
 <span class="o">...</span> <span class="c1">// use generated builder</span>
-<span class="n">Sum</span> <span class="n">sum</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">SumBuilder</span><span class="o">()</span>
+<span class="n">Sum</span> <span class="n">sum</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SumBuilder</span><span class="o">()</span>
     <span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="mi">111</span><span class="o">)</span>
     <span class="o">.</span><span class="na">b</span><span class="o">(</span><span class="mi">222</span><span class="o">)</span>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div>
 <p>You can even generate builders for preexisting POJOs from different packages using <code>Include</code> annotation. Discovery routine is not very smart, so it will use the first public constructor found.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="c1">// use package-info.java for packages</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// use package-info.java for packages</span>
 <span class="c1">// or place Include on a class</span>
 <span class="c1">// within package</span>
 <span class="nd">@Builder.Include</span><span class="o">({</span><span class="n">other</span><span class="o">.</span><span class="na">pack</span><span class="o">.</span><span class="na">PojoOne</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">other</span><span class="o">.</span><span class="na">pack</span><span class="o">.</span><span class="na">PojoAnother</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
-<span class="kn">package</span> <span class="n">my</span><span class="o">.</span><span class="na">pack</span><span class="o">;</span>
+<span class="kn">package</span> <span class="nn">my.pack</span><span class="o">;</span>
 </code></pre></div>
 <p>Style annotations put on a class or a package can be used to customize generated builders.</p>
 
@@ -148,7 +148,7 @@ Moreover, they usually don&#39;t make sense for factory builders in the way that
 <p>Sometimes, it might be preferable to have some factory parameters turned into parameters of the generated builder&#39;s constructor.
 Annotate parameters with <code>@Builder.Parameter</code> to achieve this. Generated builders will then accept the annotated parameters via the
 generated constructor instead of as parameter methods:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="nd">@Builder.Factory</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Builder.Factory</span>
 <span class="kd">public</span> <span class="kd">static</span> <span class="n">Pet</span> <span class="nf">pet</span><span class="o">(</span>
     <span class="nd">@Builder.Parameter</span> <span class="n">AnimalKind</span> <span class="n">kind</span><span class="o">,</span>
     <span class="n">String</span> <span class="n">name</span><span class="o">,</span>
@@ -157,7 +157,7 @@ generated constructor instead of as parameter methods:</p>
   <span class="k">return</span> <span class="n">pet</span><span class="o">;</span>
 <span class="o">}</span>
 
-<span class="n">Pet</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">PetBuilder</span><span class="o">(</span><span class="n">AnimalKind</span><span class="o">.</span><span class="na">DOG</span><span class="o">)</span> <span class="c1">// Parameter</span>
+<span class="n">Pet</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PetBuilder</span><span class="o">(</span><span class="n">AnimalKind</span><span class="o">.</span><span class="na">DOG</span><span class="o">)</span> <span class="c1">// Parameter</span>
     <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;Fluffy&quot;</span><span class="o">)</span>
     <span class="o">.</span><span class="na">age</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
@@ -171,13 +171,13 @@ Let&#39;s say you can create objects with different modes, and want the builder 
 Modes could be simple as a <code>boolean</code> <code>ON|OFF</code>, or could be an enumeration such as <code>LIQUID|SOLID|GAS|PLASMA</code>.</p>
 
 <p>Use <code>@Builder.Switch</code> on parameters of <code>enum</code> types to turn regular initialization methods into switch methods:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">enum</span> <span class="n">Color</span> <span class="o">{</span><span class="n">RED</span><span class="o">,</span> <span class="n">YELLOW</span><span class="o">,</span> <span class="n">GREEN</span><span class="o">}</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">enum</span> <span class="n">Color</span> <span class="o">{</span><span class="n">RED</span><span class="o">,</span> <span class="n">YELLOW</span><span class="o">,</span> <span class="n">GREEN</span><span class="o">}</span>
 
 <span class="kd">public</span> <span class="kd">static</span> <span class="n">TrafficLight</span> <span class="nf">trafficLight</span><span class="o">(</span><span class="nd">@Builder.Switch</span> <span class="n">Color</span> <span class="n">light</span><span class="o">,</span> <span class="kt">boolean</span> <span class="n">blink</span><span class="o">)</span> <span class="o">{</span>
   <span class="o">...</span>
 <span class="o">}</span>
 
-<span class="k">new</span> <span class="nf">TrafficLightBuilder</span><span class="o">()</span>
+<span class="k">new</span> <span class="n">TrafficLightBuilder</span><span class="o">()</span>
     <span class="o">.</span><span class="na">redLight</span><span class="o">()</span> <span class="c1">// a switch method</span>
     <span class="o">.</span><span class="na">blink</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span> <span class="c1">// a regular initializer</span>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
@@ -187,7 +187,7 @@ Names of switch methods are derived from the combined names of the enum constant
 
 <p>The builder will check that any corresponding light switch method has been invoked at least once (only once for <a href="/immutable.html#strict-builder">strict builders</a>).
 To make one of the switch states the default, use the <code>enum</code> constant in the annotation&#39;s <code>defaultName</code> attribute:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span class="kd">enum</span> <span class="n">Color</span> <span class="o">{</span><span class="n">RED</span><span class="o">,</span> <span class="n">YELLOW</span><span class="o">,</span> <span class="n">GREEN</span><span class="o">}</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">enum</span> <span class="n">Color</span> <span class="o">{</span><span class="n">RED</span><span class="o">,</span> <span class="n">YELLOW</span><span class="o">,</span> <span class="n">GREEN</span><span class="o">}</span>
 <span class="kd">enum</span> <span class="n">Blink</span> <span class="o">{</span><span class="n">NONE</span><span class="o">,</span> <span class="n">START</span><span class="o">}</span>
 
 <span class="kd">public</span> <span class="kd">static</span> <span class="n">TrafficLight</span> <span class="nf">trafficLight</span><span class="o">(</span>
@@ -196,7 +196,7 @@ To make one of the switch states the default, use the <code>enum</code> constant
   <span class="o">...</span>
 <span class="o">}</span>
 
-<span class="k">new</span> <span class="nf">TrafficLightBuilder</span><span class="o">()</span>
+<span class="k">new</span> <span class="n">TrafficLightBuilder</span><span class="o">()</span>
     <span class="o">.</span><span class="na">yellowLight</span><span class="o">()</span>
     <span class="o">.</span><span class="na">startBlinking</span><span class="o">()</span>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
