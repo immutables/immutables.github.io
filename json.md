@@ -3,7 +3,7 @@ title: 'JSON serialization'
 layout: page
 ---
 
-{% capture v %}2.4.2{% endcapture %}
+{% capture v %}2.4.3{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
