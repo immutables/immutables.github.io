@@ -22,7 +22,7 @@ Instead of the old generated marshaler infrastructure based on _Jackson_ streami
 
 + Simplified _Jackson_ integration
   - Generation of `@JsonCreator`, `@JsonProperty` annotations and a helper class.
-  - Delegates everything back to Jackson using it's powerful binding engine
+  - Delegates everything back to Jackson using its powerful binding engine
 + Comprehensive _Gson_ integration
   - No custom runtime APIs, Gson APIs are used
   - Generation of _TypeAdapterFactories_ which use no reflection.
