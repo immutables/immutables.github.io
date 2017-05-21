@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.4.4{% endcapture %}
+{% capture v %}2.5.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -910,6 +910,32 @@ object graphs, then it may become inefficient to recompute `hashCode` value agai
 For such cases, hash codes can be precomputed on construction and stored for fast retrieval.
 Just use the `@Value.Immutable(prehash = true)` annotation parameter to precompute hash values in advance.
 
+<a name="redacted"></a>
+### Redacted attributes
+
+Since v2.5.0 `Value.Redacted` annotation was introduced to hide or mask attribute values
+from auto-generated `toString` method. This can be useful to make sure PII will not
+leak to logs or something like that. It will be just excluded by default.
+However, you can choose to put special masking characters next to the attribute
+instead of characters, like 3 asterisks or 4 pound signs: a replacement string
+can be set using `redactedMask` style attribute.
+
+```java
+@Value.Style(redactedMask = "####")
+..
+@Value.Immutable
+public interface RedactedMask {
+  @Value.Redacted
+  String ssn();
+  @Value.Redacted
+  String secret();
+}
+// toString output: RedactedMask{ssn=####, secret=####}
+// without setting style it would be just: RedactedMask{}
+```
+
+See [opaque containers](#opaque-containers) as the more disciplined, customizable and type-safe way to achieve the same. Or see yet another alternative in the form of auxiliary attributes just [below](#auxiliary).
+
 <a name="auxiliary"></a>
 ### Auxiliary attributes
 
@@ -1410,5 +1436,5 @@ interface Val {
 // toString
 "Val{number=1, confidential=<NON DISCLOSED>}"
 ```
-
-See also [auxiliary attributes](#auxiliary) for similar functionality.
+See also [redacted attributes](#redacted) for hiding or masking attribute values in generated `toString`.
+See also [auxiliary attributes](#auxiliary) for excluding attribute from `hashCode`, `equals`, `toString`
