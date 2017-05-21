@@ -911,6 +911,30 @@ object graphs, then it may become inefficient to recompute <code>hashCode</code>
 <p>For such cases, hash codes can be precomputed on construction and stored for fast retrieval.
 Just use the <code>@Value.Immutable(prehash = true)</code> annotation parameter to precompute hash values in advance.</p>
 
+<p><a name="redacted"></a></p>
+
+<h3>Redacted attributes</h3>
+
+<p>Since v2.5.0 <code>Value.Redacted</code> annotation was introduced to hide or mask attribute values
+from auto-generated <code>toString</code> method. This can be useful to make sure PII will not
+leak to logs or something like that. It will be just excluded by default.
+However, you can choose to put special masking characters next to the attribute
+instead of characters, like 3 asterisks or 4 pound signs: a replacement string
+can be set using <code>redactedMask</code> style attribute.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Style</span><span class="o">(</span><span class="n">redactedMask</span> <span class="o">=</span> <span class="s">&quot;####&quot;</span><span class="o">)</span>
+<span class="o">..</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">RedactedMask</span> <span class="o">{</span>
+  <span class="nd">@Value.Redacted</span>
+  <span class="n">String</span> <span class="nf">ssn</span><span class="o">();</span>
+  <span class="nd">@Value.Redacted</span>
+  <span class="n">String</span> <span class="nf">secret</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="c1">// toString output: RedactedMask{ssn=####, secret=####}</span>
+<span class="c1">// without setting style it would be just: RedactedMask{}</span>
+</code></pre></div>
+<p>See <a href="#opaque-containers">opaque containers</a> as the more disciplined, customizable and type-safe way to achieve the same. Or see yet another alternative in the form of auxiliary attributes just <a href="#auxiliary">below</a>.</p>
+
 <p><a name="auxiliary"></a></p>
 
 <h3>Auxiliary attributes</h3>
@@ -1008,7 +1032,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.4.4%7Cjar">org.immutables:serial:2.4.4</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.5.1%7Cjar">org.immutables:serial:2.5.1</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
@@ -1384,7 +1408,8 @@ some confidential data from a <code>toString</code> method, create an opaque wra
 <span class="c1">// toString</span>
 <span class="s">&quot;Val{number=1, confidential=&lt;NON DISCLOSED&gt;}&quot;</span>
 </code></pre></div>
-<p>See also <a href="#auxiliary">auxiliary attributes</a> for similar functionality.</p>
+<p>See also <a href="#redacted">redacted attributes</a> for hiding or masking attribute values in generated <code>toString</code>.
+See also <a href="#auxiliary">auxiliary attributes</a> for excluding attribute from <code>hashCode</code>, <code>equals</code>, <code>toString</code></p>
 
 
 </section>
