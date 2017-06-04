@@ -36,7 +36,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <p>Obviously, it would desirable to have support for a variety of popular immutable collection libraries or custom made wrapper types in a way similar to those supported out of the box. Or, for example, the way optional types are handled may be not the way how you would encode it. Luckily, we have this covered!</p>
 
-<p>Brand new, experimental functionality allows you to create encoding classes: annotated java classes which serve as examples, snippets of code to be generated. Yes, don&#39;t need to dive into annotation processing API, nor craft obscure code-generation templates! Just use plain java code (with some reasonable limitations and rules) to describe how to embed attributes of particular type into generated immutable class. Encoding classes are compiled to metadata annotations which can be packed as reusable jar libraries of annotation processor extensions.</p>
+<p>New experimental functionality allows you to create encoding classes: annotated java classes which serve as examples, snippets of code to be generated. Yes, don&#39;t need to dive into annotation processing API, nor to craft obscure code-generation templates! Just use plain java code (with some reasonable limitations and rules) to describe how to embed attributes of particular type into generated immutable class. Encoding classes are compiled to metadata annotations which can be packed as reusable jar libraries of annotation processor extensions.</p>
 
 <h2>Tutorial</h2>
 
@@ -64,12 +64,12 @@ encoding-use/
 <p>Here&#39;s the Immutable modules we will use</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.5.1%7Cjar">org.immutables:value:2.5.1</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.5.3%7Cjar">org.immutables:value:2.5.3</a>
 
 <ul>
 <li>the annotation processor used to compile encodings and value objects</li>
 </ul></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.5.1%7Cjar">org.immutables:encode:2.5.1</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.5.3%7Cjar">org.immutables:encode:2.5.3</a>
 
 <ul>
 <li>the annotation API to define encoding classes</li>
@@ -82,15 +82,14 @@ encoding-use/
   <span class="c">&lt;!-- the annotation processor, compile only --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.5.1<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.5.3<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
-  <span class="c">&lt;!-- annotation to encodings, compile only, don&#39;t need to reexport transitively --&gt;</span>
+  <span class="c">&lt;!-- annotation to encodings, need to be reexported transitively, so annotation can be read at compile time for using modules --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>encode<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.5.1<span class="nt">&lt;/version&gt;</span>
-  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.5.3<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="c">&lt;!-- we&#39;ll encode ImmutableTable, so we need guava dependency, while user of the encoding will have to reference at least Table/ImmutableTable we can skip reexport,</span>
@@ -105,7 +104,7 @@ encoding-use/
   <span class="c">&lt;!-- the annotation processor, compile only --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.5.1<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.5.3<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
@@ -113,6 +112,7 @@ encoding-use/
   <span class="nt">&lt;groupId&gt;</span>org.immutables.sample<span class="nt">&lt;/groupId&gt;</span> <span class="c">&lt;!-- or whatever group you choose for sibling sample projects --&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>encoding-def<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>1-SNAPSHOT<span class="nt">&lt;/version&gt;</span> <span class="c">&lt;!-- whatever version we use for sample modules --&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span> <span class="c">&lt;!-- encoding definitions and annotations are compile only --&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="c">&lt;!-- compile and runtime dependency on Guava as we use Table/ImmutableTable classes --&gt;</span>
@@ -139,7 +139,7 @@ encoding-use/
 <p>Once compiled (by saying &quot;compiled&quot; we will usually mean something straightforward like <code>mvn clean install</code>), there will be an error reported:</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[6,1] @Encoding.Impl field is bare minimum to be declared. Please add implementation field declaration
 </code></pre></div>
-<p>Ok, so the bare minimum to be declared is a so called implementation field. Indeed, the system need to know some minimum information about what we&#39;re actually encoding. We have to declare the type we trying to handle as well as how we would store it instances of it internally. Luckily, this is straightforward, here&#39;s how we will define implementation field:</p>
+<p>Ok, so the bare minimum to be declared is a so called implementation field. Indeed, the system need to know some minimum information about what we&#39;re actually encoding. We have to declare the type we trying to handle as well as how we would store its instances internally. Luckily, this is straightforward, here&#39;s how we will define implementation field:</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">package</span> <span class="nn">encoding</span><span class="o">;</span>
 
 <span class="kn">import</span> <span class="nn">org.immutables.encode.Encoding</span><span class="o">;</span>
@@ -311,7 +311,7 @@ encoding-use/
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>While a good start, we&#39;ll get compilation error:</p>
+<p>While a good start, we&#39;re getting the compilation error:</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[28,10] @Encoding.Builder must have no arg method @Encoding.Build. It is used to describe how to get built instance
 </code></pre></div>
 <p>Here&#39;s how to add it:</p>
@@ -324,10 +324,10 @@ encoding-use/
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>Even that is not enough. The next compilation error still shows missing elements:</p>
+<p>That is still not enough, though. The next compilation error still shows missing elements:</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>[ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[28,10] One of builder init methods should be a copy method, i.e. it should be annotated @Encoding.Init @Encoding.Copy and be able to accept values of type which exposed accessor returns
 </code></pre></div>
-<p>This is similar how we defined conversion (<code>@Encoding.Of</code>) method, but now well have to do initialization for the builder. Apparently, we are better off creating more complete, realistic builder encoding that would compile and work. Please, follow code comments for extra details.</p>
+<p>This is similar to how we defined conversion (<code>@Encoding.Of</code>) method, but now we&#39;ll have to do initialization for the builder. Apparently, we are better off creating more complete, realistic builder encoding that would compile and work. Please, follow code comments for extra details.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">//... only nested builder is shown</span>
 <span class="nd">@Encoding.Builder</span>
 <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Builder</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
@@ -371,7 +371,7 @@ encoding-use/
 </code></pre></div>
 <p>Such encoding will compile and work. The annotation processor will generate builder code which behave almost as the default code, but with one difference: as we&#39;ve initialized builder field with empty table, build method will not complain if call to &quot;set&quot; initializer was omitted during construction, there attributes value will be empty table unless initialized to some other value. While another uninteresting example, I believe it was necessary to demonstrate very basic structure the builder might have and provide explaining comments.</p>
 
-<p>Of course, a builder for our <code>TableEncoding</code> should have convenient methods to build <code>ImmutableTable</code> and with the next attempt we&#39;ll cover this by using <code>ImmutableTable.Builder</code> as a implementation helper. Please, follow code comments for extra details.</p>
+<p>Of course, a builder for our <code>TableEncoding</code> should have convenience methods to build <code>ImmutableTable</code> and with the next attempt we&#39;ll cover this by using <code>ImmutableTable.Builder</code> as a implementation helper. Please, follow code comments for extra details.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">//... only nested builder is shown</span>
 <span class="nd">@Encoding.Builder</span>
 <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Builder</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
@@ -411,13 +411,11 @@ encoding-use/
   <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>Rec</p>
-
 <h2>How it works</h2>
 
-<h2>How To...</h2>
+<p>(Magic) ...TBD</p>
 
-<h3>Virtual fields</h3>
+<h2>How To...</h2>
 
 <p><a name="meta-annotations"></a></p>
 
@@ -427,15 +425,95 @@ encoding-use/
 
 <h3>Adding helper methods</h3>
 
+<p>You can add public (or package-private which will work the same here), private and static helper methods. Public methods will be exposed per attribute. Private methods will be used only internally.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// isEmptyAttr would be generated for every table attribute</span>
+<span class="kt">boolean</span> <span class="nf">isEmpty</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>
 <h3>Customize naming</h3>
 
+<p>For most elements, naming patterns will be derived automatically either assumed by their role or by using method name in encoding as a prefix. But you can override naming pattens and set depluralization hint where needed. Use <code>@Encoding.Naming</code> annotation for that. Errors/Warnings will be reported if misused. Use <code>StandardNaming</code> enum values where applicable, so downstream encoding users can use usual <code>@Value.Style</code> customization attributes which will be applicable to naming.</p>
+
+<p>Here&#39;s example of putting annotations on table builder methods. Fields and method implementations are left out for brevity.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="o">...</span>
+<span class="nd">@Encoding.Builder</span>
+<span class="kd">static</span> <span class="kd">class</span> <span class="nc">Builder</span><span class="o">&lt;</span><span class="n">R</span><span class="o">,</span> <span class="n">C</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="nd">@Encoding.Init</span>
+  <span class="nd">@Encoding.Naming</span><span class="o">(</span><span class="n">standard</span> <span class="o">=</span> <span class="n">StandardNaming</span><span class="o">.</span><span class="na">PUT</span><span class="o">)</span> <span class="c1">// standard &quot;putAttr&quot;</span>
+  <span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">R</span> <span class="n">row</span><span class="o">,</span> <span class="n">C</span> <span class="n">column</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">)</span> <span class="o">{...}</span>
+
+  <span class="nd">@Encoding.Init</span>
+  <span class="nd">@Encoding.Naming</span><span class="o">(</span><span class="n">standard</span> <span class="o">=</span> <span class="n">StandardNaming</span><span class="o">.</span><span class="na">PUT_ALL</span><span class="o">)</span> <span class="c1">// standard &quot;putAllAttr&quot;</span>
+  <span class="kt">void</span> <span class="nf">putAll</span><span class="o">(</span><span class="n">Table</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">R</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">C</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">table</span><span class="o">)</span> <span class="o">{...}</span>
+
+  <span class="nd">@Encoding.Init</span>
+  <span class="nd">@Encoding.Copy</span>
+  <span class="nd">@Encoding.Naming</span><span class="o">(</span><span class="s">&quot;reset*&quot;</span><span class="o">)</span> <span class="c1">// will result in &quot;resetAttr&quot;, not customizable with styles</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="n">Table</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">R</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">C</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">table</span><span class="o">)</span> <span class="o">{...}</span>
+<span class="o">}</span>
+</code></pre></div>
 <h3>Customize with methods</h3>
 
+<p>Encodings provide the way to &quot;encode&quot; <code>with*</code> methods with custom signatures. There&#39;s Javadoc on <code>@Encoding.Copy</code> and error messages if misused.</p>
+
+<p>Here is example of custom with methods for hypothetical <code>Option</code> encoding. Builder encoding is left out for brevity.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">OptionEncoding</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="nd">@Encoding.Impl</span>
+  <span class="kd">private</span> <span class="n">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">field</span> <span class="o">=</span> <span class="n">Option</span><span class="o">.</span><span class="na">none</span><span class="o">();</span>
+  <span class="c1">// if you specify one of the copy methods, the default one is not longer generated</span>
+  <span class="c1">// so you need to declare both alternative methods</span>
+  <span class="nd">@Encoding.Copy</span>
+  <span class="kd">public</span> <span class="n">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">withOption</span><span class="o">(</span><span class="n">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">Objects</span><span class="o">.</span><span class="na">requireNonNull</span><span class="o">(</span><span class="n">value</span><span class="o">);</span> <span class="c1">// insert any checks necessary</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Encoding.Copy</span>
+  <span class="kd">public</span> <span class="n">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">with</span><span class="o">(</span><span class="n">T</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">Option</span><span class="o">.</span><span class="na">some</span><span class="o">(</span><span class="n">value</span><span class="o">);</span> <span class="c1">// insert any checks necessary</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
 <h3>Getting attribute name</h3>
 
+<p>If you need attribute name as a string value inside encoding use asterisk in angle brackets inside string literal: <code>&quot;&lt;*&gt;&quot;</code>. This placeholder will be replaced in compile time with current attribute name. This can be used to generate exception messages and creating attribute related constant values.</p>
+
+<h3>Virtual fields</h3>
+
+<p>Implementation fields can be marked as virtual to allow alternative internal storage of the value by using one or more other fields. But, what is important is that value should be still converted to (if conversion method defined) and smuggled in constructor as a single <code>@Encoding.Impl</code> value.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// This encoding is rudimentary/incomplete and serves only as example.</span>
+<span class="nd">@Encoding</span>
+<span class="kd">class</span> <span class="nc">CompactOptionalDouble</span> <span class="o">{</span>
+  <span class="nd">@Encoding.Impl</span><span class="o">(</span><span class="n">virtual</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+  <span class="kd">private</span> <span class="n">OptionalDouble</span> <span class="n">opt</span><span class="o">;</span> <span class="c1">// will not be stored as a field</span>
+
+  <span class="c1">// but these derived values will be stored as object fields.</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">double</span> <span class="n">value</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">present</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="na">isPresent</span><span class="o">();</span>
+
+  <span class="nd">@Encoding.Expose</span>
+  <span class="n">OptionalDouble</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">present</span>
+        <span class="o">?</span> <span class="n">OptionalDouble</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">value</span><span class="o">)</span>
+        <span class="o">:</span> <span class="n">OptionalDouble</span><span class="o">.</span><span class="na">empty</span><span class="o">();</span>
+  <span class="o">}</span>
+
+  <span class="c1">// Custom helper accessors can bypass OptionalDouble creation</span>
+  <span class="nd">@Encoding.Naming</span><span class="o">(</span><span class="s">&quot;is*Present&quot;</span><span class="o">)</span>
+  <span class="kt">boolean</span> <span class="nf">isPresent</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">present</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="nd">@Encoding.Naming</span><span class="o">(</span><span class="s">&quot;*OrElse&quot;</span><span class="o">)</span>
+  <span class="kt">double</span> <span class="nf">orElse</span><span class="o">(</span><span class="kt">double</span> <span class="n">defaultValue</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">present</span> <span class="o">?</span> <span class="n">value</span> <span class="o">:</span> <span class="n">defaultValue</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div>
 <h2>Limitations</h2>
 
-<h3>Annotations are not supported yet</h3>
+<h3>Annotations are not supported yet as encoding qualifiers</h3>
 
 <h3>Parser/processor limitations (method references)</h3>
 
@@ -454,6 +532,7 @@ encoding-use/
 <li><a href="/style.html">Style customization</a></li>
 <li><a href="/json.html">JSON serialization</a></li>
 <li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
 <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 

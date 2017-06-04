@@ -260,8 +260,10 @@ class in the same package.</p>
 <p><a name="extending-builder"></a>
 From version <code>2.0.17</code> onwards, it is possible to extend a [yet-to-be] generated builder to code
 in the following style:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
-<span class="nd">@Value.Style</span><span class="o">(</span><span class="n">visibility</span> <span class="o">=</span> <span class="n">ImplementationVisibility</span><span class="o">.</span><span class="na">PACKAGE</span><span class="o">)</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Style</span><span class="o">(</span><span class="n">visibility</span> <span class="o">=</span> <span class="n">ImplementationVisibility</span><span class="o">.</span><span class="na">PACKAGE</span><span class="o">,</span> <span class="n">overshadowImplementation</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+<span class="c1">//...</span>
+
+<span class="nd">@Value.Immutable</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
   <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
   <span class="n">String</span> <span class="nf">address</span><span class="o">();</span>
@@ -274,10 +276,9 @@ in the following style:</p>
   <span class="o">.</span><span class="na">address</span><span class="o">(</span><span class="s">&quot;P.O. box 0000, Lexington, KY&quot;</span><span class="o">)</span>
   <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div>
-<p>While <code>ImmutablePerson</code> (and <code>ImmutablePerson.Builder</code> consequently) is not visible outside of package,
-<code>Person.Builder</code> inherits and exposes all public methods defined on <code>ImmutablePerson.Builder</code>.
-The interesting fact is that the calling bytecode will reference only <code>Person.Builder</code> and not <code>ImmutablePerson.Builder</code>. From the above example: <code>INVOKEVIRTUAL</code> will target <code>Person.Builder.name</code>, <code>Person.Builder.address</code> and <code>Person.Builder.build</code> methods. Essentially, a generated class becomes implementation
-detail without much boilerplate which is needed to fully <a href="#hide-implementation">hide implementation</a> behind user-written code.</p>
+<p>While <code>ImmutablePerson</code> (and <code>ImmutablePerson.Builder</code> consequently) is not visible outside of package, <code>Person.Builder</code> inherits and exposes all public methods defined on <code>ImmutablePerson.Builder</code>.
+The <code>overshadowImplementation = true</code> style attribute makes sure that <code>build()</code> will be declared to return abstract value type <code>Person</code>, not the implementation <code>ImmutablePerson</code>, following metaphor: implementation type will be &quot;overshadowed&quot; by abstract value type.
+The interesting fact is that the calling bytecode references only <code>Person.Builder</code> and not <code>ImmutablePerson.Builder</code>. From the above example: <code>INVOKEVIRTUAL</code> will target <code>Person.Builder.name</code>, <code>Person.Builder.address</code> and <code>Person.Builder.build</code> methods. Essentially, a generated class becomes implementation detail without much boilerplate which is needed to fully <a href="#hide-implementation">hide implementation</a> behind user-written code.</p>
 
 <p>For other structural and naming style customizations, see the <a href="/style.html">style guide</a></p>
 
@@ -1032,7 +1033,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.5.1%7Cjar">org.immutables:serial:2.5.1</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.5.3%7Cjar">org.immutables:serial:2.5.3</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
@@ -1426,6 +1427,7 @@ See also <a href="#auxiliary">auxiliary attributes</a> for excluding attribute f
 <li><a href="/style.html">Style customization</a></li>
 <li><a href="/json.html">JSON serialization</a></li>
 <li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
 <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 
