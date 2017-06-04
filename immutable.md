@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.5.1{% endcapture %}
+{% capture v %}2.5.3{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -244,8 +244,10 @@ From version `2.0.17` onwards, it is possible to extend a [yet-to-be] generated 
 in the following style:
 
 ```java
+@Value.Style(visibility = ImplementationVisibility.PACKAGE, overshadowImplementation = true)
+//...
+
 @Value.Immutable
-@Value.Style(visibility = ImplementationVisibility.PACKAGE)
 public interface Person {
   String name();
   String address();
@@ -259,11 +261,9 @@ Person person = new Person.Builder()
   .build();
 ```
 
-
-While `ImmutablePerson` (and `ImmutablePerson.Builder` consequently) is not visible outside of package,
-`Person.Builder` inherits and exposes all public methods defined on `ImmutablePerson.Builder`.
-The interesting fact is that the calling bytecode will reference only `Person.Builder` and not `ImmutablePerson.Builder`. From the above example: `INVOKEVIRTUAL` will target `Person.Builder.name`, `Person.Builder.address` and `Person.Builder.build` methods. Essentially, a generated class becomes implementation
-detail without much boilerplate which is needed to fully [hide implementation](#hide-implementation) behind user-written code.
+While `ImmutablePerson` (and `ImmutablePerson.Builder` consequently) is not visible outside of package, `Person.Builder` inherits and exposes all public methods defined on `ImmutablePerson.Builder`.
+The `overshadowImplementation = true` style attribute makes sure that `build()` will be declared to return abstract value type `Person`, not the implementation `ImmutablePerson`, following metaphor: implementation type will be "overshadowed" by abstract value type.
+The interesting fact is that the calling bytecode references only `Person.Builder` and not `ImmutablePerson.Builder`. From the above example: `INVOKEVIRTUAL` will target `Person.Builder.name`, `Person.Builder.address` and `Person.Builder.build` methods. Essentially, a generated class becomes implementation detail without much boilerplate which is needed to fully [hide implementation](#hide-implementation) behind user-written code.
 
 For other structural and naming style customizations, see the [style guide](/style.html)
 

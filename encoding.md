@@ -3,7 +3,7 @@ title: 'Encoding custom types'
 layout: page
 ---
 
-{% capture v %}2.5.1{% endcapture %}
+{% capture v %}2.5.3{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Introduction
@@ -12,7 +12,7 @@ The _Immutables_ annotation processor supports not only plain [attribute](immuta
 
 Obviously, it would desirable to have support for a variety of popular immutable collection libraries or custom made wrapper types in a way similar to those supported out of the box. Or, for example, the way optional types are handled may be not the way how you would encode it. Luckily, we have this covered!
 
-Brand new, experimental functionality allows you to create encoding classes: annotated java classes which serve as examples, snippets of code to be generated. Yes, don't need to dive into annotation processing API, nor craft obscure code-generation templates! Just use plain java code (with some reasonable limitations and rules) to describe how to embed attributes of particular type into generated immutable class. Encoding classes are compiled to metadata annotations which can be packed as reusable jar libraries of annotation processor extensions.
+New experimental functionality allows you to create encoding classes: annotated java classes which serve as examples, snippets of code to be generated. Yes, don't need to dive into annotation processing API, nor to craft obscure code-generation templates! Just use plain java code (with some reasonable limitations and rules) to describe how to embed attributes of particular type into generated immutable class. Encoding classes are compiled to metadata annotations which can be packed as reusable jar libraries of annotation processor extensions.
 
 Tutorial
 --------
@@ -60,11 +60,10 @@ Maven dependencies will look like following snippets:
   <scope>provided</scope>
 </dependency>
 <dependency>
-  <!-- annotation to encodings, compile only, don't need to reexport transitively -->
+  <!-- annotation to encodings, need to be reexported transitively, so annotation can be read at compile time for using modules -->
   <groupId>org.immutables</groupId>
   <artifactId>encode</artifactId>
   <version>{{ v }}</version>
-  <scope>provided</scope>
 </dependency>
 <dependency>
   <!-- we'll encode ImmutableTable, so we need guava dependency, while user of the encoding will have to reference at least Table/ImmutableTable we can skip reexport,
@@ -90,6 +89,7 @@ Maven dependencies will look like following snippets:
   <groupId>org.immutables.sample</groupId> <!-- or whatever group you choose for sibling sample projects -->
   <artifactId>encoding-def</artifactId>
   <version>1-SNAPSHOT</version> <!-- whatever version we use for sample modules -->
+  <scope>provided</scope> <!-- encoding definitions and annotations are compile only -->
 </dependency>
 <dependency>
   <!-- compile and runtime dependency on Guava as we use Table/ImmutableTable classes -->
@@ -123,7 +123,7 @@ Once compiled (by saying "compiled" we will usually mean something straightforwa
 [ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[6,1] @Encoding.Impl field is bare minimum to be declared. Please add implementation field declaration
 ```
 
-Ok, so the bare minimum to be declared is a so called implementation field. Indeed, the system need to know some minimum information about what we're actually encoding. We have to declare the type we trying to handle as well as how we would store it instances of it internally. Luckily, this is straightforward, here's how we will define implementation field:
+Ok, so the bare minimum to be declared is a so called implementation field. Indeed, the system need to know some minimum information about what we're actually encoding. We have to declare the type we trying to handle as well as how we would store its instances internally. Luckily, this is straightforward, here's how we will define implementation field:
 
 ```java
 package encoding;
@@ -329,7 +329,7 @@ class TableEncoding<R, C, V> {
 }
 ```
 
-While a good start, we'll get compilation error:
+While a good start, we're getting the compilation error:
 
 ```
 [ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[28,10] @Encoding.Builder must have no arg method @Encoding.Build. It is used to describe how to get built instance
@@ -348,13 +348,13 @@ static class Builder<R, C, V> {
 }
 ```
 
-Even that is not enough. The next compilation error still shows missing elements:
+That is still not enough, though. The next compilation error still shows missing elements:
 
 ```
 [ERROR] ../samples/encoding-def/src/encoding/TableEncoding.java:[28,10] One of builder init methods should be a copy method, i.e. it should be annotated @Encoding.Init @Encoding.Copy and be able to accept values of type which exposed accessor returns
 ```
 
-This is similar how we defined conversion (`@Encoding.Of`) method, but now well have to do initialization for the builder. Apparently, we are better off creating more complete, realistic builder encoding that would compile and work. Please, follow code comments for extra details.
+This is similar to how we defined conversion (`@Encoding.Of`) method, but now we'll have to do initialization for the builder. Apparently, we are better off creating more complete, realistic builder encoding that would compile and work. Please, follow code comments for extra details.
 
 ```java
 //... only nested builder is shown
@@ -401,7 +401,7 @@ static class Builder<R, C, V> {
 
 Such encoding will compile and work. The annotation processor will generate builder code which behave almost as the default code, but with one difference: as we've initialized builder field with empty table, build method will not complain if call to "set" initializer was omitted during construction, there attributes value will be empty table unless initialized to some other value. While another uninteresting example, I believe it was necessary to demonstrate very basic structure the builder might have and provide explaining comments.
 
-Of course, a builder for our `TableEncoding` should have convenient methods to build `ImmutableTable` and with the next attempt we'll cover this by using `ImmutableTable.Builder` as a implementation helper. Please, follow code comments for extra details.
+Of course, a builder for our `TableEncoding` should have convenience methods to build `ImmutableTable` and with the next attempt we'll cover this by using `ImmutableTable.Builder` as a implementation helper. Please, follow code comments for extra details.
 
 ```java
 //... only nested builder is shown
@@ -444,27 +444,119 @@ static class Builder<R, C, V> {
 }
 ```
 
-Rec
-
 How it works
 ------------
+(Magic) ...TBD
 
 How To...
 ---------
-### Virtual fields
 
 <a name="meta-annotations"></a>
 ### Enabling encoding via meta-annotations
 
 The activation annotation can be used also as meta-annotation: imagine having special "stereotype" annotation which is itself annotated with `*Enabled` annotations as well as any relevant `Value.Style` annotation. All in all, placing encoding activation annotation follows the same rules as [applying styles](style.html#apply-style)
 
-
 ### Adding helper methods
+
+You can add public (or package-private which will work the same here), private and static helper methods. Public methods will be exposed per attribute. Private methods will be used only internally.
+
+```java
+// isEmptyAttr would be generated for every table attribute
+boolean isEmpty() {
+  return value.isEmpty();
+}
+```
+
 ### Customize naming
+
+For most elements, naming patterns will be derived automatically either assumed by their role or by using method name in encoding as a prefix. But you can override naming pattens and set depluralization hint where needed. Use `@Encoding.Naming` annotation for that. Errors/Warnings will be reported if misused. Use `StandardNaming` enum values where applicable, so downstream encoding users can use usual `@Value.Style` customization attributes which will be applicable to naming.
+
+Here's example of putting annotations on table builder methods. Fields and method implementations are left out for brevity.
+
+```java
+...
+@Encoding.Builder
+static class Builder<R, C, V> {
+  @Encoding.Init
+  @Encoding.Naming(standard = StandardNaming.PUT) // standard "putAttr"
+  void put(R row, C column, V value) {...}
+
+  @Encoding.Init
+  @Encoding.Naming(standard = StandardNaming.PUT_ALL) // standard "putAllAttr"
+  void putAll(Table<? extends R, ? extends C, ? extends V> table) {...}
+
+  @Encoding.Init
+  @Encoding.Copy
+  @Encoding.Naming("reset*") // will result in "resetAttr", not customizable with styles
+  public void set(Table<? extends R, ? extends C, ? extends V> table) {...}
+}
+```
+
 ### Customize with methods
+
+Encodings provide the way to "encode" `with*` methods with custom signatures. There's Javadoc on `@Encoding.Copy` and error messages if misused.
+
+Here is example of custom with methods for hypothetical `Option` encoding. Builder encoding is left out for brevity.
+
+```java
+@Encoding
+class OptionEncoding<T> {
+  @Encoding.Impl
+  private Option<T> field = Option.none();
+  // if you specify one of the copy methods, the default one is not longer generated
+  // so you need to declare both alternative methods
+  @Encoding.Copy
+  public Option<T> withOption(Option<T> value) {
+    return Objects.requireNonNull(value); // insert any checks necessary
+  }
+
+  @Encoding.Copy
+  public Option<T> with(T value) {
+    return Option.some(value); // insert any checks necessary
+  }
+}
+```
+
 ### Getting attribute name
+
+If you need attribute name as a string value inside encoding use asterisk in angle brackets inside string literal: `"<*>"`. This placeholder will be replaced in compile time with current attribute name. This can be used to generate exception messages and creating attribute related constant values.
+
+### Virtual fields
+
+Implementation fields can be marked as virtual to allow alternative internal storage of the value by using one or more other fields. But, what is important is that value should be still converted to (if conversion method defined) and smuggled in constructor as a single `@Encoding.Impl` value.
+
+```java
+// This encoding is rudimentary/incomplete and serves only as example.
+@Encoding
+class CompactOptionalDouble {
+  @Encoding.Impl(virtual = true)
+  private OptionalDouble opt; // will not be stored as a field
+
+  // but these derived values will be stored as object fields.
+  private final double value = opt.orElse(0);
+  private final boolean present = opt.isPresent();
+
+  @Encoding.Expose
+  OptionalDouble get() {
+    return present
+        ? OptionalDouble.of(value)
+        : OptionalDouble.empty();
+  }
+
+  // Custom helper accessors can bypass OptionalDouble creation
+  @Encoding.Naming("is*Present")
+  boolean isPresent() {
+    return present;
+  }
+
+  @Encoding.Naming("*OrElse")
+  double orElse(double defaultValue) {
+    return present ? value : defaultValue;
+  }
+}
+```
 
 Limitations
 -----------
-### Annotations are not supported yet
+### Annotations are not supported yet as encoding qualifiers
 ### Parser/processor limitations (method references)
