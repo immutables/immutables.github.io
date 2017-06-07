@@ -471,7 +471,7 @@ collection API!). If you are concerned with the number of methods, consider usin
 _ProGuard_ to remove unused generated methods in the resulting application.
 
 Why are other kinds of containers not supported in the same way? What about `java.lang.Iterable`, `java.util.Collection` or `java.util.Queue`?
-Those other containers are either too-generic or too-specific for the purposes of immutable object modeling.
+Those other containers are either too-generic or too-specific for the purposes of immutable object modelling.
 This might change upon request, of course, and this is what happened with ordered sets and maps (which were recognized with [order annotations](#natural-reverse)).
 On the plus side, any type is supported as an attribute value. Even though there isn't any kind of magic support, other container types are still usable:
 
