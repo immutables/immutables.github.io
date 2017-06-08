@@ -50,7 +50,7 @@ Abstract value types are used as the source model for generated code. [Get start
 An attribute holds a value that cannot be changed after the owning object is created.
 The name "attribute" is used to intentionally distinguish the concept from "fields" or JavaBean "properties", and to imply a similarity with Java annotation attributes.
 It is defined by an accessor method: A zero argument, non-`void`-returning Java method.
-No annotations are required on abstract accessor methods in order for them to became attributes. However, some attributes
+No annotations are required on abstract accessor methods in order for them to become attributes. However, some attributes
 such as those with [default values](#default-attribute)
 are non-`abstract` methods that have bodies that compute values.
 Such accessors therefore require special annotations to distinguish them from regular methods.
@@ -134,9 +134,9 @@ Generally, builders compensate for the lack of named and optional constructor ar
 
 + To create a builder, invoke the static `builder()` method on a generated immutable implementation class
 + Invoke attribute initializer methods to set attributes
-+ Call `build()` methods to construct immutable instances after attributes are initialized
++ Call `build()` method to construct immutable instances after attributes are initialized
 
-Build methods will fail if any mandatory attribute is omitted. Efficient bit masks are used
+The `build()` method will fail if any mandatory attribute is omitted. Efficient bit masks are used
 internally to track which attributes are initialized!
 
 ```java
@@ -265,7 +265,7 @@ While `ImmutablePerson` (and `ImmutablePerson.Builder` consequently) is not visi
 The `overshadowImplementation = true` style attribute makes sure that `build()` will be declared to return abstract value type `Person`, not the implementation `ImmutablePerson`, following metaphor: implementation type will be "overshadowed" by abstract value type.
 The interesting fact is that the calling bytecode references only `Person.Builder` and not `ImmutablePerson.Builder`. From the above example: `INVOKEVIRTUAL` will target `Person.Builder.name`, `Person.Builder.address` and `Person.Builder.build` methods. Essentially, a generated class becomes implementation detail without much boilerplate which is needed to fully [hide implementation](#hide-implementation) behind user-written code.
 
-For other structural and naming style customizations, see the [style guide](/style.html)
+For other structural and naming style customizations, see the [style guide](/style.html).
 
 <a name="strict-builder"></a>
 ### Strict Builder
@@ -330,7 +330,7 @@ public final class ImmutablePerson implements Person {
 }
 ```
 
-The price to pay for the additional compile-time safety is the increased count of java interfaces, generated per each required attribute. If staged builders are used extensively, this may lead to the increased memory/disc footprint and can affect class-loading times.
+The price to pay for the additional compile-time safety is the increased count of java interfaces, generated per each required attribute. If staged builders are used extensively, this may lead to the increased memory/disc footprint and can affect class-loading time.
 
 The staged builder mode also implies [strict builder](#strict-builder) mode.
 
@@ -340,7 +340,7 @@ The staged builder mode also implies [strict builder](#strict-builder) mode.
 As an alternative to builders, it is possible to provide concise "constructor" factory methods.
 A "constructor" will be available as a `static` method named `of`, on generated immutable implementation classes.
 
-In order to generate a constructor method, certain attributes should be annotated
+In order to generate a constructor method, certain attributes have to be annotated
 with `org.immutables.value.Value.Parameter` annotations.
 
 ```java
@@ -407,7 +407,7 @@ Following collection types enjoy built-in support for convenient usage:
 + `com.google.common.collect.Immutable*` variants for collections above
 
 Array attributes are cloned for safety (due to the mutable nature of Java arrays).
-Collection attributes are backed by Guava immutable collections if Guava is available in on the classpath.
+Collection attributes are backed by Guava immutable collections if Guava is available on the classpath.
 Otherwise, they are safely copied and wrapped in unmodifiable collection classes from the standard JDK.
 
 `java.util.Set` and `java.util.Map` with `enum` keys are backed by efficient `EnumSet` and `EnumMap` implementations.
@@ -489,7 +489,7 @@ ImmutableDoItYourselfContainer.builder()
 <a name="optional"></a>
 ### Optional attributes
 
-Attributes declared with a return type of `com.google.common.base.Optional<T>`
+An attribute declared with a return type of `com.google.common.base.Optional<T>`
 defines a logically [optional](https://code.google.com/p/guava-libraries/wiki/UsingAndAvoidingNullExplained#Optional)
 attribute of type `T`.
 
@@ -629,7 +629,7 @@ int totalCount33 = order.totalCount();
 As with [default attributes](#default-attribute), derived attribute initializer
 method bodies can refer to other default or derived attributes as long as there are no cycles.
 If a cycle is detected during object construction, then an `IllegalStateException` will be thrown pointing
-to the attribute names which form cycles.
+to the attribute names which form the cycle.
 
 <a name="nullable"></a>
 ### Nullable attributes
@@ -657,7 +657,7 @@ obj.toString(); // NullAccepted{i1=null, l2=null}
 
 #### Nulls in collection
 
-As already mentioned, neither collection, nor its elements are supposed to be `null`. But for the reason of compatibility with the third party libraries or services you may need to allow or to skip (i.e. throw away silently) nulls. Collection attributes could be marked as [@Nullable](#nullable), but what about collection elements? In this cases you can mark attribute with special annotations: `@AllowNulls` or `@SkipNulls`. These annotations are not supplied by _Immutables_ and any annotations matching by a simple name will take effect — we call this approach BYOA (Bring Your Own Annotations). Please note, that Guava immutable collections do not support nulls, so this feature is only enabled when JDK collections are used, i.e. when Guava not available or `@Style(jdkOnly = true)`.
+As already mentioned, neither collection, nor its elements are supposed to be `null`. But for the reason of compatibility with the third party libraries or services you may need to allow or to skip (i.e. throw away silently) nulls. Collection attributes could be marked as [@Nullable](#nullable), but what about collection elements? In this case you can mark attribute with special annotations: `@AllowNulls` or `@SkipNulls`. These annotations are not supplied by _Immutables_ and any annotations matching by a simple name will take effect — we call this approach BYOA (Bring Your Own Annotations). Please note, that Guava immutable collections do not support nulls, so this feature is only enabled when JDK collections are used, i.e. when Guava not available or `@Style(jdkOnly = true)`.
 
 ```java
 @Value.Style(jdkOnly = true)
@@ -672,7 +672,7 @@ public interface NullElements {
 }
 ```
 
-It also possible to use `@Nullable`, `@AllowNulls`, `@SkipNulls` as Java 8 type annotation, like `List<@Nullable Obj>`, but it may not work depending on compiler (works in _ECJ_ and _ErrorProne_, but not in plain _Javac_).
+It is also possible to use `@Nullable`, `@AllowNulls`, `@SkipNulls` as Java 8 type annotation, like `List<@Nullable Obj>`, but it may not work depending on compiler (works in _ECJ_ and _ErrorProne_, but not in plain _Javac_).
 
 <a name="lazy-attribute"></a>
 ### Lazy attributes
@@ -712,16 +712,16 @@ Order order = ImmutableOrder.builder()
 
 // total cost will be computed now
 int lazilyComputedCost = order.totalCost();
-// total cost already computed and stored value is returned
+// total cost is already computed and stored value is returned
 lazilyComputedCost = order.totalCost();
 ```
 
 Lazy values are thread-safe and will be computed once and only once, regardless of race conditions.
 
-Unlike to [default](#default-attribute) or [derived](#derived-attributes) attributes,
-body of the lazy attribute accessor method could refer to any attribute. If you call lazy attribute during initialization of a [default](#default-attribute) or a [derived](#derived-attributes) attribute, it will be initialized eagerly, making it equivalent of a derived attribute.
+Unlike [default](#default-attribute) or [derived](#derived-attributes) attributes,
+body of the lazy attribute accessor method could refer to any attribute. If you call lazy attribute during initialization of a [default](#default-attribute) or a [derived](#derived-attributes) attribute, it will be initialized eagerly, making it an equivalent of a derived attribute.
 
-The current implementation of lazy attributes is very similar to the way they were implemented in older versions of Scala.
+Current implementation of lazy attributes is very similar to the way they were implemented in older versions of Scala.
 Currently, this implementation strategy potentially suffers from the problem described in [Scala SIP-20](http://docs.scala-lang.org/sips/pending/improved-lazy-val-initialization.html).
 On the other hand, problems can only occur if you are mixing immutable objects with
 mutable/static/thread-local state: cyclic dependencies need to be introduced between different
@@ -730,7 +730,7 @@ immutable objects.
 <a name="check-method"></a>
 ### Precondition check method
 
-One of the core advantages of immutable objects is the fact that an immutable object will be
+One of the core advantages of immutable objects is the fact that an immutable object is
 constructed with proper attribute values in a _consistent state_, and _never changes_ afterwards.
 Sometimes, however, a need arises to check attribute values or a combination of attribute values
 for correctness (cross validation).
@@ -759,7 +759,7 @@ ImmutableNumberContainer.builder().build();
 However, one should note how this differs from other kinds of object state validation where
 objects may be constructed with values and later validated for correctness regarding business
 rules in some context: Precondition checking should not be used to validate against such rules,
-but should be used to preserve consistency and guarantee that instances will be usable.
+but should be used to preserve consistency and guarantee that the instances are usable.
 
 Precondition check methods are executed when immutable objects are _instantiated and all attributes are initialized_, but _before being returned to a caller_. Any instance that fails the precondition checks is made unreachable to a caller due to an exception being raised.
 
@@ -894,7 +894,7 @@ Use the `@Value.Immutable(intern = true)` annotation parameter to enable strong 
 + Any object returned by a builder or constructor will be interned and a "canonical" instance returned
 + `equals` will be short-circuited to object reference equality.
 
-Only strong interning is supported:
+Only strong interning is supported.
 Soft reference and weak reference interning as well as any forms of partial range interning
 were left out to be implemented externally. There is, however, a module `org.immutables:ordinal`
 which supports sophisticated domain-based interning of enum-like objects. See the documentation of
@@ -1161,7 +1161,7 @@ Use a supertype and corresponding styles to describe your wrapper types:
 		typeAbstract = "_*",
     // Generate without any suffix, just raw detected name
 		typeImmutable = "*",
-     // Make generated it public, leave underscored as package private
+    // Make generated public, leave underscored as package private
 		visibility = ImplementationVisibility.PUBLIC,
     // Seems unnecessary to have builder or superfluous copy method
 		defaults = @Value.Immutable(builder = false, copy = false))
@@ -1200,7 +1200,7 @@ VehicleMake make = VehicleMake.of("Honda");
 
 ```
 
-You can make it so only `@Wrapped` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
+You can make it so that only `@Wrapped` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
 
 <a name="tuples"></a>
 ### Tuple style
@@ -1229,7 +1229,7 @@ public interface Complex {
 Complex c = ComplexTuple.of(1d, 0d);
 ```
 
-You can make it so only `@Tuple` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
+You can make it so that only `@Tuple` is needed without corresponding `@Value.Immutable` annotation, if you follow the recipe for [custom immutable annotations](http://immutables.github.io/style.html#custom-immutable-annotation).
 
 <a name="deepImmutablesDetection"></a>
 ### Wrapper/Tupple initializers inlined as alternative setters with Deep Immutables Detection
