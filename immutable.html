@@ -85,7 +85,7 @@ Abstract value types are used as the source model for generated code. <a href="/
 <p>An attribute holds a value that cannot be changed after the owning object is created.
 The name &quot;attribute&quot; is used to intentionally distinguish the concept from &quot;fields&quot; or JavaBean &quot;properties&quot;, and to imply a similarity with Java annotation attributes.
 It is defined by an accessor method: A zero argument, non-<code>void</code>-returning Java method.
-No annotations are required on abstract accessor methods in order for them to became attributes. However, some attributes
+No annotations are required on abstract accessor methods in order for them to become attributes. However, some attributes
 such as those with <a href="#default-attribute">default values</a>
 are non-<code>abstract</code> methods that have bodies that compute values.
 Such accessors therefore require special annotations to distinguish them from regular methods.</p>
@@ -164,10 +164,10 @@ Generally, builders compensate for the lack of named and optional constructor ar
 <ul>
 <li>To create a builder, invoke the static <code>builder()</code> method on a generated immutable implementation class</li>
 <li>Invoke attribute initializer methods to set attributes</li>
-<li>Call <code>build()</code> methods to construct immutable instances after attributes are initialized</li>
+<li>Call <code>build()</code> method to construct immutable instances after attributes are initialized</li>
 </ul>
 
-<p>Build methods will fail if any mandatory attribute is omitted. Efficient bit masks are used
+<p>The <code>build()</code> method will fail if any mandatory attribute is omitted. Efficient bit masks are used
 internally to track which attributes are initialized!</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// builder methods illustrated</span>
 <span class="n">ImmutableValue</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
@@ -280,7 +280,7 @@ in the following style:</p>
 The <code>overshadowImplementation = true</code> style attribute makes sure that <code>build()</code> will be declared to return abstract value type <code>Person</code>, not the implementation <code>ImmutablePerson</code>, following metaphor: implementation type will be &quot;overshadowed&quot; by abstract value type.
 The interesting fact is that the calling bytecode references only <code>Person.Builder</code> and not <code>ImmutablePerson.Builder</code>. From the above example: <code>INVOKEVIRTUAL</code> will target <code>Person.Builder.name</code>, <code>Person.Builder.address</code> and <code>Person.Builder.build</code> methods. Essentially, a generated class becomes implementation detail without much boilerplate which is needed to fully <a href="#hide-implementation">hide implementation</a> behind user-written code.</p>
 
-<p>For other structural and naming style customizations, see the <a href="/style.html">style guide</a></p>
+<p>For other structural and naming style customizations, see the <a href="/style.html">style guide</a>.</p>
 
 <p><a name="strict-builder"></a></p>
 
@@ -340,7 +340,7 @@ The preferred method to use <code>Style</code> annotations is to create meta-ann
   <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">BuildFinal</span> <span class="o">{</span> <span class="n">ImmutablePerson</span> <span class="nf">build</span><span class="o">();</span> <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>The price to pay for the additional compile-time safety is the increased count of java interfaces, generated per each required attribute. If staged builders are used extensively, this may lead to the increased memory/disc footprint and can affect class-loading times.</p>
+<p>The price to pay for the additional compile-time safety is the increased count of java interfaces, generated per each required attribute. If staged builders are used extensively, this may lead to the increased memory/disc footprint and can affect class-loading time.</p>
 
 <p>The staged builder mode also implies <a href="#strict-builder">strict builder</a> mode.</p>
 
@@ -351,7 +351,7 @@ The preferred method to use <code>Style</code> annotations is to create meta-ann
 <p>As an alternative to builders, it is possible to provide concise &quot;constructor&quot; factory methods.
 A &quot;constructor&quot; will be available as a <code>static</code> method named <code>of</code>, on generated immutable implementation classes.</p>
 
-<p>In order to generate a constructor method, certain attributes should be annotated
+<p>In order to generate a constructor method, certain attributes have to be annotated
 with <code>org.immutables.value.Value.Parameter</code> annotations.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
 <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">HostWithPort</span> <span class="o">{</span>
@@ -413,7 +413,7 @@ works for <code>javac</code> and Eclipse JDT compilers.</p>
 </ul>
 
 <p>Array attributes are cloned for safety (due to the mutable nature of Java arrays).
-Collection attributes are backed by Guava immutable collections if Guava is available in on the classpath.
+Collection attributes are backed by Guava immutable collections if Guava is available on the classpath.
 Otherwise, they are safely copied and wrapped in unmodifiable collection classes from the standard JDK.</p>
 
 <p><code>java.util.Set</code> and <code>java.util.Map</code> with <code>enum</code> keys are backed by efficient <code>EnumSet</code> and <code>EnumMap</code> implementations.</p>
@@ -503,7 +503,7 @@ On the plus side, any type is supported as an attribute value. Even though there
 
 <h3>Optional attributes</h3>
 
-<p>Attributes declared with a return type of <code>com.google.common.base.Optional&lt;T&gt;</code>
+<p>An attribute declared with a return type of <code>com.google.common.base.Optional&lt;T&gt;</code>
 defines a logically <a href="https://code.google.com/p/guava-libraries/wiki/UsingAndAvoidingNullExplained#Optional">optional</a>
 attribute of type <code>T</code>.</p>
 
@@ -639,7 +639,7 @@ values of derived attributes are computed once and stored (at the end of object 
 <p>As with <a href="#default-attribute">default attributes</a>, derived attribute initializer
 method bodies can refer to other default or derived attributes as long as there are no cycles.
 If a cycle is detected during object construction, then an <code>IllegalStateException</code> will be thrown pointing
-to the attribute names which form cycles.</p>
+to the attribute names which form the cycle.</p>
 
 <p><a name="nullable"></a></p>
 
@@ -665,7 +665,7 @@ attribute.</p>
 </code></pre></div>
 <h4>Nulls in collection</h4>
 
-<p>As already mentioned, neither collection, nor its elements are supposed to be <code>null</code>. But for the reason of compatibility with the third party libraries or services you may need to allow or to skip (i.e. throw away silently) nulls. Collection attributes could be marked as <a href="#nullable">@Nullable</a>, but what about collection elements? In this cases you can mark attribute with special annotations: <code>@AllowNulls</code> or <code>@SkipNulls</code>. These annotations are not supplied by <em>Immutables</em> and any annotations matching by a simple name will take effect — we call this approach BYOA (Bring Your Own Annotations). Please note, that Guava immutable collections do not support nulls, so this feature is only enabled when JDK collections are used, i.e. when Guava not available or <code>@Style(jdkOnly = true)</code>.</p>
+<p>As already mentioned, neither collection, nor its elements are supposed to be <code>null</code>. But for the reason of compatibility with the third party libraries or services you may need to allow or to skip (i.e. throw away silently) nulls. Collection attributes could be marked as <a href="#nullable">@Nullable</a>, but what about collection elements? In this case you can mark attribute with special annotations: <code>@AllowNulls</code> or <code>@SkipNulls</code>. These annotations are not supplied by <em>Immutables</em> and any annotations matching by a simple name will take effect — we call this approach BYOA (Bring Your Own Annotations). Please note, that Guava immutable collections do not support nulls, so this feature is only enabled when JDK collections are used, i.e. when Guava not available or <code>@Style(jdkOnly = true)</code>.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Style</span><span class="o">(</span><span class="n">jdkOnly</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
 <span class="nd">@Value.Immutable</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">NullElements</span> <span class="o">{</span>
@@ -677,7 +677,7 @@ attribute.</p>
   <span class="nd">@SkipNulls</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">sm</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div>
-<p>It also possible to use <code>@Nullable</code>, <code>@AllowNulls</code>, <code>@SkipNulls</code> as Java 8 type annotation, like <code>List&lt;@Nullable Obj&gt;</code>, but it may not work depending on compiler (works in <em>ECJ</em> and <em>ErrorProne</em>, but not in plain <em>Javac</em>).</p>
+<p>It is also possible to use <code>@Nullable</code>, <code>@AllowNulls</code>, <code>@SkipNulls</code> as Java 8 type annotation, like <code>List&lt;@Nullable Obj&gt;</code>, but it may not work depending on compiler (works in <em>ECJ</em> and <em>ErrorProne</em>, but not in plain <em>Javac</em>).</p>
 
 <p><a name="lazy-attribute"></a></p>
 
@@ -719,15 +719,15 @@ accessed and return the same memoized value on subsequent accesses.</p>
 
 <span class="c1">// total cost will be computed now</span>
 <span class="kt">int</span> <span class="n">lazilyComputedCost</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="na">totalCost</span><span class="o">();</span>
-<span class="c1">// total cost already computed and stored value is returned</span>
+<span class="c1">// total cost is already computed and stored value is returned</span>
 <span class="n">lazilyComputedCost</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="na">totalCost</span><span class="o">();</span>
 </code></pre></div>
 <p>Lazy values are thread-safe and will be computed once and only once, regardless of race conditions.</p>
 
-<p>Unlike to <a href="#default-attribute">default</a> or <a href="#derived-attributes">derived</a> attributes,
-body of the lazy attribute accessor method could refer to any attribute. If you call lazy attribute during initialization of a <a href="#default-attribute">default</a> or a <a href="#derived-attributes">derived</a> attribute, it will be initialized eagerly, making it equivalent of a derived attribute.</p>
+<p>Unlike <a href="#default-attribute">default</a> or <a href="#derived-attributes">derived</a> attributes,
+body of the lazy attribute accessor method could refer to any attribute. If you call lazy attribute during initialization of a <a href="#default-attribute">default</a> or a <a href="#derived-attributes">derived</a> attribute, it will be initialized eagerly, making it an equivalent of a derived attribute.</p>
 
-<p>The current implementation of lazy attributes is very similar to the way they were implemented in older versions of Scala.
+<p>Current implementation of lazy attributes is very similar to the way they were implemented in older versions of Scala.
 Currently, this implementation strategy potentially suffers from the problem described in <a href="http://docs.scala-lang.org/sips/pending/improved-lazy-val-initialization.html">Scala SIP-20</a>.
 On the other hand, problems can only occur if you are mixing immutable objects with
 mutable/static/thread-local state: cyclic dependencies need to be introduced between different
@@ -737,7 +737,7 @@ immutable objects.</p>
 
 <h3>Precondition check method</h3>
 
-<p>One of the core advantages of immutable objects is the fact that an immutable object will be
+<p>One of the core advantages of immutable objects is the fact that an immutable object is
 constructed with proper attribute values in a <em>consistent state</em>, and <em>never changes</em> afterwards.
 Sometimes, however, a need arises to check attribute values or a combination of attribute values
 for correctness (cross validation).</p>
@@ -763,7 +763,7 @@ can be used to specify preconditions for generated classes:</p>
 <p>However, one should note how this differs from other kinds of object state validation where
 objects may be constructed with values and later validated for correctness regarding business
 rules in some context: Precondition checking should not be used to validate against such rules,
-but should be used to preserve consistency and guarantee that instances will be usable.</p>
+but should be used to preserve consistency and guarantee that the instances are usable.</p>
 
 <p>Precondition check methods are executed when immutable objects are <em>instantiated and all attributes are initialized</em>, but <em>before being returned to a caller</em>. Any instance that fails the precondition checks is made unreachable to a caller due to an exception being raised.</p>
 
@@ -895,7 +895,7 @@ Use the <code>@Value.Immutable(intern = true)</code> annotation parameter to ena
 <li><code>equals</code> will be short-circuited to object reference equality.</li>
 </ul>
 
-<p>Only strong interning is supported:
+<p>Only strong interning is supported.
 Soft reference and weak reference interning as well as any forms of partial range interning
 were left out to be implemented externally. There is, however, a module <code>org.immutables:ordinal</code>
 which supports sophisticated domain-based interning of enum-like objects. See the documentation of
@@ -1156,7 +1156,7 @@ wrapper types are easy to create and use, then fewer accidental errors will end 
         <span class="n">typeAbstract</span> <span class="o">=</span> <span class="s">&quot;_*&quot;</span><span class="o">,</span>
     <span class="c1">// Generate without any suffix, just raw detected name</span>
         <span class="n">typeImmutable</span> <span class="o">=</span> <span class="s">&quot;*&quot;</span><span class="o">,</span>
-     <span class="c1">// Make generated it public, leave underscored as package private</span>
+    <span class="c1">// Make generated public, leave underscored as package private</span>
         <span class="n">visibility</span> <span class="o">=</span> <span class="n">ImplementationVisibility</span><span class="o">.</span><span class="na">PUBLIC</span><span class="o">,</span>
     <span class="c1">// Seems unnecessary to have builder or superfluous copy method</span>
         <span class="n">defaults</span> <span class="o">=</span> <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">false</span><span class="o">))</span>
@@ -1193,7 +1193,7 @@ wrapper types are easy to create and use, then fewer accidental errors will end 
 
 <span class="n">VehicleMake</span> <span class="n">make</span> <span class="o">=</span> <span class="n">VehicleMake</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;Honda&quot;</span><span class="o">);</span>
 </code></pre></div>
-<p>You can make it so only <code>@Wrapped</code> is needed without corresponding <code>@Value.Immutable</code> annotation, if you follow the recipe for <a href="http://immutables.github.io/style.html#custom-immutable-annotation">custom immutable annotations</a>.</p>
+<p>You can make it so that only <code>@Wrapped</code> is needed without corresponding <code>@Value.Immutable</code> annotation, if you follow the recipe for <a href="http://immutables.github.io/style.html#custom-immutable-annotation">custom immutable annotations</a>.</p>
 
 <p><a name="tuples"></a></p>
 
@@ -1220,7 +1220,7 @@ The key style here is <code>allParameters</code> which automatically makes const
 
 <span class="n">Complex</span> <span class="n">c</span> <span class="o">=</span> <span class="n">ComplexTuple</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mf">1d</span><span class="o">,</span> <span class="mf">0d</span><span class="o">);</span>
 </code></pre></div>
-<p>You can make it so only <code>@Tuple</code> is needed without corresponding <code>@Value.Immutable</code> annotation, if you follow the recipe for <a href="http://immutables.github.io/style.html#custom-immutable-annotation">custom immutable annotations</a>.</p>
+<p>You can make it so that only <code>@Tuple</code> is needed without corresponding <code>@Value.Immutable</code> annotation, if you follow the recipe for <a href="http://immutables.github.io/style.html#custom-immutable-annotation">custom immutable annotations</a>.</p>
 
 <p><a name="deepImmutablesDetection"></a></p>
 
