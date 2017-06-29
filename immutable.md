@@ -39,7 +39,7 @@ Concepts
 
 An Abstract value type is a manually-written non-final (usually abstract) class or
 interface (or even annotation type) that defines the value type and is annotated with the
-`org.immutable.value.Value.Immutable` annotation.
+`org.immutables.value.Value.Immutable` annotation.
 It may contain [attributes](#attributes) and other metadata, as well as regular Java methods (and fields, if necessary).
 It is strongly recommended that abstract value types not introduce visible mutable state.
 Abstract value types are used as the source model for generated code. [Get started!](/getstarted.html).
