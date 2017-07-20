@@ -490,7 +490,7 @@ ImmutableDoItYourselfContainer.builder()
 ### Optional attributes
 
 An attribute declared with a return type of `com.google.common.base.Optional<T>`
-defines a logically [optional](https://code.google.com/p/guava-libraries/wiki/UsingAndAvoidingNullExplained#Optional)
+defines a logically [optional](https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained#optional)
 attribute of type `T`.
 
 As of version 2.0, `java.util.Optional`, `java.util.OptionalInt`, `java.util.OptionalLong`, `java.util.OptionalDouble` from Java 8 are also fully supported.
