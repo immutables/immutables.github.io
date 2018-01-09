@@ -446,18 +446,18 @@ It is possible to verify, for example, that they contain a required number of it
   - `addAllFoo(Iterable<? extends T>)`
 
 + For a `Map` or `BiMap` attribute named `bar`, where keys are of type `K` and values of type `V`
-  - `bar(Map<? extends K, ? extends K>)` &mdash; not available in [strict](#strict-builder) mode
+  - `bar(Map<? extends K, ? extends V>)` &mdash; not available in [strict](#strict-builder) mode
   - `putBar(K, V)`
   - `putBar(Map.Entry<? extends K, ? extends V>)`
-  - `putAllBar(Map<? extends K, ? extends K>)`
+  - `putAllBar(Map<? extends K, ? extends V>)`
 
 + For a `MultiMap` attribute named `bar`
-  - `bar(Multimap<? extends K, ? extends K>)` &mdash; not available in [strict](#strict-builder) mode
+  - `bar(Multimap<? extends K, ? extends V>)` &mdash; not available in [strict](#strict-builder) mode
   - `putBar(K, V)`
   - `putBar(Map.Entry<? extends K, ? extends V>)`
   - `putBar(K, ...V)`
   - `putAllBar(K, Iterable<V>)`
-  - `putAllBar(Multimap<? extends K, ? extends K>)`
+  - `putAllBar(Multimap<? extends K, ? extends V>)`
 
 From version `0.16` onwards, we no longer generate `clear*` methods on builders, so `clearFoo()` or `clearBar()` would not be generated for collection or map attributes.
 To clear the contents of collections or maps, use a reset method `bar(Collections.emptyList())`, or use [copy methods](#copy-methods) right after an instance is built.
