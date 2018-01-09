@@ -458,20 +458,20 @@ It is possible to verify, for example, that they contain a required number of it
 <li><p>For a <code>Map</code> or <code>BiMap</code> attribute named <code>bar</code>, where keys are of type <code>K</code> and values of type <code>V</code></p>
 
 <ul>
-<li><code>bar(Map&lt;? extends K, ? extends K&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
+<li><code>bar(Map&lt;? extends K, ? extends V&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
 <li><code>putBar(K, V)</code></li>
 <li><code>putBar(Map.Entry&lt;? extends K, ? extends V&gt;)</code></li>
-<li><code>putAllBar(Map&lt;? extends K, ? extends K&gt;)</code></li>
+<li><code>putAllBar(Map&lt;? extends K, ? extends V&gt;)</code></li>
 </ul></li>
 <li><p>For a <code>MultiMap</code> attribute named <code>bar</code></p>
 
 <ul>
-<li><code>bar(Multimap&lt;? extends K, ? extends K&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
+<li><code>bar(Multimap&lt;? extends K, ? extends V&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
 <li><code>putBar(K, V)</code></li>
 <li><code>putBar(Map.Entry&lt;? extends K, ? extends V&gt;)</code></li>
 <li><code>putBar(K, ...V)</code></li>
 <li><code>putAllBar(K, Iterable&lt;V&gt;)</code></li>
-<li><code>putAllBar(Multimap&lt;? extends K, ? extends K&gt;)</code></li>
+<li><code>putAllBar(Multimap&lt;? extends K, ? extends V&gt;)</code></li>
 </ul></li>
 </ul>
 
