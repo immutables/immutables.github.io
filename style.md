@@ -89,7 +89,7 @@ The simplest way to apply styles in manner as close to globally as possible is t
 ```java
 // com/mycompany/project/package-info.java
 @MyStyle
-public com.mycompany.project;
+package com.mycompany.project;
 ```
 
 **Things to be aware of**
