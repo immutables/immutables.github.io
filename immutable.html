@@ -458,20 +458,20 @@ It is possible to verify, for example, that they contain a required number of it
 <li><p>For a <code>Map</code> or <code>BiMap</code> attribute named <code>bar</code>, where keys are of type <code>K</code> and values of type <code>V</code></p>
 
 <ul>
-<li><code>bar(Map&lt;? extends K, ? extends K&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
+<li><code>bar(Map&lt;? extends K, ? extends V&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
 <li><code>putBar(K, V)</code></li>
 <li><code>putBar(Map.Entry&lt;? extends K, ? extends V&gt;)</code></li>
-<li><code>putAllBar(Map&lt;? extends K, ? extends K&gt;)</code></li>
+<li><code>putAllBar(Map&lt;? extends K, ? extends V&gt;)</code></li>
 </ul></li>
 <li><p>For a <code>MultiMap</code> attribute named <code>bar</code></p>
 
 <ul>
-<li><code>bar(Multimap&lt;? extends K, ? extends K&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
+<li><code>bar(Multimap&lt;? extends K, ? extends V&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
 <li><code>putBar(K, V)</code></li>
 <li><code>putBar(Map.Entry&lt;? extends K, ? extends V&gt;)</code></li>
 <li><code>putBar(K, ...V)</code></li>
 <li><code>putAllBar(K, Iterable&lt;V&gt;)</code></li>
-<li><code>putAllBar(Multimap&lt;? extends K, ? extends K&gt;)</code></li>
+<li><code>putAllBar(Multimap&lt;? extends K, ? extends V&gt;)</code></li>
 </ul></li>
 </ul>
 
@@ -504,7 +504,7 @@ On the plus side, any type is supported as an attribute value. Even though there
 <h3>Optional attributes</h3>
 
 <p>An attribute declared with a return type of <code>com.google.common.base.Optional&lt;T&gt;</code>
-defines a logically <a href="https://code.google.com/p/guava-libraries/wiki/UsingAndAvoidingNullExplained#Optional">optional</a>
+defines a logically <a href="https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained#optional">optional</a>
 attribute of type <code>T</code>.</p>
 
 <p>As of version 2.0, <code>java.util.Optional</code>, <code>java.util.OptionalInt</code>, <code>java.util.OptionalLong</code>, <code>java.util.OptionalDouble</code> from Java 8 are also fully supported.</p>
@@ -1033,7 +1033,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.5.5%7Cjar">org.immutables:serial:2.5.5</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.5.6%7Cjar">org.immutables:serial:2.5.6</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
