@@ -385,6 +385,22 @@ works for <code>javac</code> and Eclipse JDT compilers.</p>
 </code></pre></div>
 <p>If you want to automatically turn all attributes into parameters to generate constructor, you could use styles for that, see <a href="#tuples">tuple style</a> pattern.</p>
 
+<h4>Plain public constructor</h4>
+
+<p>If there&#39;s a need for plain public constructor instead of the factory method we can achieve it using <a href="style.html">styles</a> by &quot;renaming&quot; <code>of</code> method to <code>new</code>:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Style</span><span class="o">(</span>
+  <span class="n">of</span> <span class="o">=</span> <span class="s">&quot;new&quot;</span><span class="o">,</span> <span class="c1">// renames &quot;of&quot; method to &quot;new&quot;, which is interpreted as plain constructor</span>
+  <span class="n">allParameters</span> <span class="o">=</span> <span class="kc">true</span> <span class="c1">// unrelated to the line above: every attribute becomes parameter</span>
+  <span class="c1">// reminder: don&#39;t get used to inline styles, read style guide!</span>
+<span class="o">)</span>
+<span class="nd">@Value.Immutable</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">HostWithPort</span> <span class="o">{</span>
+  <span class="n">String</span> <span class="nf">host</span><span class="o">();</span>
+  <span class="kt">int</span> <span class="nf">port</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="n">HostWithPort</span> <span class="n">hostWithPort</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ImmutableHostWithPort</span><span class="o">(</span><span class="s">&quot;localhost&quot;</span><span class="o">,</span> <span class="mi">8081</span><span class="o">);</span>
+</code></pre></div>
 <p><strong>Things to be aware of</strong></p>
 
 <ul>
@@ -463,7 +479,7 @@ It is possible to verify, for example, that they contain a required number of it
 <li><code>putBar(Map.Entry&lt;? extends K, ? extends V&gt;)</code></li>
 <li><code>putAllBar(Map&lt;? extends K, ? extends V&gt;)</code></li>
 </ul></li>
-<li><p>For a <code>MultiMap</code> attribute named <code>bar</code></p>
+<li><p>For a <code>Multimap</code> attribute named <code>bar</code></p>
 
 <ul>
 <li><code>bar(Multimap&lt;? extends K, ? extends V&gt;)</code> &mdash; not available in <a href="#strict-builder">strict</a> mode</li>
@@ -895,8 +911,9 @@ Use the <code>@Value.Immutable(intern = true)</code> annotation parameter to ena
 <li><code>equals</code> will be short-circuited to object reference equality.</li>
 </ul>
 
-<p>Only strong interning is supported.
-Soft reference and weak reference interning as well as any forms of partial range interning
+<p><em>Strong</em> interning is supported by default and since version <code>2.6.0</code> <em>weak</em> interning is also supported via <code>@Value.Style(weakInterning = true)</code>.</p>
+
+<p>Any other forms of interning including partial range interning
 were left out to be implemented externally. There is, however, a module <code>org.immutables:ordinal</code>
 which supports sophisticated domain-based interning of enum-like objects. See the documentation of
 classes in that module.</p>
@@ -1033,7 +1050,7 @@ and builders using the <a href="#include">Include</a> annotation.</p>
 (since v2.0.12):</p>
 
 <ul>
-<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.5.6%7Cjar">org.immutables:serial:2.5.6</a></p></li>
+<li><p><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cserial%7C2.6.0%7Cjar">org.immutables:serial:2.6.0</a></p></li>
 <li><p><code>@Serial.Version</code> — to apply a serial version to enclosing value types</p></li>
 <li><p><code>@Serial.Structural</code> — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from <code>Set</code> to <code>List</code> will not break compatibility of serialized value objects.</p></li>
 <li><p>immutable value type generated from types annotated with either <code>@Serial.Version</code> or <code>@Serial.Structural</code> will auto-implement <code>java.lang.Serializable</code> if not already.</p></li>
@@ -1120,6 +1137,12 @@ even going as far as creating <a href="">builders in disguise</a>.</p>
         <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div>
 <p>See <a href="#wrapper-types">Wrapper types</a> for other examples illustrating the use of generics.</p>
+
+<h3>Annotation injection</h3>
+
+<p>Experimental annotation injection introduced in version <code>2.6.0</code>: allows injecting annotation on fields, accessors, initializer, immutable and builder types etc. Injection directives are defined as custom annotations meta-annotated with <code>@InjectAnnotation</code> in new <code>org.immutables:annotate</code> module. Allow some non-trivial annotation code construction, see Javadoc of <code>@InjectAnnotation</code> for details.</p>
+
+<p>The motivation of annotation injection is integration with some introspection-based toolkits and frameworks.</p>
 
 <p><a name="warnings"></a></p>
 
