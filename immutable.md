@@ -3,7 +3,7 @@ title: 'Immutable objects'
 layout: page
 ---
 
-{% capture v %}2.5.6{% endcapture %}
+{% capture v %}2.6.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 Overview
@@ -380,6 +380,25 @@ HostWithPort hostWithPort = ImmutableHostWithPort.of("localhost", 8081);
 
 If you want to automatically turn all attributes into parameters to generate constructor, you could use styles for that, see [tuple style](#tuples) pattern.
 
+#### Plain public constructor
+
+If there's a need for plain public constructor instead of the factory method we can achieve it using [styles](style.html) by "renaming" `of` method to `new`:
+
+```java
+@Value.Style(
+  of = "new", // renames "of" method to "new", which is interpreted as plain constructor
+  allParameters = true // unrelated to the line above: every attribute becomes parameter
+  // reminder: don't get used to inline styles, read style guide!
+)
+@Value.Immutable
+public interface HostWithPort {
+  String host();
+  int port();
+}
+
+HostWithPort hostWithPort = new ImmutableHostWithPort("localhost", 8081);
+```
+
 **Things to be aware of**
 
 + If not all mandatory attributes are marked as `@Value.Parameter`
@@ -451,7 +470,7 @@ It is possible to verify, for example, that they contain a required number of it
   - `putBar(Map.Entry<? extends K, ? extends V>)`
   - `putAllBar(Map<? extends K, ? extends V>)`
 
-+ For a `MultiMap` attribute named `bar`
++ For a `Multimap` attribute named `bar`
   - `bar(Multimap<? extends K, ? extends V>)` &mdash; not available in [strict](#strict-builder) mode
   - `putBar(K, V)`
   - `putBar(Map.Entry<? extends K, ? extends V>)`
@@ -894,8 +913,9 @@ Use the `@Value.Immutable(intern = true)` annotation parameter to enable strong 
 + Any object returned by a builder or constructor will be interned and a "canonical" instance returned
 + `equals` will be short-circuited to object reference equality.
 
-Only strong interning is supported.
-Soft reference and weak reference interning as well as any forms of partial range interning
+_Strong_ interning is supported by default and since version `2.6.0` _weak_ interning is also supported via `@Value.Style(weakInterning = true)`.
+
+Any other forms of interning including partial range interning
 were left out to be implemented externally. There is, however, a module `org.immutables:ordinal`
 which supports sophisticated domain-based interning of enum-like objects. See the documentation of
 classes in that module.
@@ -1125,6 +1145,12 @@ TreeElement<String> tree =
 ```
 
 See [Wrapper types](#wrapper-types) for other examples illustrating the use of generics.
+
+### Annotation injection
+
+Experimental annotation injection introduced in version `2.6.0`: allows injecting annotation on fields, accessors, initializer, immutable and builder types etc. Injection directives are defined as custom annotations meta-annotated with `@InjectAnnotation` in new `org.immutables:annotate` module. Allow some non-trivial annotation code construction, see Javadoc of `@InjectAnnotation` for details.
+
+The motivation of annotation injection is integration with some introspection-based toolkits and frameworks.
 
 <a name="warnings"></a>
 ### Warnings
