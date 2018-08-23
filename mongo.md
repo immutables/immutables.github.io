@@ -84,7 +84,6 @@ In addition to code annotation-processor, it's necessary to add the `mongo` anno
 _Mongo_ artifact required to be used for compilation as well be available at runtime.
 _Mongo_ module works closely with [Gson](/json.html#gson) module, which is also included as transitive dependency.
 
-**Note:** Current release works with versions `2.12+` of the MongoDB Java driver - version `3.0` and up is not yet supported.
 
 Snippet of Maven dependencies:
 
@@ -425,6 +424,18 @@ posts.findById(111)
     .addRatings(5)
     .upsert();
 ```
+
+### Read-only repositories
+For usecases when only read operations are required one can customize repository generation with `readonly` annotation parameter.
+When set to `true` (it is `false` by default) write, delete and update methods will not be available:
+```java
+@Value.Immutable
+@Mongo.Repository(readonly = true) // don't generate any write / delete / update methods
+public abstract class Item {
+  // ...
+}
+```
+To omit indexing operations use `index = false` parameter (indexing is enabled by default).
 
 ### Ensure Index
 
