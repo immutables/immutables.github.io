@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 Introduction
 ------------
@@ -43,9 +43,9 @@ We'll progress by gradually editing files and compiling projects.
 
 Here's the Immutable modules we will use
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
   + the annotation processor used to compile encodings and value objects
-- [org.immutables:encode:{{v}}]({{ depUri }}|encoding|{{ v }}|jar)
+- [org.immutables:encode:{{v}}]({{ depUri }}/encoding/{{ v }}/jar)
   + the annotation API to define encoding classes
 
 Maven dependencies will look like following snippets:

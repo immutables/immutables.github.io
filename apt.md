@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 --------
 Overview
 --------
@@ -20,7 +20,7 @@ However, something usually has to be configured or quirks may exist that prevent
 
 The annotation processor that is to be plugged into a given IDE is built as single jar without external dependencies.
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
 
 -------
 Eclipse
@@ -50,7 +50,7 @@ In this example, this is achieved by extending the `M2_REPO` classpath variable 
 
 Use the correct jar from `M2_REPO`:
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
 
 -------------
 IntelliJ IDEA

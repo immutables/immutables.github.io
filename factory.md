@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 Overview
 --------
@@ -20,8 +20,8 @@ This handles the common case of constructing immutable objects. However, if extr
 
 Compile dependencies:
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
-- [org.immutables:builder:{{v}}]({{ depUri }}|builder|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
+- [org.immutables:builder:{{v}}]({{ depUri }}/builder/{{ v }}/jar)
 
 ```xml
 <dependency>

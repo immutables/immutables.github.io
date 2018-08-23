@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 ### Overview
 
@@ -118,8 +118,8 @@ Function<Xyz, String> fn = XyzFunctions.computeZ("Y");
 
 This feature has the following compile-time dependencies in addition to a runtime dependency on Guava:
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
-- [org.immutables:func:{{v}}]({{ depUri }}|func|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
+- [org.immutables:func:{{v}}]({{ depUri }}/func/{{ v }}/jar)
 
 ```xml
 <dependency>

@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 Overview
 --------
@@ -78,7 +78,7 @@ In addition to code annotation-processor, it's necessary to add the `mongo` anno
 
 <a name="dependencies"></a>
 
-- [org.immutables:mongo:{{v}}]({{ depUri }}|mongo|{{ v }}|jar)
+- [org.immutables:mongo:{{v}}]({{ depUri }}/mongo/{{ v }}/jar)
   + Compile and runtime utilities used during marshaling
 
 _Mongo_ artifact required to be used for compilation as well be available at runtime.

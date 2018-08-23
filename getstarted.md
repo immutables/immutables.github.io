@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 ## Prerequisites
 
@@ -12,7 +12,7 @@ Java 7 or higher is required to run the _Immutables_ annotation processor.
 
 Add the required dependencies for basic immutable object generation:
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
   + Compile-only annotation processing tool. All in one artifact: annotations, processor with properly repackaged embedded dependencies.
 
 Snippet of Maven dependencies:
@@ -121,7 +121,7 @@ dependencies {
 }
 ```
 
-Other compile-only dependencies applicable to Android should be added in the `provided` scope. Jar files with annotations such as [org.immutables:builder:{{v}}]({{ depUri }}|builder|{{ v }}|jar) (see [Factory Builders](factory.html)) or [org.immutables:gson:{{v}}]({{ depUri }}|gson|{{ v }}|jar) (see [GSON support](json.html#gson)) don't have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the `gson` module provides optional runtime classes which are not suitable for Android apps.
+Other compile-only dependencies applicable to Android should be added in the `provided` scope. Jar files with annotations such as [org.immutables:builder:{{v}}]({{ depUri }}/builder/{{ v }}/jar) (see [Factory Builders](factory.html)) or [org.immutables:gson:{{v}}]({{ depUri }}/gson/{{ v }}/jar) (see [GSON support](json.html#gson)) don't have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the `gson` module provides optional runtime classes which are not suitable for Android apps.
 
 ```javascript
 dependencies {

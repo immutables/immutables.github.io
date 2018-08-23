@@ -4,7 +4,7 @@ layout: page
 ---
 
 {% capture v %}2.7.0{% endcapture %}
-{% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
+{% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 Overview
 --------
@@ -197,8 +197,8 @@ Gson
 
 ### Dependencies
 
-- [org.immutables:value:{{v}}]({{ depUri }}|value|{{ v }}|jar)
-- [org.immutables:gson:{{v}}]({{ depUri }}|gson|{{ v }}|jar)
+- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
+- [org.immutables:gson:{{v}}]({{ depUri }}/gson/{{ v }}/jar)
 
 Gson integration requires the `com.google.gson:gson` compile and runtime modules.
 The `org.immutables:gson` module contains compile-time annotations to generate `TypeAdapter` factories.
