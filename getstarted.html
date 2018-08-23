@@ -38,7 +38,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>Add the required dependencies for basic immutable object generation:</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.7.0%7Cjar">org.immutables:value:2.7.0</a>
+<li><a href="http://search.maven.org/artifact/org.immutables/value/2.7.0/jar">org.immutables:value:2.7.0</a>
 
 <ul>
 <li>Compile-only annotation processing tool. All in one artifact: annotations, processor with properly repackaged embedded dependencies.</li>
@@ -138,7 +138,7 @@ Although <em>Immutables</em> annotation processing works with <code>javac</code>
   <span class="nx">provided</span> <span class="s2">&quot;org.immutables:value:2.7.0&quot;</span> <span class="c1">// &lt;-- for annotation API</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Other compile-only dependencies applicable to Android should be added in the <code>provided</code> scope. Jar files with annotations such as <a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cbuilder%7C2.7.0%7Cjar">org.immutables:builder:2.7.0</a> (see <a href="factory.html">Factory Builders</a>) or <a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cgson%7C2.7.0%7Cjar">org.immutables:gson:2.7.0</a> (see <a href="json.html#gson">GSON support</a>) don&#39;t have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the <code>gson</code> module provides optional runtime classes which are not suitable for Android apps.</p>
+<p>Other compile-only dependencies applicable to Android should be added in the <code>provided</code> scope. Jar files with annotations such as <a href="http://search.maven.org/artifact/org.immutables/builder/2.7.0/jar">org.immutables:builder:2.7.0</a> (see <a href="factory.html">Factory Builders</a>) or <a href="http://search.maven.org/artifact/org.immutables/gson/2.7.0/jar">org.immutables:gson:2.7.0</a> (see <a href="json.html#gson">GSON support</a>) don&#39;t have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the <code>gson</code> module provides optional runtime classes which are not suitable for Android apps.</p>
 <div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="nx">dependencies</span> <span class="p">{</span>
   <span class="c1">// ...</span>
   <span class="nx">apt</span> <span class="s2">&quot;org.immutables:value:2.7.0&quot;</span> <span class="c1">// for annotation processor</span>
