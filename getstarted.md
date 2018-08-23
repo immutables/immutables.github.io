@@ -3,7 +3,7 @@ title: 'Get started!'
 layout: page
 ---
 
-{% capture v %}2.6.3{% endcapture %}
+{% capture v %}2.7.0{% endcapture %}
 {% capture depUri %}http://search.maven.org/#artifactdetails|org.immutables{% endcapture %}
 
 ## Prerequisites
@@ -127,7 +127,7 @@ Other compile-only dependencies applicable to Android should be added in the `pr
 dependencies {
   // ...
   apt "org.immutables:value:{{v}}" // for annotation processor
-  provided "org.immutables:value:{{v}}" // for annotations
+  provided "org.immutables:value-annotations:{{v}}" // for annotations
   provided "org.immutables:builder:{{v}}" // for annotations
   provided "org.immutables:gson:{{v}}" // for annotations
 }
@@ -147,6 +147,8 @@ dependencies {
   provided "org.immutables:gson:{{v}}:annotations" // annotation-only artifact
 }
 ```
+
+Since version 2.7 in addition to `org.immutables:value:annotations` artifact (with `annotations` classifier), also available equivalent `org.immutables:value-annotations` annotation-only artifact. It will be easier for some tools to consume artifacts without classifiers and including source jars.
 
 <a href="/immutable.html" class="btn btn-default btn-lg">Read guide...</a>
 
