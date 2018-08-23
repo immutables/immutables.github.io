@@ -25,7 +25,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <div class="container">
     <a href="/">Immutables</a> &larr;
 
-    <h1>Encoding custom types <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></h1>
+    <h1>Encoding custom types <iframe src="https://ghbtns.com/github-btn.html?user=immutables&repo=immutables&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+</h1>
   </div>
 </header>
 <aside id="toc"></aside>
@@ -64,12 +65,12 @@ encoding-use/
 <p>Here&#39;s the Immutable modules we will use</p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.6.3%7Cjar">org.immutables:value:2.6.3</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cvalue%7C2.7.0%7Cjar">org.immutables:value:2.7.0</a>
 
 <ul>
 <li>the annotation processor used to compile encodings and value objects</li>
 </ul></li>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.6.3%7Cjar">org.immutables:encode:2.6.3</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cencoding%7C2.7.0%7Cjar">org.immutables:encode:2.7.0</a>
 
 <ul>
 <li>the annotation API to define encoding classes</li>
@@ -82,14 +83,14 @@ encoding-use/
   <span class="c">&lt;!-- the annotation processor, compile only --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.6.3<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.7.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="c">&lt;!-- annotation to encodings, need to be reexported transitively, so annotation can be read at compile time for using modules --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>encode<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.6.3<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.7.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="c">&lt;!-- we&#39;ll encode ImmutableTable, so we need guava dependency, while user of the encoding will have to reference at least Table/ImmutableTable we can skip reexport,</span>
@@ -104,7 +105,7 @@ encoding-use/
   <span class="c">&lt;!-- the annotation processor, compile only --&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.6.3<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.7.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
@@ -517,7 +518,6 @@ encoding-use/
 
 <h3>Parser/processor limitations (method references)</h3>
 
-
 </section>
 <footer class="jumbotron">
   <div class="container">
@@ -568,6 +568,5 @@ $(function() {
   })
 })
 </script>
-<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>

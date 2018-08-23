@@ -25,7 +25,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <div class="container">
     <a href="/">Immutables</a> &larr;
 
-    <h1>MongoDB repositories <a class="github-button" href="https://github.com/immutables/immutables" data-style="mega" data-count-href="/immutables/immutables/stargazers" data-count-api="/repos/immutables/immutables#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star immutables/immutables on GitHub">stars</a></h1>
+    <h1>MongoDB repositories <iframe src="https://ghbtns.com/github-btn.html?user=immutables&repo=immutables&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+</h1>
   </div>
 </header>
 <aside id="toc"></aside>
@@ -106,7 +107,7 @@ Repositories employ BSON marshaling which uses the same infrastructure for <a hr
 <p><a name="dependencies"></a></p>
 
 <ul>
-<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cmongo%7C2.6.3%7Cjar">org.immutables:mongo:2.6.3</a>
+<li><a href="http://search.maven.org/#artifactdetails%7Corg.immutables%7Cmongo%7C2.7.0%7Cjar">org.immutables:mongo:2.7.0</a>
 
 <ul>
 <li>Compile and runtime utilities used during marshaling</li>
@@ -116,19 +117,17 @@ Repositories employ BSON marshaling which uses the same infrastructure for <a hr
 <p><em>Mongo</em> artifact required to be used for compilation as well be available at runtime.
 <em>Mongo</em> module works closely with <a href="/json.html#gson">Gson</a> module, which is also included as transitive dependency.</p>
 
-<p><strong>Note:</strong> Current release works with versions <code>2.12+</code> of the MongoDB Java driver - version <code>3.0</code> and up is not yet supported.</p>
-
 <p>Snippet of Maven dependencies:</p>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.6.3<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.7.0<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>mongo<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.6.3<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.7.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
 <h3>Enable repository generation</h3>
@@ -412,6 +411,19 @@ if a document is to be created via upsert operation.</p>
     <span class="o">.</span><span class="na">addRatings</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
     <span class="o">.</span><span class="na">upsert</span><span class="o">();</span>
 </code></pre></div>
+<h3>Read-only repositories</h3>
+
+<p>For usecases when only read operations are required one can customize repository generation with <code>readonly</code> annotation parameter.
+When set to <code>true</code> (it is <code>false</code> by default) write, delete and update methods will not be available:
+<code>java
+@Value.Immutable
+@Mongo.Repository(readonly = true) // don&#39;t generate any write / delete / update methods
+public abstract class Item {
+  // ...
+}
+</code>
+To omit indexing operations use <code>index = false</code> parameter (indexing is enabled by default).</p>
+
 <h3>Ensure Index</h3>
 
 <p>If you want to ensure indices using code rather than the administrative tools,
@@ -428,7 +440,6 @@ See the methods of <code>Indexer</code> object.</p>
     <span class="o">.</span><span class="na">withContentDesceding</span><span class="o">()</span>
     <span class="o">.</span><span class="na">ensure</span><span class="o">();</span>
 </code></pre></div>
-
 </section>
 <footer class="jumbotron">
   <div class="container">
@@ -479,6 +490,5 @@ $(function() {
   })
 })
 </script>
-<script async defer id="github-bjs" src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
