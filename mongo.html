@@ -414,15 +414,14 @@ if a document is to be created via upsert operation.</p>
 <h3>Read-only repositories</h3>
 
 <p>For usecases when only read operations are required one can customize repository generation with <code>readonly</code> annotation parameter.
-When set to <code>true</code> (it is <code>false</code> by default) write, delete and update methods will not be available:
-<code>java
-@Value.Immutable
-@Mongo.Repository(readonly = true) // don&#39;t generate any write / delete / update methods
-public abstract class Item {
-  // ...
-}
-</code>
-To omit indexing operations use <code>index = false</code> parameter (indexing is enabled by default).</p>
+When set to <code>true</code> (it is <code>false</code> by default) write, delete and update methods will not be available:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<span class="nd">@Mongo.Repository</span><span class="o">(</span><span class="n">readonly</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span> <span class="c1">// don&#39;t generate any write / delete / update methods</span>
+<span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Item</span> <span class="o">{</span>
+  <span class="c1">// ...</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>To omit indexing operations use <code>index = false</code> parameter (indexing is enabled by default).</p>
 
 <h3>Ensure Index</h3>
 
