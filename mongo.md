@@ -428,6 +428,7 @@ posts.findById(111)
 ### Read-only repositories
 For usecases when only read operations are required one can customize repository generation with `readonly` annotation parameter.
 When set to `true` (it is `false` by default) write, delete and update methods will not be available:
+
 ```java
 @Value.Immutable
 @Mongo.Repository(readonly = true) // don't generate any write / delete / update methods
@@ -435,6 +436,7 @@ public abstract class Item {
   // ...
 }
 ```
+
 To omit indexing operations use `index = false` parameter (indexing is enabled by default).
 
 ### Ensure Index
