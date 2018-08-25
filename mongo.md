@@ -3,7 +3,7 @@ title: 'MongoDB repositories'
 layout: page
 ---
 
-{% capture v %}2.7.0{% endcapture %}
+{% capture v %}2.7.1{% endcapture %}
 {% capture depUri %}http://search.maven.org/artifact/org.immutables{% endcapture %}
 
 Overview
