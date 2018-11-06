@@ -1112,7 +1112,7 @@ System.out.println(item);
 ```
 
 The naming conventions of modifiable classes can be changed using [styles](/style.html),
-even going as far as creating [builders in disguise]().
+even going as far as creating [builders in disguise](https://github.com/immutables/immutables/issues/234#issuecomment-170574928).
 
 <a name="generics"></a>
 ### Generics are fully supported!
