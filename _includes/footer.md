@@ -13,7 +13,8 @@
 
 ## Get involved
 
-* Clone source repository, contribute bug reports and fixes on [GitHub immutables/immutables](https://github.com/immutables/immutables). Questions and feedback is welcome on issue tracker
+* Clone source repository, contribute bug reports and fixes on [GitHub immutables/immutables](https://github.com/immutables/immutables)
+* Issue reports, questions and feedback is welcome on issue tracker [GitHub immutables/immutables/issues](https://github.com/immutables/immutables/issues)
 * News and announcements on twitter [@ImmutablesOrg](https://twitter.com/ImmutablesOrg)
 
 [Apache License 2.0](/license.html)
