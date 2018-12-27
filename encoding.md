@@ -3,7 +3,7 @@ title: 'Encoding custom types'
 layout: page
 ---
 
-{% capture v %}2.7.3{% endcapture %}
+{% capture v %}2.7.4{% endcapture %}
 {% capture depUri %}https://search.maven.org/artifact/org.immutables{% endcapture %}
 
 Introduction
