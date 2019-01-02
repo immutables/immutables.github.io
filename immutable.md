@@ -864,11 +864,11 @@ public abstract class Data {
 
 ...
 boolean willBeTrue =
-    ImmuableData.of() == ImmuableData.of();
+    ImmutableData.of() == ImmutableData.of();
 // true
 
 boolean willBeTrueAlso =
-    ImmuableData.of().chunks().isEmpty();
+    ImmutableData.of().chunks().isEmpty();
 // true
 ```
 
