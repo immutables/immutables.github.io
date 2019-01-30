@@ -21,8 +21,7 @@ is to provide the best possible API that matches well for storing documents expr
 
 One of the side goals of this module was to demonstrate that Java DSLs and APIs could be actually a lot less ugly than they usually are.
 
-Generated repositories wrap the infrastructure of the official Java driver, but there are couple of places where operations are handled more efficiently in _Immutables_.
-Repositories employ BSON marshaling which uses the same infrastructure for [JSON marshaling](/json.html) using the excellent [bson4jackson](https://github.com/michel-kraemer/bson4jackson) data-format adapter.
+Generated repositories wrap the infrastructure of the official [Java driver](https://mongodb.github.io/mongo-java-driver/) and [BSON serialization](http://mongodb.github.io/mongo-java-driver/3.8/bson/). 
 
 ```java
 // Define repository for collection "items".
@@ -82,7 +81,7 @@ In addition to code annotation-processor, it's necessary to add the `mongo` anno
   + Compile and runtime utilities used during marshaling
 
 _Mongo_ artifact required to be used for compilation as well be available at runtime.
-_Mongo_ module works closely with [Gson](/json.html#gson) module, which is also included as transitive dependency.
+By default, _Mongo_ adapter works with [Gson](/json.html#gson) module, however there are ways to register external [CodecRegistry](http://mongodb.github.io/mongo-java-driver/3.8/bson/codecs/) to allow custom serialization and deserialization using other libraries (eg. Jackson).
 
 
 Snippet of Maven dependencies:
@@ -208,14 +207,49 @@ public abstract class EventRecord {
 BSON/JSON documents
 ----
 
+Reading and writing mongo documents requries conversion into [BSON format](http://bson.org). 
+Immutables provides BSON adapters for common JSON libraries like [Jackson](#jackson) (experimental) and [GSON](#gson) so users can
+reuse their mapping API while persisting objects in binary (BSON) format. 
+
+For historical reasons, GSON is used by default for mongo repositories. 
+However, it is possible to register any CodecRegistry 
+(even [PojoCodec](http://mongodb.github.io/mongo-java-driver/3.8/bson/pojos/)). 
+Internally, Jackson and Gson have their own CodecRegistry implementations.
+
+<a name="gson"></a>
+#### GSON
+
 All values used to model documents should have GSON type adapters registered. Use
 `@Gson.TypeAdapters` on types or packages to generate type adapters for enclosed value types. When
 using `RepositorySetup.forUri`, all type adapters will be auto-registered from the classpath. When
 using custom `RepositorySetup`, register type adapters on a `Gson` instance using `GsonBuilder`
 as shown in [GSON guide](json.html#adapter-registration).
 
-A large portion of the things you need to know to create MongoDB mapped documents is described in
+A large portion of the things you need to know to create MongoDB mapped documents with GSON is described in
 [GSON guide](json.html#gson)
+
+<a name="jackson"></a>
+#### Jackson (experimental)
+
+Since release [2.7.2](https://github.com/immutables/immutables#272-2018-11-05) immutables has added 
+**experimental support** for jackson. You can use provided helper classes to bridge between [ObjectMapper](https://fasterxml.github.io/jackson-databind/javadoc/2.8/com/fasterxml/jackson/databind/ObjectMapper.html) and [CodecRegistry](http://mongodb.github.io/mongo-java-driver/3.8/bson/codecs/) as shown below:
+
+```java
+ObjectMapper mapper = new ObjectMapper()
+       // support for mongo driver (bson) specific types like Document, DBObject etc.
+      .registerModule(JacksonCodecs.module(MongoClient.getDefaultCodecRegistry()))
+      .registerModule(new GuavaModule());
+
+RepositorySetup setup = RepositorySetup.builder()
+      .database(database)
+      .codecRegistry(JacksonCodecs.registryFromMapper(mapper))
+      // ...
+      .build();
+```
+
+Jackson adapter for CodecRegistry will delegate all calls to native [BsonReader and BsonWriter](http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/) without intermediate object reprsentation (eg. String or byte[]) thus avoiding extra parsing and memory allocation.
+
+Please note that jackson support is marked as [@Beta](https://google.github.io/guava/releases/21.0/api/docs/com/google/common/annotations/Beta.html) so API is subject to change or even removal.
 
 ----------
 Operations
