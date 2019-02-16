@@ -16,7 +16,7 @@ combinations of customizations will work correctly.
 
 `@Value.Style` annotation has a number of attributes to
 customize generated the APIs and implementations. See the JavaDoc for
-[Value.Style](https://github.com/immutables/immutables/blob/master/value/src/org/immutables/value/Value.java#L308)
+[Value.Style](https://github.com/immutables/immutables/blob/ee52a793b512e7cdb1b03f5077f2dcc022e65a5f/value-annotations/src/org/immutables/value/Value.java#L416)
 
 In nutshell, using styles you can:
 
