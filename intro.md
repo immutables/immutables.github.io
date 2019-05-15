@@ -19,7 +19,7 @@ It is used for the development of airline inventory systems, travel deal aggrega
 
 [Guava](https://code.google.com/p/guava-libraries) is used as an optional utility library for the generated classes,
 but in addition we employ an API style popularized by the "Effective Java, Second Edition" book and Guava Library.
-Use of `null` as an attribute value is rigorously prohibited ([Using and avoiding null explained](https://code.google.com/p/guava-libraries/wiki/UsingAndAvoidingNullExplained)).
+Use of `null` as an attribute value is rigorously prohibited ([Using and avoiding null explained](https://github.com/google/guava/wiki/UsingAndAvoidingNullExplained)).
 
 The _Immutables_ package does not use compiler hacks with AST transformations or companion languages: It uses annotation processing - a part of the standard Java compiler.
 Classes are generated during the compilation process and are not stored in source control, but the generated sources are easily inspected if necessary.

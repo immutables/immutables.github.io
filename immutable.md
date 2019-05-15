@@ -11,7 +11,7 @@ Overview
 
 To reap the benefits of immutability in Java, we created an annotation processor
 to easily create simple and consistent value objects. You can think of it as
-[Guava's Immutable Collections](https://code.google.com/p/guava-libraries/wiki/ImmutableCollectionsExplained) but for regular objects.
+[Guava's Immutable Collections](https://github.com/google/guava/wiki/ImmutableCollectionsExplained) but for regular objects.
 
 The core of _Immutables_ is modelling. Good modelling is at the heart of creating good applications and
 services, and of good design in general. We feel proud to fill a gap in the area of modelling in the Java programming language, where conventional JavaBeans are insufficient.
