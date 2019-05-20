@@ -8,6 +8,7 @@
 - [Style customization](/style.html)
 - [JSON serialization](/json.html)
 - [MongoDB repositories](/mongo.html)
+- [DynamoDB integration](/dynamodb.html)
 - [Encoding: Customizing attributes and builders (experimental)](/encoding.html)
 - [Using annotation processor in IDE](/apt.html)
 
