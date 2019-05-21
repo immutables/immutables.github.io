@@ -120,7 +120,7 @@ import org.immutables.value.Value;
 interface IncludedAnnotations {}
 ...
 
-ImmutableRetention.build()
+ImmutableRetention.builder()
     .value(RetentionPolicy.CLASS);
     .build();
 ```
