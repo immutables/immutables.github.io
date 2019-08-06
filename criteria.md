@@ -9,8 +9,7 @@ layout: page
 Overview
 --------
 
-**WARNING** Criteria API is currently considered in preview phase. 
-We encourage users to try it out and give feedback but reserve the right to modify its API.
+{% include important.html content="Criteria API is currently considered in preview phase. We encourage users to try it out and give feedback but reserve the right to modify its API." %}
 
 The focus of Immutables Criteria is to provide database agnostic and efficient API for storing, querying and modifying documents expressed as immutable objects.
 
