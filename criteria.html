@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>Criteria</title>
+</head>
+<body class="page">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PMJSKV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PMJSKV');</script>
+<!-- End Google Tag Manager -->
+
+<header>
+  <div class="container">
+    <a href="/">Immutables</a> &larr;
+
+    <h1>Criteria <iframe src="https://ghbtns.com/github-btn.html?user=immutables&repo=immutables&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+</h1>
+  </div>
+</header>
+<aside id="toc"></aside>
+<section class="documentation">
+  <h2>Overview</h2>
+
+<div markdown="span" class="alert alert-warning" role="alert"><i class="fa fa-warning"></i> <b>Important:</b> Criteria API is currently considered in preview phase. We encourage users to try it out and give feedback but reserve the right to modify its API.</div>
+
+<p>The focus of Immutables Criteria is to provide database agnostic and efficient API for storing, querying and modifying documents expressed as immutable objects.</p>
+
+<h3>Features</h3>
+
+<ul>
+<li><strong>Expressive and type-safe API</strong> Compile-type validation of the query.</li>
+<li><strong>Dynamic</strong> Combine predicates at runtime based on some logic</li>
+<li><strong>Data-source agnostic</strong> Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)</li>
+<li><strong>Blocking / asynchronous operations</strong> Generated repositories allow you to query data in blocking, non-blocking and <a href="https://www.reactive-streams.org/">reactive</a> fashion</li>
+</ul>
+
+<h2>Criteria</h2>
+
+<p>In order to enable criteria generation add <code>@Criteria</code> annotation to any existing immutable interface or abstract class. Criteria will be generated as a class with a <code>Criteria</code> suffix in the same package.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<span class="nd">@Criteria</span> <span class="c1">// generate criteria</span>
+<span class="nd">@Criteria.Repository</span> <span class="c1">// means generate repository (different from @Criteria)</span>
+<span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="nd">@Criteria.Id</span> 
+    <span class="n">String</span> <span class="nf">id</span><span class="o">();</span>
+    <span class="n">String</span> <span class="nf">fullName</span><span class="o">();</span>
+    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">nickName</span><span class="o">();</span>  
+    <span class="kt">int</span> <span class="nf">age</span><span class="o">();</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">Pet</span><span class="o">&gt;</span> <span class="nf">pets</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div>
+<p>Generated <code>PersonCriteria</code> class closely follows <code>Person</code> model and allows type-safe queries. Criteria objects are immutable and can be stored as constants, serialized or otherwise safely passed around. They have methods corresponding to document attributes and relevant matchers (attribute predicates).</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// basic query by id</span>
+<span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">isIn</span><span class="o">(</span><span class="s">&quot;id1&quot;</span><span class="o">,</span> <span class="s">&quot;id2&quot;</span><span class="o">,</span> <span class="s">&quot;id3&quot;</span><span class="o">);</span>
+
+<span class="c1">// query on Strings, Comparables and Optionals</span>
+<span class="n">person</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)</span> <span class="c1">// basic string conditions</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isEqualTo</span><span class="o">(</span><span class="mf">3.1415D</span><span class="o">)</span> <span class="c1">// ERROR! will not compile since fullName is String (not double)</span>
+    <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">isAbsent</span><span class="o">()</span> <span class="c1">// for Optional attribute</span>
+    <span class="o">.</span><span class="na">or</span><span class="o">()</span> <span class="c1">// disjunction</span>
+    <span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">isGreaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">value</span><span class="o">().</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&quot;Adam&quot;</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">or</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">not</span><span class="o">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="n">p</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">value</span><span class="o">().</span><span class="na">hasLength</span><span class="o">(</span><span class="mi">4</span><span class="o">));</span> <span class="c1">// negation</span>
+
+<span class="c1">// apply specific predicate to elements of a collection</span>
+<span class="n">person</span>
+    <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">none</span><span class="o">().</span><span class="na">type</span><span class="o">.</span><span class="na">isEqualTo</span><span class="o">(</span><span class="n">Pet</span><span class="o">.</span><span class="na">PetType</span><span class="o">.</span><span class="na">iguana</span><span class="o">)</span>  <span class="c1">// no Iguanas</span>
+    <span class="o">.</span><span class="na">or</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">any</span><span class="o">().</span><span class="na">name</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;fluffy&quot;</span><span class="o">);</span> <span class="c1">// person has a pet which sounds like fluffy</span>
+</code></pre></div>
+<p>You will notice that there are no <code>and</code> statements (conjunctions) that is because criteria uses 
+<a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive Normal Form</a> (in short DNF) by default. Statements are
+combined using logical <code>and</code> unless disjunction <code>or()</code> is explicitly used.</p>
+
+<p>For more complex expressions, one can still combine criterias arbitrarily using <code>and</code>s / <code>or</code>s / <code>not</code>s. 
+Statement like <code>A and (B or C)</code> can be written as follows:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isEqualTo</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">isGreaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span>
+</code></pre></div>
+<p>You need to add <code>@Criteria</code> to all classes to be queried. For example, to filter on <code>Person.pets.name</code>,
+ <code>Pet</code> class needs to have <code>@Criteria</code> annotation (otherwise generic ObjectMatcher is used).</p>
+
+<hr>
+
+<h2>Repository</h2>
+
+<p>Repository is a User facing API to perform queries, updates, pub/sub or other CRUD operations (think data-access abstraction).
+Similarly to criteria, repositories are auto-generated when <code>@Criteria.Repository</code> annotation is added to immutables class.
+User has the option to customize repository generation by using facets. </p>
+
+<p>Repositories delegate all operations to the Backend (more on that later).</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// add insert / find / delete / watch operations which return rxjava types</span>
+<span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span> <span class="o">=</span> <span class="o">{</span><span class="n">RxJavaReadable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">RxJavaWatchable</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+<span class="kd">interface</span> <span class="nc">Persion</span> <span class="o">{</span>
+<span class="o">}</span>
+
+<span class="c1">// query datasource and return reactive type: Flowable</span>
+<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span>
+         <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">isGreaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">))</span>
+         <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
+         <span class="o">.</span><span class="na">offset</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span>
+         <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+         <span class="o">.</span><span class="na">fetch</span><span class="o">();</span> <span class="c1">// return rxjava flowable because of RxJavaReadable facet</span>
+
+
+<span class="c1">// unbounded stream of events using watch API (if backend supports it)</span>
+<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">isActive</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
+</code></pre></div>
+<h3>Facet</h3>
+
+<p>Facets allow fine-tuning of repository behaviour. They (mostly) serve two purposes: define a set of operations supported by repository (like
+read, write, watch) and control execution model of the repository (sync / async / reactive).</p>
+
+<p>Several implementatins for execution model are available out of the box:</p>
+
+<ul>
+<li>Synchronous. Returning List / Optional / void / etc.</li>
+<li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
+<li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
+<li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / Single / Completable</li>
+</ul>
+
+<h3>Querying</h3>
+
+<p>Add one of the <code>*Readable</code> facets for query operations to become available. </p>
+
+<p>Currently <code>Readable</code> allows filter / order / limit / offset operations. </p>
+
+<p>Projections and Aggregations are planned in future. </p>
+
+<h3>Inserting / Deleting</h3>
+
+<p><code>*Writable</code> facet is required to enable write operations. Examples of write / delete operations:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// one of RxJavaWritable / SyncWritable / AsyncWritable etc.</span>
+<span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="n">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
+
+<span class="n">WriteResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">,</span> <span class="n">person2</span><span class="o">);</span> <span class="c1">// for sync</span>
+<span class="n">Single</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for rxjava2</span>
+<span class="n">CompletionStage</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for async</span>
+<span class="n">Publisher</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for reactive </span>
+<span class="n">repository</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">());</span> <span class="c1">// delete by query</span>
+</code></pre></div>
+<h3>Pub/Sub (aka Watching)</h3>
+
+<p>Watching allows to continuously observe events on the backend in real-time. When available, it is built on the top of existing oferring like 
+<a href="https://docs.mongodb.com/manual/changeStreams">change streams</a> in mongo or 
+<a href="https://geode.apache.org/docs/guide/19/developing/continuous_querying/how_continuous_querying_works.html">continuous querying</a> in Geode.</p>
+
+<p>Use <code>*Watchable</code> facet to enable this functionality on a repository.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="n">RxJavaWatchable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
+
+<span class="c1">// if remote database allows filtering in real-time</span>
+<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Persion</span><span class="o">&gt;</span> <span class="n">flow</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
+</code></pre></div>
+<hr>
+
+<h2>Backend</h2>
+
+<p>Backend is responsible for interpreting expressions and operations into native queries and API calls using vendor drivers. It is the adapter 
+between criteria abstraction and native API.</p>
+
+<p>Usually it is instantiated using vendor API (eg. MongoDatabase)</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// can be Mongo / Elasticsearch or any other backend</span>
+
+<span class="c1">// instantiate repository using existing backend</span>
+<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+</code></pre></div>
+<h3>InMemory</h3>
+
+<h3>Mongo</h3>
+
+<h3>ElasticSearch</h3>
+
+<h3>Geode</h3>
+
+</section>
+<footer class="jumbotron">
+  <div class="container">
+    <h2>Guides</h2>
+
+<ul>
+<li><a href="/getstarted.html">Get started!</a></li>
+<li><a href="/intro.html">Inception</a></li>
+<li><a href="/immutable.html">Immutable objects</a></li>
+<li><a href="/factory.html">Factory builders</a></li>
+<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+<li><a href="/style.html">Style customization</a></li>
+<li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/criteria.html">Criteria</a></li>
+<li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2>Get involved</h2>
+
+<ul>
+<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
+    <!--<div><h2>Posts</h2>
+      <ul>
+        
+      </ul>
+    </div>-->
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({
+    container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+</body>
+</html>

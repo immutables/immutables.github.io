@@ -54,8 +54,7 @@ is to provide the best possible API that matches well for storing documents expr
 
 <p>One of the side goals of this module was to demonstrate that Java DSLs and APIs could be actually a lot less ugly than they usually are.</p>
 
-<p>Generated repositories wrap the infrastructure of the official Java driver, but there are couple of places where operations are handled more efficiently in <em>Immutables</em>.
-Repositories employ BSON marshaling which uses the same infrastructure for <a href="/json.html">JSON marshaling</a> using the excellent <a href="https://github.com/michel-kraemer/bson4jackson">bson4jackson</a> data-format adapter.</p>
+<p>Generated repositories wrap the infrastructure of the official <a href="https://mongodb.github.io/mongo-java-driver/">Java driver</a> and <a href="http://mongodb.github.io/mongo-java-driver/3.8/bson/">BSON serialization</a>. </p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Define repository for collection &quot;items&quot;.</span>
 <span class="nd">@Value.Immutable</span>
 <span class="nd">@Mongo.Repository</span><span class="o">(</span><span class="s">&quot;items&quot;</span><span class="o">)</span>
@@ -115,7 +114,7 @@ Repositories employ BSON marshaling which uses the same infrastructure for <a hr
 </ul>
 
 <p><em>Mongo</em> artifact required to be used for compilation as well be available at runtime.
-<em>Mongo</em> module works closely with <a href="/json.html#gson">Gson</a> module, which is also included as transitive dependency.</p>
+By default, <em>Mongo</em> adapter works with <a href="/json.html#gson">Gson</a> module, however there are ways to register external <a href="http://mongodb.github.io/mongo-java-driver/3.8/bson/codecs/">CodecRegistry</a> to allow custom serialization and deserialization using other libraries (eg. Jackson).</p>
 
 <p>Snippet of Maven dependencies:</p>
 <div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
@@ -222,14 +221,48 @@ to MongoDB&#39; <code>ObjectID</code>. Here&#39;s example of an auto-generated i
 
 <h2>BSON/JSON documents</h2>
 
+<p>Reading and writing mongo documents requries conversion into <a href="http://bson.org">BSON format</a>. 
+Immutables provides BSON adapters for common JSON libraries like <a href="#jackson">Jackson</a> (experimental) and <a href="#gson">GSON</a> so users can
+reuse their mapping API while persisting objects in binary (BSON) format. </p>
+
+<p>For historical reasons, GSON is used by default for mongo repositories. 
+However, it is possible to register any CodecRegistry 
+(even <a href="http://mongodb.github.io/mongo-java-driver/3.8/bson/pojos/">PojoCodec</a>). 
+Internally, Jackson and Gson have their own CodecRegistry implementations.</p>
+
+<p><a name="gson"></a></p>
+
+<h4>GSON</h4>
+
 <p>All values used to model documents should have GSON type adapters registered. Use
 <code>@Gson.TypeAdapters</code> on types or packages to generate type adapters for enclosed value types. When
 using <code>RepositorySetup.forUri</code>, all type adapters will be auto-registered from the classpath. When
 using custom <code>RepositorySetup</code>, register type adapters on a <code>Gson</code> instance using <code>GsonBuilder</code>
 as shown in <a href="json.html#adapter-registration">GSON guide</a>.</p>
 
-<p>A large portion of the things you need to know to create MongoDB mapped documents is described in
+<p>A large portion of the things you need to know to create MongoDB mapped documents with GSON is described in
 <a href="json.html#gson">GSON guide</a></p>
+
+<p><a name="jackson"></a></p>
+
+<h4>Jackson (experimental)</h4>
+
+<p>Since release <a href="https://github.com/immutables/immutables#272-2018-11-05">2.7.2</a> immutables has added 
+<strong>experimental support</strong> for jackson. You can use provided helper classes to bridge between <a href="https://fasterxml.github.io/jackson-databind/javadoc/2.8/com/fasterxml/jackson/databind/ObjectMapper.html">ObjectMapper</a> and <a href="http://mongodb.github.io/mongo-java-driver/3.8/bson/codecs/">CodecRegistry</a> as shown below:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">()</span>
+       <span class="c1">// support for mongo driver (bson) specific types like Document, DBObject etc.</span>
+      <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">module</span><span class="o">(</span><span class="n">MongoClient</span><span class="o">.</span><span class="na">getDefaultCodecRegistry</span><span class="o">()))</span>
+      <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">GuavaModule</span><span class="o">());</span>
+
+<span class="n">RepositorySetup</span> <span class="n">setup</span> <span class="o">=</span> <span class="n">RepositorySetup</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+      <span class="o">.</span><span class="na">database</span><span class="o">(</span><span class="n">database</span><span class="o">)</span>
+      <span class="o">.</span><span class="na">codecRegistry</span><span class="o">(</span><span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">registryFromMapper</span><span class="o">(</span><span class="n">mapper</span><span class="o">))</span>
+      <span class="c1">// ...</span>
+      <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+</code></pre></div>
+<p>Jackson adapter for CodecRegistry will delegate all calls to native <a href="http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/">BsonReader and BsonWriter</a> without intermediate object reprsentation (eg. String or byte[]) thus avoiding extra parsing and memory allocation.</p>
+
+<p>Please note that jackson support is marked as <a href="https://google.github.io/guava/releases/21.0/api/docs/com/google/common/annotations/Beta.html">@Beta</a> so API is subject to change or even removal.</p>
 
 <hr>
 
@@ -452,6 +485,7 @@ See the methods of <code>Indexer</code> object.</p>
 <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
 <li><a href="/style.html">Style customization</a></li>
 <li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/criteria.html">Criteria</a></li>
 <li><a href="/mongo.html">MongoDB repositories</a></li>
 <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
 <li><a href="/apt.html">Using annotation processor in IDE</a></li>

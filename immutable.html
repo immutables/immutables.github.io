@@ -35,7 +35,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <p>To reap the benefits of immutability in Java, we created an annotation processor
 to easily create simple and consistent value objects. You can think of it as
-<a href="https://code.google.com/p/guava-libraries/wiki/ImmutableCollectionsExplained">Guava&#39;s Immutable Collections</a> but for regular objects.</p>
+<a href="https://github.com/google/guava/wiki/ImmutableCollectionsExplained">Guava&#39;s Immutable Collections</a> but for regular objects.</p>
 
 <p>The core of <em>Immutables</em> is modelling. Good modelling is at the heart of creating good applications and
 services, and of good design in general. We feel proud to fill a gap in the area of modelling in the Java programming language, where conventional JavaBeans are insufficient.</p>
@@ -150,7 +150,7 @@ can be used in combination with <a href="/style.html#nesting"><code>@Value.Enclo
 <span class="kd">interface</span> <span class="nc">IncludedAnnotations</span> <span class="o">{}</span>
 <span class="o">...</span>
 
-<span class="n">ImmutableRetention</span><span class="o">.</span><span class="na">build</span><span class="o">()</span>
+<span class="n">ImmutableRetention</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
     <span class="o">.</span><span class="na">value</span><span class="o">(</span><span class="n">RetentionPolicy</span><span class="o">.</span><span class="na">CLASS</span><span class="o">);</span>
     <span class="o">.</span><span class="na">build</span><span class="o">();</span>
 </code></pre></div>
@@ -857,11 +857,11 @@ Use the concise <code>of()</code> factory method to obtain a singleton instance.
 
 <span class="o">...</span>
 <span class="kt">boolean</span> <span class="n">willBeTrue</span> <span class="o">=</span>
-    <span class="n">ImmuableData</span><span class="o">.</span><span class="na">of</span><span class="o">()</span> <span class="o">==</span> <span class="n">ImmuableData</span><span class="o">.</span><span class="na">of</span><span class="o">();</span>
+    <span class="n">ImmutableData</span><span class="o">.</span><span class="na">of</span><span class="o">()</span> <span class="o">==</span> <span class="n">ImmutableData</span><span class="o">.</span><span class="na">of</span><span class="o">();</span>
 <span class="c1">// true</span>
 
 <span class="kt">boolean</span> <span class="n">willBeTrueAlso</span> <span class="o">=</span>
-    <span class="n">ImmuableData</span><span class="o">.</span><span class="na">of</span><span class="o">().</span><span class="na">chunks</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">();</span>
+    <span class="n">ImmutableData</span><span class="o">.</span><span class="na">of</span><span class="o">().</span><span class="na">chunks</span><span class="o">().</span><span class="na">isEmpty</span><span class="o">();</span>
 <span class="c1">// true</span>
 </code></pre></div>
 <p>The abstract value type of a singleton should not have any mandatory attributes, otherwise the
@@ -1449,6 +1449,7 @@ See also <a href="#auxiliary">auxiliary attributes</a> for excluding attribute f
 <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
 <li><a href="/style.html">Style customization</a></li>
 <li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/criteria.html">Criteria</a></li>
 <li><a href="/mongo.html">MongoDB repositories</a></li>
 <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
 <li><a href="/apt.html">Using annotation processor in IDE</a></li>
