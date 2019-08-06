@@ -1,3 +1,5 @@
 name: Immutables
 highlighter: pygments
 markdown: redcarpet
+exclude: [README.md]
+
