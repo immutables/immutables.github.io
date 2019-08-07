@@ -220,11 +220,6 @@ section.documentation > ul li {
   margin-left: 30px;
 }
 
-section.documentation > .highlight {
-  max-width: inherit;
-  margin: 20px 0;
-}
-
 @media (max-width: 768px) {
   .jumbotron p {
     font-size: 16px;
