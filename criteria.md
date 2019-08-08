@@ -42,25 +42,30 @@ Generated `PersonCriteria` class closely follows `Person` model and allows type-
 
 ```java
 // basic query by id
-PersonCriteria.person.id.isIn("id1", "id2", "id3");
+PersonCriteria.person.id.in("id1", "id2", "id3");
+PersonCriteria.person.id.notIn("bad_id");
 
-// query on Strings, Comparables and Optionals
+// query on Strings, Comparables, Optionals and other Criterias
 person
-    .fullName.startsWith("John") // basic string conditions
-    .fullName.isEqualTo(3.1415D) // ERROR! will not compile since fullName is String (not double)
-    .nickName.isAbsent() // for Optional attribute
-    .or() // disjunction
-    .age.isGreaterThan(21)
-    .nickName.value().startsWith("Adam")
+    .fullName.is("John") // basic equal
+    .fullName.isNot("Marry") // not equal
+    .fullName.endsWith("Smith") // string condition
+    .fullName.is(3.1415D) // ERROR! will not compile since fullName is String (not double)
+    .nickName.isPresent() // for Optional attribute
+    .nickName.value().startsWith("Adam") // For Optional<String> attribute
+    .pets.notEmpty() // condition on an Iterable
+    .active.isTrue() // boolean
+    .or() // disjunction (equivalent to logical OR)
+    .age.atLeast(21) // comparable attribute
     .or()
-    .not(p -> p.nickName.value().hasLength(4)); // negation
+    .not(p -> p.nickName.value().hasLength(4)); // negation on a Optional<String> attribute
+    .bestFriend.value().hobby.endsWith("ing") // chaining criterias on other entities like Optional<Friend> 
 
 // apply specific predicate to elements of a collection
 person
-    .pets.none().type.isEqualTo(Pet.PetType.iguana)  // no Iguanas
+    .pets.none().type.is(Pet.PetType.iguana)  // no Iguanas
     .or()
     .pets.any().name.contains("fluffy"); // person has a pet which sounds like fluffy
-
 ```
 
 You will notice that there are no `and` statements (conjunctions) that is because criteria uses 
@@ -71,7 +76,7 @@ For more complex expressions, one can still combine criterias arbitrarily using 
 Statement like `A and (B or C)` can be written as follows:
 
 ```java
-person.fullName.isEqualTo("John").and(person.age.isGreaterThan(22).or().nickName.isPresent())
+person.fullName.is("John").and(person.age.greaterThan(22).or().nickName.isPresent())
 ```
 
 You need to add `@Criteria` to all classes to be queried. For example, to filter on `Person.pets.name`,
@@ -95,7 +100,7 @@ interface Persion {
 
 // query datasource and return reactive type: Flowable
 Flowable<Person> persons = repository
-         .find(PersonCriteria.person.age.isGreaterThan(21))
+         .find(PersonCriteria.person.age.atLeast(33))
          .orderBy(PersonCriteria.person.fullName.asc())
          .offset(20)
          .limit(10)
@@ -103,7 +108,7 @@ Flowable<Person> persons = repository
 
 
 // unbounded stream of events using watch API (if backend supports it)
-Flowable<Person> persons = repository.watcher(PersonCriteria.person.isActive.isFalse()).watch();
+Flowable<Person> persons = repository.watcher(PersonCriteria.person.active.isFalse()).watch();
 ```
 
 ### Facet
