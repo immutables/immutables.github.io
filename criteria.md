@@ -35,7 +35,23 @@ interface Person {
     Optional<String> nickName();  
     int age();
     List<Pet> pets();
+    Optional<Friend> bestFriend();
 }
+
+@Value.Immutable
+@Criteria 
+interface Pet {
+  enum PetType {parrot, panda, iguana, gecko}
+  PetType type();
+  String name();
+}
+
+@Value.Immutable
+@Criteria 
+interface Friend {
+   String hobby();
+}
+
 ```
 
 Generated `PersonCriteria` class closely follows `Person` model and allows type-safe queries. Criteria objects are immutable and can be stored as constants, serialized or otherwise safely passed around. They have methods corresponding to document attributes and relevant matchers (attribute predicates).
