@@ -59,6 +59,21 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">nickName</span><span class="o">();</span>  
     <span class="kt">int</span> <span class="nf">age</span><span class="o">();</span>
     <span class="n">List</span><span class="o">&lt;</span><span class="n">Pet</span><span class="o">&gt;</span> <span class="nf">pets</span><span class="o">();</span>
+    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Friend</span><span class="o">&gt;</span> <span class="nf">bestFriend</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="nd">@Value.Immutable</span>
+<span class="nd">@Criteria</span> 
+<span class="kd">interface</span> <span class="nc">Pet</span> <span class="o">{</span>
+  <span class="kd">enum</span> <span class="n">PetType</span> <span class="o">{</span><span class="n">parrot</span><span class="o">,</span> <span class="n">panda</span><span class="o">,</span> <span class="n">iguana</span><span class="o">,</span> <span class="n">gecko</span><span class="o">}</span>
+  <span class="n">PetType</span> <span class="nf">type</span><span class="o">();</span>
+  <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+<span class="o">}</span>
+
+<span class="nd">@Value.Immutable</span>
+<span class="nd">@Criteria</span> 
+<span class="kd">interface</span> <span class="nc">Friend</span> <span class="o">{</span>
+   <span class="n">String</span> <span class="nf">hobby</span><span class="o">();</span>
 <span class="o">}</span>
 </code></pre></div>
 <p>Generated <code>PersonCriteria</code> class closely follows <code>Person</code> model and allows type-safe queries. Criteria objects are immutable and can be stored as constants, serialized or otherwise safely passed around. They have methods corresponding to document attributes and relevant matchers (attribute predicates).</p>
