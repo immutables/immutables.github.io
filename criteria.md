@@ -18,7 +18,7 @@ The focus of Immutables Criteria is to provide database agnostic and efficient A
 - **Expressive and type-safe API** Compile-type validation of the query.
 - **Dynamic** Combine predicates at runtime based on some logic
 - **Data-source agnostic** Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)
-- **Blocking / asynchronous operations** Generated repositories allow you to query data in blocking, non-blocking and [reactive](https://www.reactive-streams.org/) fashion
+- **Blocking / asynchronous operations** Generated repositories allow querying data in blocking, non-blocking and [reactive](https://www.reactive-streams.org/) fashion
 
 Quick Start
 -----
@@ -155,7 +155,7 @@ Repositories delegate all operations to the Backend (more on that later).
 ```java
 // add insert / find / delete / watch operations which return rxjava types
 @Criteria.Repository(facets = {RxJavaReadable.class, RxJavaWritable.class, RxJavaWatchable.class})
-interface Persion {
+interface Person {
 }
 
 // query datasource and return reactive type: Flowable
@@ -218,7 +218,7 @@ Use `*Watchable` facet to enable this functionality on a repository.
 interface Person {}
 
 // if remote database allows filtering in real-time
-Flowable<Persion> flow = repository.watcher(PersonCriteria.person.active.isFalse()).watch();
+Flowable<Person> flow = repository.watcher(PersonCriteria.person.active.isFalse()).watch();
 ```
 
 ----
@@ -247,7 +247,7 @@ To instantiate mongo backend use `CollectionResolver`. The later is responsible 
 ```java
 MongoDatabase database = ... // get database
 Backend backend = new MongoBackend(CollectionResolver.defaultResolver(database));
-PersonRepository repository = new PersionRepository(backend);
+PersonRepository repository = new PersonRepository(backend);
 ```
 
 #### Jackson/Bson integration
