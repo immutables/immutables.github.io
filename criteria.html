@@ -243,6 +243,39 @@ between criteria abstraction and native API.</p>
 
 <h3>Mongo</h3>
 
+<p>Mongo backend uses <a href="https://mongodb.github.io/mongo-java-driver-reactivestreams/">reactive streams</a> driver. There is always an
+option for repository to expose synchronous (or other) API by using facets.</p>
+
+<p>To instantiate mongo backend use <code>CollectionResolver</code>. The later is responsible for mapping an entity class eg. <code>Person</code> to <code>MongoCollection&lt;Person&gt;</code>.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// get database</span>
+<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">CollectionResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">(</span><span class="n">database</span><span class="o">));</span>
+<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersionRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+</code></pre></div>
+<h4>Jackson/Bson integration</h4>
+
+<p>Out of box, criteria provides integration with <a href="https://github.com/FasterXML/jackson">jackson</a> library. This allows
+use of standard jackson binding infrastructure but still serializing documents in <a href="http://bsonspec.org/">BSON format</a> (including non-JSON types like Decimal128, 
+timestamp or date). Jackson (BSON) adapter will delegate calls to native <a href="http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/">BsonReader and BsonWriter</a> without intermediate object transformation (eg. <code>BSON -&gt; String -&gt; POJO</code>) thus avoiding 
+extra parsing and memory allocation.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">module</span><span class="o">(</span><span class="k">new</span> <span class="n">Jsr310CodecProvider</span><span class="o">()))</span> <span class="c1">// persist java.time. classes in native BSON type (date/timestamp)</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">Jdk8Module</span><span class="o">())</span> <span class="c1">// used for Optional / OptionalDouble etc.</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">IdAnnotationModule</span><span class="o">());</span> <span class="c1">// used for Criteria.Id to &#39;_id&#39; attribute mapping</span>
+
+
+<span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// instantiate mongo database</span>
+
+<span class="n">CodecRegistry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">registryFromMapper</span><span class="o">(</span><span class="n">mapper</span><span class="o">);</span> <span class="c1">// create registry adapter based on existing ObjectMapper</span>
+<span class="n">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">CollectionResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">(</span><span class="n">database</span><span class="o">,</span> <span class="n">registry</span><span class="o">));</span>
+</code></pre></div>
+<p>Don&#39;t forget to add <code>@JsonSerialize</code> and <code>@JsonDeserialize</code> to your model. Admittedly, number of annotations is becoming noticeable.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<span class="nd">@Criteria</span>
+<span class="nd">@Criteria.Repository</span>
+<span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
+</code></pre></div>
 <h3>ElasticSearch</h3>
 
 <h3>Geode</h3>
