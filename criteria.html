@@ -46,6 +46,44 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li><strong>Blocking / asynchronous operations</strong> Generated repositories allow you to query data in blocking, non-blocking and <a href="https://www.reactive-streams.org/">reactive</a> fashion</li>
 </ul>
 
+<h2>Quick Start</h2>
+
+<ol>
+<li><p>Add criteria module dependency (on the top of existing immutables annotation processor)</p>
+<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="c">&lt;!-- Maven dependency --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>criteria-inmemory<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.7.4<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></li>
+<li><p>Define a model with two annotations present <code>@Criteria</code> and <code>@Criteria.Repository</code>:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<span class="nd">@Criteria</span> <span class="c1">// generate criteria</span>
+<span class="nd">@Criteria.Repository</span> <span class="c1">// means generate repository (different from @Criteria)</span>
+<span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="nd">@Criteria.Id</span> 
+    <span class="n">String</span> <span class="nf">id</span><span class="o">();</span>
+    <span class="n">String</span> <span class="nf">fullName</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></li>
+<li><p>Instantiate a backend (we&#39;ll use simple <code>InMemoryBackend</code>) and perform some CRUD operations:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// instantiate a backend</span>
+<span class="kd">final</span> <span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryBackend</span><span class="o">();</span>
+
+<span class="c1">// attach repository to the backend</span>
+<span class="kd">final</span> <span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+
+<span class="c1">// insert some documents</span>
+<span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">&quot;id1&quot;</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
+<span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">&quot;id2&quot;</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">&quot;Marry&quot;</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
+
+<span class="c1">// query</span>
+<span class="n">Person</span> <span class="n">john</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)).</span><span class="na">fetch</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+<span class="n">Person</span> <span class="n">marry</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)).</span><span class="na">fetch</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</code></pre></div></li>
+</ol>
+
 <h2>Criteria</h2>
 
 <p>In order to enable criteria generation add <code>@Criteria</code> annotation to any existing immutable interface or abstract class. Criteria will be generated as a class with a <code>Criteria</code> suffix in the same package.</p>
