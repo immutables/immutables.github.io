@@ -20,6 +20,50 @@ The focus of Immutables Criteria is to provide database agnostic and efficient A
 - **Data-source agnostic** Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)
 - **Blocking / asynchronous operations** Generated repositories allow you to query data in blocking, non-blocking and [reactive](https://www.reactive-streams.org/) fashion
 
+Quick Start
+-----
+1. Add criteria module dependency (on the top of existing immutables annotation processor)
+
+    ```xml
+    <!-- Maven dependency -->
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>criteria-inmemory</artifactId>
+      <version>2.7.4</version>
+    </dependency>
+    ```
+
+2. Define a model with two annotations present `@Criteria` and `@Criteria.Repository`:
+
+    ```java
+    @Value.Immutable
+    @Criteria // generate criteria
+    @Criteria.Repository // means generate repository (different from @Criteria)
+    interface Person {
+        @Criteria.Id 
+        String id();
+        String fullName();
+    }
+    ```
+
+3. Instantiate a backend (we'll use simple `InMemoryBackend`) and perform some CRUD operations:
+
+    ```java
+    // instantiate a backend
+    final Backend backend = new InMemoryBackend();
+    
+    // attach repository to the backend
+    final PersonRepository repository = new PersonRepository(backend);
+    
+    // insert some documents
+    repository.insert(ImmutablePerson.builder().id("id1").fullName("John").build());
+    repository.insert(ImmutablePerson.builder().id("id2").fullName("Marry").build());
+    
+    // query
+    Person john = repository.find(PersonCriteria.person.fullName.is("John")).fetch().get(0);
+    Person marry = repository.find(PersonCriteria.person.fullName.isNot("John")).fetch().get(0);
+    ```
+
 Criteria
 -----
 In order to enable criteria generation add `@Criteria` annotation to any existing immutable interface or abstract class. Criteria will be generated as a class with a `Criteria` suffix in the same package.
