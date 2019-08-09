@@ -239,6 +239,49 @@ PersonRepository repository = new PersonRepository(backend);
 
 ### InMemory
 ### Mongo
+Mongo backend uses [reactive streams](https://mongodb.github.io/mongo-java-driver-reactivestreams/) driver. There is always an
+option for repository to expose synchronous (or other) API by using facets.
+
+To instantiate mongo backend use `CollectionResolver`. The later is responsible for mapping an entity class eg. `Person` to `MongoCollection<Person>`.
+
+```java
+MongoDatabase database = ... // get database
+Backend backend = new MongoBackend(CollectionResolver.defaultResolver(database));
+PersonRepository repository = new PersionRepository(backend);
+```
+
+#### Jackson/Bson integration
+Out of box, criteria provides integration with [jackson](https://github.com/FasterXML/jackson) library. This allows
+use of standard jackson binding infrastructure but still serializing documents in [BSON format](http://bsonspec.org/) (including non-JSON types like Decimal128, 
+timestamp or date). Jackson (BSON) adapter will delegate calls to native [BsonReader and BsonWriter](http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/) without intermediate object transformation (eg. `BSON -> String -> POJO`) thus avoiding 
+extra parsing and memory allocation.
+
+
+```java
+ObjectMapper mapper = new ObjectMapper()
+       .registerModule(JacksonCodecs.module(new Jsr310CodecProvider())) // persist java.time. classes in native BSON type (date/timestamp)
+       .registerModule(new Jdk8Module()) // used for Optional / OptionalDouble etc.
+       .registerModule(new IdAnnotationModule()); // used for Criteria.Id to '_id' attribute mapping
+
+
+MongoDatabase database = ... // instantiate mongo database
+
+CodecRegistry registry = JacksonCodecs.registryFromMapper(mapper); // create registry adapter based on existing ObjectMapper
+MongoBackend backend = new MongoBackend(CollectionResolver.defaultResolver(database, registry));
+```
+
+Don't forget to add `@JsonSerialize` and `@JsonDeserialize` to your model. Admittedly, number of annotations is becoming noticeable.
+
+```java
+@Value.Immutable
+@Criteria
+@Criteria.Repository
+@JsonSerialize(as = ImmutablePerson.class)
+@JsonDeserialize(as = ImmutablePerson.class)
+public interface Person {}
+```
+
+
 ### ElasticSearch
 ### Geode
 
