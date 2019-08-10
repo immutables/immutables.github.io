@@ -64,6 +64,15 @@ Quick Start
     Person marry = repository.find(PersonCriteria.person.fullName.isNot("John")).fetch().get(0);
     ```
 
+Introduction
+----
+Criteria module uses several abstractions which are useful to understand. Below are the most important ones:
+
+- [Criteria](#criteria) code-generated DSL to query a model. 
+- [Repository](#repository)  Data Access API to perform queries, updates, pub/sub or other operations. Uses _Backend_ and _Criteria_. 
+- [Backend](#backend) adapter to a data-source (database). Uses vendor specific API and transforms queries/operations into native calls.
+
+
 Criteria
 -----
 In order to enable criteria generation add `@Criteria` annotation to any existing immutable interface or abstract class. Criteria will be generated as a class with a `Criteria` suffix in the same package.
