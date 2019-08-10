@@ -238,6 +238,14 @@ PersonRepository repository = new PersonRepository(backend);
 ```
 
 ### InMemory
+`InMemoryBackend` is the simplest form of backend which doesn't have any external dependencies. Internally it uses [ConcurrentMap](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentMap.html) and reflections
+to evaluate expressions and perform CRUD operations.
+
+```java
+// instantiate InMemoryBackend
+Backend backend = new InMemoryBackend();
+```
+
 ### Mongo
 Mongo backend uses [reactive streams](https://mongodb.github.io/mongo-java-driver-reactivestreams/) driver. There is always an
 option for repository to expose synchronous (or other) API by using facets.
@@ -281,7 +289,31 @@ Don't forget to add `@JsonSerialize` and `@JsonDeserialize` to your model. Admit
 public interface Person {}
 ```
 
+### Elastic Search
+`ElasticsearchBackend` leverages [low-level rest client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html) 
+to communicate with elastic search cluster. Because of object binding and JSON parsing [Jackson](https://github.com/FasterXML/jackson) 
+is currently a hard dependency of this module.
 
-### ElasticSearch
+```java
+RestClient client = ... // provided
+ObjectMapper mapper = ... // provided
+
+// use default resolver which maps entity (class) to index name
+ElasticsearchBackend backend = new ElasticsearchBackend(client, mapper, IndexResolver.defaultResolver());
+```
+
+By default, [scrolling](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll) is 
+used for all queries unless it is an aggregation or [offset/from](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-from-size) request.
+
+[Mapping types](https://www.elastic.co/guide/en/elasticsearch/reference/master/removal-of-types.html) are not supported (to be removed by vendor in 7.x).
+
+At least version 6.2 of Elastic is recommended for criteria API. Generally we follow [EoL schedule](https://www.elastic.co/support/eol)
+
 ### Geode
+`GeodeBackend` is using standard API. User needs to provide mapping between entity class and geode region (see `RegionResolver`) 
+
+```java
+GemFireCache cache = ... // provided
+GeodeBackend backend = new GeodeBackend(RegionResolver.defaultResolver(cache));
+```
 
