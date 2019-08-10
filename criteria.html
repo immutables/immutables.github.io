@@ -241,6 +241,11 @@ between criteria abstraction and native API.</p>
 </code></pre></div>
 <h3>InMemory</h3>
 
+<p><code>InMemoryBackend</code> is the simplest form of backend which doesn&#39;t have any external dependencies. Internally it uses <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a> and reflections
+to evaluate expressions and perform CRUD operations.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// instantiate InMemoryBackend</span>
+<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryBackend</span><span class="o">();</span>
+</code></pre></div>
 <h3>Mongo</h3>
 
 <p>Mongo backend uses <a href="https://mongodb.github.io/mongo-java-driver-reactivestreams/">reactive streams</a> driver. There is always an
@@ -276,10 +281,30 @@ extra parsing and memory allocation.</p>
 <span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
 </code></pre></div>
-<h3>ElasticSearch</h3>
+<h3>Elastic Search</h3>
+
+<p><code>ElasticsearchBackend</code> leverages <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html">low-level rest client</a> 
+to communicate with elastic search cluster. Because of object binding and JSON parsing <a href="https://github.com/FasterXML/jackson">Jackson</a> 
+is currently a hard dependency of this module.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">RestClient</span> <span class="n">client</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
+<span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
+
+<span class="c1">// use default resolver which maps entity (class) to index name</span>
+<span class="n">ElasticsearchBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ElasticsearchBackend</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="n">mapper</span><span class="o">,</span> <span class="n">IndexResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">());</span>
+</code></pre></div>
+<p>By default, <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll">scrolling</a> is 
+used for all queries unless it is an aggregation or <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-from-size">offset/from</a> request.</p>
+
+<p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/removal-of-types.html">Mapping types</a> are not supported (to be removed by vendor in 7.x).</p>
+
+<p>At least version 6.2 of Elastic is recommended for criteria API. Generally we follow <a href="https://www.elastic.co/support/eol">EoL schedule</a></p>
 
 <h3>Geode</h3>
 
+<p><code>GeodeBackend</code> is using standard API. User needs to provide mapping between entity class and geode region (see <code>RegionResolver</code>) </p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">GemFireCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
+<span class="n">GeodeBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GeodeBackend</span><span class="o">(</span><span class="n">RegionResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">(</span><span class="n">cache</span><span class="o">));</span>
+</code></pre></div>
 </section>
 <footer class="jumbotron">
   <div class="container">
