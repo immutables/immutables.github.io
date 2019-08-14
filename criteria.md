@@ -57,11 +57,11 @@ Quick Start
     
     // insert some documents
     repository.insert(ImmutablePerson.builder().id("id1").fullName("John").build());
-    repository.insert(ImmutablePerson.builder().id("id2").fullName("Marry").build());
+    repository.insert(ImmutablePerson.builder().id("id2").fullName("Mary").build());
     
     // query
     Person john = repository.find(PersonCriteria.person.fullName.is("John")).fetch().get(0);
-    Person marry = repository.find(PersonCriteria.person.fullName.isNot("John")).fetch().get(0);
+    Person mary = repository.find(PersonCriteria.person.fullName.isNot("John")).fetch().get(0);
     ```
 
 Introduction
@@ -117,7 +117,7 @@ PersonCriteria.person.id.notIn("bad_id");
 // query on Strings, Comparables, Optionals and other Criterias
 person
     .fullName.is("John") // basic equal
-    .fullName.isNot("Marry") // not equal
+    .fullName.isNot("Mary") // not equal
     .fullName.endsWith("Smith") // string condition
     .fullName.is(3.1415D) // ERROR! will not compile since fullName is String (not double)
     .nickName.isPresent() // for Optional attribute
