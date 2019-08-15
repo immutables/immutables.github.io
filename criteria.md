@@ -275,8 +275,9 @@ extra parsing and memory allocation.
 
 
 ```java
-ObjectMapper mapper = JacksonCodecs.register(new ObjectMapper()) // register default codecs like Jsr310, BsonValue, ValueCodec etc.
-       .registerModule(new GuavaModule()) // eg: Immutable* classes from guava
+ObjectMapper mapper = new ObjectMapper()
+       .registerModule(new BsonModule())  // register default codecs like Jsr310, BsonValueCodec, ValueCodecProvider etc.
+       .registerModule(new GuavaModule()) // for Immutable* classes from guava
        .registerModule(new Jdk8Module()) // used for Optional / OptionalDouble etc.
        .registerModule(new IdAnnotationModule()); // used for Criteria.Id to '_id' attribute mapping
 
