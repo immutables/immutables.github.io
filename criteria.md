@@ -275,11 +275,10 @@ extra parsing and memory allocation.
 
 
 ```java
-ObjectMapper mapper = new ObjectMapper()
-       .registerModule(JacksonCodecs.module(new Jsr310CodecProvider())) // persist java.time. classes in native BSON type (date/timestamp)
+ObjectMapper mapper = JacksonCodecs.register(new ObjectMapper()) // register default codecs like Jsr310, BsonValue, ValueCodec etc.
+       .registerMode(new GuavaModule()) // eg: Immutable* classes from guava
        .registerModule(new Jdk8Module()) // used for Optional / OptionalDouble etc.
        .registerModule(new IdAnnotationModule()); // used for Criteria.Id to '_id' attribute mapping
-
 
 MongoDatabase database = ... // instantiate mongo database
 
