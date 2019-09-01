@@ -202,15 +202,31 @@ Currently `Readable` allows filter / select / order / limit / offset operations.
 Use `select` operation to reduce number of attributes returned by the backend. The concept is similar to [projection](https://en.wikipedia.org/wiki/Projection_(relational_algebra))
 in relational algebra. 
 
-Instead of returning generic tuple after projection, criteria requires a mapping function (which can be a lambda or method reference).
+Instead of returning generic tuple after projection, criteria requires a mapping function (which can be a lambda or method reference). Mapping function parameters will have same type
+as declared on the entity class (`Optional<T>`, `@Nullable T` etc.)..
 
 ```java
 List<String> list = repository
    .find(person.age.atLeast(33))
    .select(person.nickName, person.age) // project two fields of person: nickName and age
-   .map((nickName, age) -> nickName + " " + age) // map operator required after projection
+   .map((nickName, age) -> nickName.orElse(null) + " " + age) // map operator required after projection. Note that nickName is Optional<String>
    //.map((nickName, age) -> NickNameAndAge::new) // alternative with method reference
    .fetch(); 
+```
+
+#### Aggregations
+
+Standard aggregations like `count` / `min` / `max` / `sum` / `avg` are supported. 
+
+`count` operator is available on all types. For `min` / `max` attribute needs to be of type [Comparable](https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html). For `sum` / `avg` attribute needs to be of type [Number](https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html).
+
+```java
+List<String> list = repository.findAll()
+  .orderBy(person.nickName.desc())
+  .groupBy(person.nickName)
+  .select(person.nickName, person.age.max(), person.age.min(), person.age.count(), person.age.sum())
+  .map((nickName, max, min, count, sum) -> ("nick=" + nickName.orElse(null) + " max=" + max + " min=" + min + " count=" + count + " sum=" + sum)))
+  .fetch();
 ```
 
 ### Inserting / Deleting
