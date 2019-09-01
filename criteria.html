@@ -206,10 +206,34 @@ read, write, watch) and control execution model of the repository (sync / async 
 
 <p>Add one of the <code>*Readable</code> facets for query operations to become available. </p>
 
-<p>Currently <code>Readable</code> allows filter / order / limit / offset operations. </p>
+<p>Currently <code>Readable</code> allows filter / select / order / limit / offset operations. </p>
 
-<p>Projections and Aggregations are planned in future. </p>
+<h4>Projections</h4>
 
+<p>Use <code>select</code> operation to reduce number of attributes returned by the backend. The concept is similar to <a href="https://en.wikipedia.org/wiki/Projection_(relational_algebra)">projection</a>
+in relational algebra. </p>
+
+<p>Instead of returning generic tuple after projection, criteria requires a mapping function (which can be a lambda or method reference). Mapping function parameters will have same type
+as declared on the entity class (<code>Optional&lt;T&gt;</code>, <code>@Nullable T</code> etc.)..</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span>
+   <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
+   <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">)</span> <span class="c1">// project two fields of person: nickName and age</span>
+   <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">age</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="n">age</span><span class="o">)</span> <span class="c1">// map operator required after projection. Note that nickName is Optional&lt;String&gt;</span>
+   <span class="c1">//.map((nickName, age) -&gt; NickNameAndAge::new) // alternative with method reference</span>
+   <span class="o">.</span><span class="na">fetch</span><span class="o">();</span> 
+</code></pre></div>
+<h4>Aggregations</h4>
+
+<p>Standard aggregations like <code>count</code> / <code>min</code> / <code>max</code> / <code>sum</code> / <code>avg</code> are supported. </p>
+
+<p><code>count</code> operator is available on all types. For <code>min</code> / <code>max</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>. For <code>sum</code> / <code>avg</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html">Number</a>.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">desc</span><span class="o">())</span>
+  <span class="o">.</span><span class="na">groupBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">)</span>
+  <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">max</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">min</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">count</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">sum</span><span class="o">())</span>
+  <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">&quot;nick=&quot;</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; max=&quot;</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">&quot; min=&quot;</span> <span class="o">+</span> <span class="n">min</span> <span class="o">+</span> <span class="s">&quot; count=&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">&quot; sum=&quot;</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span>
+  <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
+</code></pre></div>
 <h3>Inserting / Deleting</h3>
 
 <p><code>*Writable</code> facet is required to enable write operations. Examples of write / delete operations:</p>
