@@ -195,9 +195,23 @@ Several implementatins for execution model are available out of the box:
 ### Querying
 Add one of the `*Readable` facets for query operations to become available. 
 
-Currently `Readable` allows filter / order / limit / offset operations. 
+Currently `Readable` allows filter / select / order / limit / offset operations. 
 
-Projections and Aggregations are planned in future. 
+#### Projections
+
+Use `select` operation to reduce number of attributes returned by the backend. The concept is similar to [projection](https://en.wikipedia.org/wiki/Projection_(relational_algebra))
+in relational algebra. 
+
+Instead of returning generic tuple after projection, criteria requires a mapping function (which can be a lambda or method reference).
+
+```java
+List<String> list = repository
+   .find(person.age.atLeast(33))
+   .select(person.nickName, person.age) // project two fields of person: nickName and age
+   .map((nickName, age) -> nickName + " " + age) // map operator required after projection
+   //.map((nickName, age) -> NickNameAndAge::new) // alternative with method reference
+   .fetch(); 
+```
 
 ### Inserting / Deleting
 
