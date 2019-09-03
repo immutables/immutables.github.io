@@ -188,6 +188,10 @@ User has the option to customize repository generation by using facets. </p>
 <span class="c1">// unbounded stream of events using watch API (if backend supports it)</span>
 <span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
 </code></pre></div>
+<p>By default, table (collection, index etc.) name is derived from simple class name (<code>MyClass</code> resolves to <code>myClass</code> table). It is possible to override this behaviour using annotation (<code>@Criteria.Repository(name =&quot;custom&quot;)</code>) as well as 
+ by registring custom name resolution strategy (see <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java">ContainerNaming</a> interface). The later
+is done during backend instantiation. </p>
+
 <h3>Facet</h3>
 
 <p>Facets allow fine-tuning of repository behaviour. They (mostly) serve two purposes: define a set of operations supported by repository (like
@@ -334,7 +338,7 @@ used for all queries unless it is an aggregation or <a href="https://www.elastic
 
 <p><a href="https://www.elastic.co/guide/en/elasticsearch/reference/master/removal-of-types.html">Mapping types</a> are not supported (to be removed by vendor in 7.x).</p>
 
-<p>At least version 6.2 of Elastic is recommended for criteria API. Generally we follow <a href="https://www.elastic.co/support/eol">EoL schedule</a></p>
+<p>At least version 6.2 of Elastic is recommended for criteria API. Generally we follow official <a href="https://www.elastic.co/support/eol">EoL schedule</a></p>
 
 <h3>Geode</h3>
 
