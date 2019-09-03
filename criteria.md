@@ -180,6 +180,10 @@ Flowable<Person> persons = repository
 Flowable<Person> persons = repository.watcher(PersonCriteria.person.active.isFalse()).watch();
 ```
 
+By default, table (collection, index etc.) name is derived from simple class name (`MyClass` resolves to `myClass` table). It is possible to override this behaviour using annotation (`@Criteria.Repository(name ="custom")`) as well as 
+ by registring custom name resolution strategy (see [ContainerNaming](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java) interface). The later
+is done during backend instantiation. 
+
 ### Facet
 
 Facets allow fine-tuning of repository behaviour. They (mostly) serve two purposes: define a set of operations supported by repository (like
@@ -273,7 +277,6 @@ Backend backend = ... // can be Mongo / Elasticsearch or any other backend
 
 // instantiate repository using existing backend
 PersonRepository repository = new PersonRepository(backend);
-
 ```
 
 ### InMemory
@@ -349,7 +352,7 @@ used for all queries unless it is an aggregation or [offset/from](https://www.el
 
 [Mapping types](https://www.elastic.co/guide/en/elasticsearch/reference/master/removal-of-types.html) are not supported (to be removed by vendor in 7.x).
 
-At least version 6.2 of Elastic is recommended for criteria API. Generally we follow [EoL schedule](https://www.elastic.co/support/eol)
+At least version 6.2 of Elastic is recommended for criteria API. Generally we follow official [EoL schedule](https://www.elastic.co/support/eol)
 
 ### Geode
 The only required dependency of `GeodeBackend` is [GemFireCache](https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/GemFireCache.html). Below is an example of how to instantiate `GeodeBackend`.
