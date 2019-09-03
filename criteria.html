@@ -286,8 +286,8 @@ to evaluate expressions and perform CRUD operations.</p>
 option for repository to expose synchronous (or other) API by using facets.</p>
 
 <p>To instantiate mongo backend use <code>CollectionResolver</code>. The later is responsible for mapping an entity class eg. <code>Person</code> to <code>MongoCollection&lt;Person&gt;</code>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// get database</span>
-<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">CollectionResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">(</span><span class="n">database</span><span class="o">));</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// get database (with correct CodecRegistry)</span>
+<span class="n">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">MongoSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">database</span><span class="o">));</span>
 <span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
 </code></pre></div>
 <h4>Jackson/Bson integration</h4>
@@ -298,14 +298,15 @@ timestamp or date). Jackson (BSON) adapter will delegate calls to native <a href
 extra parsing and memory allocation.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">()</span>
        <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">BsonModule</span><span class="o">())</span>  <span class="c1">// register default codecs like Jsr310, BsonValueCodec, ValueCodecProvider etc.</span>
-       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">GuavaModule</span><span class="o">())</span> <span class="c1">// for Immutable* classes from guava</span>
-       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">Jdk8Module</span><span class="o">())</span> <span class="c1">// used for Optional / OptionalDouble etc.</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">GuavaModule</span><span class="o">())</span> <span class="c1">// for Immutable* classes from Guava (eg. ImmutableList)</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">Jdk8Module</span><span class="o">())</span> <span class="c1">// used for java 8 types like Optional / OptionalDouble etc.</span>
        <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">IdAnnotationModule</span><span class="o">());</span> <span class="c1">// used for Criteria.Id to &#39;_id&#39; attribute mapping</span>
 
-<span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// instantiate mongo database</span>
+<span class="n">CodecRegistry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">registryFromMapper</span><span class="o">(</span><span class="n">mapper</span><span class="o">);</span> <span class="c1">// create CodecRegistry (adapter) from ObjectMapper</span>
 
-<span class="n">CodecRegistry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">registryFromMapper</span><span class="o">(</span><span class="n">mapper</span><span class="o">);</span> <span class="c1">// create registry adapter based on existing ObjectMapper</span>
-<span class="n">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">CollectionResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">(</span><span class="n">database</span><span class="o">,</span> <span class="n">registry</span><span class="o">));</span>
+<span class="n">MongoClient</span> <span class="n">client</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// &quot;connect&quot; / get client</span>
+<span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">getDatabase</span><span class="o">(</span><span class="s">&quot;myDB&quot;</span><span class="o">).</span><span class="na">withCodecRegistry</span><span class="o">(</span><span class="n">registry</span><span class="o">);</span> <span class="c1">// override with &quot;jackson&quot; CodecRegistry</span>
+<span class="n">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">MongoSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">database</span><span class="o">));</span> <span class="c1">// create backend instance</span>
 </code></pre></div>
 <p>Don&#39;t forget to add <code>@JsonSerialize</code> and <code>@JsonDeserialize</code> to your model. Admittedly, number of annotations is becoming noticeable.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
@@ -320,12 +321,14 @@ extra parsing and memory allocation.</p>
 <p><code>ElasticsearchBackend</code> leverages <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html">low-level rest client</a> 
 to communicate with elastic search cluster. Because of object binding and JSON parsing <a href="https://github.com/FasterXML/jackson">Jackson</a> 
 is currently a hard dependency of this module.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">RestClient</span> <span class="n">client</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
-<span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">RestClient</span> <span class="n">restClient</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
 
 <span class="c1">// use default resolver which maps entity (class) to index name</span>
-<span class="n">ElasticsearchBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ElasticsearchBackend</span><span class="o">(</span><span class="n">client</span><span class="o">,</span> <span class="n">mapper</span><span class="o">,</span> <span class="n">IndexResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">());</span>
+<span class="n">ElasticsearchBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ElasticsearchBackend</span><span class="o">(</span><span class="n">ElasticsearchSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">restClient</span><span class="o">));</span>
 </code></pre></div>
+<p>The only required depedency of <code>ElasticsearchSetup</code> is <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-low.html">RestClient</a> however you can also override default instances<br>
+of <code>ObjectMapper</code>, <code>scrollSize</code>, <code>indexResolver</code> etc.</p>
+
 <p>By default, <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll">scrolling</a> is 
 used for all queries unless it is an aggregation or <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-from-size">offset/from</a> request.</p>
 
@@ -335,9 +338,9 @@ used for all queries unless it is an aggregation or <a href="https://www.elastic
 
 <h3>Geode</h3>
 
-<p><code>GeodeBackend</code> is using standard API. User needs to provide mapping between entity class and geode region (see <code>RegionResolver</code>) </p>
+<p>The only required dependency of <code>GeodeBackend</code> is <a href="https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/GemFireCache.html">GemFireCache</a>. Below is an example of how to instantiate <code>GeodeBackend</code>.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">GemFireCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
-<span class="n">GeodeBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GeodeBackend</span><span class="o">(</span><span class="n">RegionResolver</span><span class="o">.</span><span class="na">defaultResolver</span><span class="o">(</span><span class="n">cache</span><span class="o">));</span>
+<span class="n">GeodeBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GeodeBackend</span><span class="o">(</span><span class="n">GeodeSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">cache</span><span class="o">));</span>
 </code></pre></div>
 </section>
 <footer class="jumbotron">
