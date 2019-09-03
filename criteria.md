@@ -292,8 +292,8 @@ option for repository to expose synchronous (or other) API by using facets.
 To instantiate mongo backend use `CollectionResolver`. The later is responsible for mapping an entity class eg. `Person` to `MongoCollection<Person>`.
 
 ```java
-MongoDatabase database = ... // get database
-Backend backend = new MongoBackend(CollectionResolver.defaultResolver(database));
+MongoDatabase database = ... // get database (with correct CodecRegistry)
+MongoBackend backend = new MongoBackend(MongoSetup.of(database));
 PersonRepository repository = new PersonRepository(backend);
 ```
 
@@ -307,14 +307,15 @@ extra parsing and memory allocation.
 ```java
 ObjectMapper mapper = new ObjectMapper()
        .registerModule(new BsonModule())  // register default codecs like Jsr310, BsonValueCodec, ValueCodecProvider etc.
-       .registerModule(new GuavaModule()) // for Immutable* classes from guava
-       .registerModule(new Jdk8Module()) // used for Optional / OptionalDouble etc.
+       .registerModule(new GuavaModule()) // for Immutable* classes from Guava (eg. ImmutableList)
+       .registerModule(new Jdk8Module()) // used for java 8 types like Optional / OptionalDouble etc.
        .registerModule(new IdAnnotationModule()); // used for Criteria.Id to '_id' attribute mapping
 
-MongoDatabase database = ... // instantiate mongo database
+CodecRegistry registry = JacksonCodecs.registryFromMapper(mapper); // create CodecRegistry (adapter) from ObjectMapper
 
-CodecRegistry registry = JacksonCodecs.registryFromMapper(mapper); // create registry adapter based on existing ObjectMapper
-MongoBackend backend = new MongoBackend(CollectionResolver.defaultResolver(database, registry));
+MongoClient client = ... // "connect" / get client
+MongoDatabase database = client.getDatabase("myDB").withCodecRegistry(registry); // override with "jackson" CodecRegistry
+MongoBackend backend = new MongoBackend(MongoSetup.of(database)); // create backend instance
 ```
 
 Don't forget to add `@JsonSerialize` and `@JsonDeserialize` to your model. Admittedly, number of annotations is becoming noticeable.
@@ -334,12 +335,14 @@ to communicate with elastic search cluster. Because of object binding and JSON p
 is currently a hard dependency of this module.
 
 ```java
-RestClient client = ... // provided
-ObjectMapper mapper = ... // provided
+RestClient restClient = ... // provided
 
 // use default resolver which maps entity (class) to index name
-ElasticsearchBackend backend = new ElasticsearchBackend(client, mapper, IndexResolver.defaultResolver());
+ElasticsearchBackend backend = new ElasticsearchBackend(ElasticsearchSetup.of(restClient));
 ```
+
+The only required depedency of `ElasticsearchSetup` is [RestClient](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-low.html) however you can also override default instances  
+of `ObjectMapper`, `scrollSize`, `indexResolver` etc.
 
 By default, [scrolling](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll) is 
 used for all queries unless it is an aggregation or [offset/from](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-from-size) request.
@@ -349,10 +352,10 @@ used for all queries unless it is an aggregation or [offset/from](https://www.el
 At least version 6.2 of Elastic is recommended for criteria API. Generally we follow [EoL schedule](https://www.elastic.co/support/eol)
 
 ### Geode
-`GeodeBackend` is using standard API. User needs to provide mapping between entity class and geode region (see `RegionResolver`) 
+The only required dependency of `GeodeBackend` is [GemFireCache](https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/GemFireCache.html). Below is an example of how to instantiate `GeodeBackend`.
 
 ```java
 GemFireCache cache = ... // provided
-GeodeBackend backend = new GeodeBackend(RegionResolver.defaultResolver(cache));
+GeodeBackend backend = new GeodeBackend(GeodeSetup.of(cache));
 ```
 
