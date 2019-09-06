@@ -121,13 +121,13 @@ person
     .fullName.endsWith("Smith") // string condition
     .fullName.is(3.1415D) // ERROR! will not compile since fullName is String (not double)
     .nickName.isPresent() // for Optional attribute
-    .nickName.value().startsWith("Adam") // For Optional<String> attribute
+    .nickName.startsWith("Adam") // special matcher Optional<String> which is intersetion type between OptionalMatcher and StringMatcher
     .pets.notEmpty() // condition on an Iterable
     .active.isTrue() // boolean
     .or() // disjunction (equivalent to logical OR)
     .age.atLeast(21) // comparable attribute
     .or()
-    .not(p -> p.nickName.value().hasLength(4)); // negation on a Optional<String> attribute
+    .not(p -> p.nickName.hasLength(4)); // negation on a Optional<String> attribute
     .bestFriend.value().hobby.endsWith("ing") // chaining criterias on other entities like Optional<Friend> 
 
 // apply specific predicate to elements of a collection
