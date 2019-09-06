@@ -264,9 +264,31 @@ interface Person {}
 Flowable<Person> flow = repository.watcher(PersonCriteria.person.active.isFalse()).watch();
 ```
 
+### Custom Repositories
+While `@Criteria.Repository` will auto-generate repository class based on facets, one can also write repository implementation manually. Facets are just 
+classes which can be leveraged to compose functionality.
+
+```java
+public class MyCustomRepository implements Repository<Person> {
+   private final RxJavaReadable<Person> readable;
+
+   public MyCustomRepository(Backend backend) {
+     // open backend session for Person class
+     Backend.Session session = backend.open(Person.class);
+     this.readable = new RxJavaReadable(session);
+   }
+
+   public Flowable<Person> findPeopleOlderThan(Period period) {
+     PersonCriteria criteria = PersonCriteria.person.dateOfBirth.atMost(LocalDate.now().minus(period));
+     return readable.find(criteria).fetch();
+   }
+}
+```
+
 ----
 Backend
 ----
+
 Backend is responsible for interpreting expressions and operations into native queries and API calls using vendor drivers. It is the adapter 
 between criteria abstraction and native API.
 
