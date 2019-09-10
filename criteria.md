@@ -206,17 +206,31 @@ Currently `Readable` allows filter / select / order / limit / offset operations.
 Use `select` operation to reduce number of attributes returned by the backend. The concept is similar to [projection](https://en.wikipedia.org/wiki/Projection_(relational_algebra))
 in relational algebra. 
 
-Instead of returning generic tuple after projection, criteria requires a mapping function (which can be a lambda or method reference). Mapping function parameters will have same type
-as declared on the entity class (`Optional<T>`, `@Nullable T` etc.)..
+To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in `select` operation (eg. `Optional<String>`). One can pass  
+lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use `Tuple` (see below).
 
 ```java
 List<String> list = repository
    .find(person.age.atLeast(33))
    .select(person.nickName, person.age) // project two fields of person: nickName and age
-   .map((nickName, age) -> nickName.orElse(null) + " " + age) // map operator required after projection. Note that nickName is Optional<String>
+   .map((nickName, age) -> nickName.orElse(null) + " " + (age - 10)) // map operator required after projection. Note that nickName is Optional<String> and age is of type Integer
    //.map((nickName, age) -> NickNameAndAge::new) // alternative with method reference
    .fetch(); 
 ```
+
+When list of attributes is unknown at compile time or when default mapping function can't be used (eg. due to number of arguments threshold) use generic `Tuple` in projection. `select(Iterable)` method overload will return `Tuple`.
+
+```java
+List<Projection<?>> projections = ....; // build list of projections
+List<String> list = repository
+   .find(person.age.atLeast(33))
+   .select(Arrays.asList(person.nickName, person.age)) // select(Iterable) method overload
+   .map(tuple -> tuple.get(person.nickName).orElse(null) + (tuple.get(person.age) - 10)) // using single argument mapper with Tuple API 
+   .fetch(); 
+```
+
+When possible, prefer using basic `select` variant of projection (as opposed to `Tuple`) since it enforces type-safety. 
+
 
 #### Aggregations
 
