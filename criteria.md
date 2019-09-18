@@ -18,6 +18,9 @@ The focus of Immutables Criteria is to provide database agnostic and efficient A
 - **Data-source agnostic** Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)
 - **Blocking / asynchronous operations** Generated repositories allow querying data in blocking, non-blocking and [reactive](https://www.reactive-streams.org/) fashion
 
+### Requirements
+Criteria API requires JDK 8 (or later) plus backend specific dependencies (like mongo java driver).
+
 Quick Start
 -----
 1. Add criteria module dependency (on the top of existing immutables annotation processor)
