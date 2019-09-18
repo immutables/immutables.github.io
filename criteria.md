@@ -249,7 +249,8 @@ List<String> list = repository.findAll()
 ```
 
 #### Fetching
-Standard way to return all results is to use `fetch()` function, however typical [Fetcher](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java) has a richer API.
+
+Common way to return all results is to use `fetch()` function, however typical [Fetcher](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java) has a richer API.
 
 Use `fetch()` when you want to return full result set (which can have zero, one or multiple elements):
 
