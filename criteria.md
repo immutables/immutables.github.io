@@ -9,8 +9,6 @@ layout: page
 Overview
 --------
 
-{% include important.html content="Criteria API is currently considered in preview phase. We encourage users to try it out and give feedback but reserve the right to modify its API." %}
-
 The focus of Immutables Criteria is to provide database agnostic and efficient API for storing, querying and modifying documents expressed as immutable objects.
 
 ### Features
@@ -204,10 +202,10 @@ Currently `Readable` allows filter / select / order / limit / offset operations.
 #### Projections
 
 Use `select` operation to reduce number of attributes returned by the backend. The concept is similar to [projection](https://en.wikipedia.org/wiki/Projection_(relational_algebra))
-in relational algebra. 
+in relational algebra.
 
-To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in `select` operation (eg. `Optional<String>`). One can pass  
-lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use `Tuple` (see below).
+To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in `select` operation (eg. `Optional<String>`). 
+One can pass lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use `Tuple` (see below).
 
 ```java
 List<String> list = repository

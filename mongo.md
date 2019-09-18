@@ -8,6 +8,8 @@ layout: page
 
 Overview
 --------
+{% include important.html content="While we don’t yet deprecate mongo repositories, new and existing users are encouraged to consider <a href='criteria.html'>criteria API</a> as a better alternative" %}
+
 There are already a lot of tools to access MongoDB collections [using Java](http://docs.mongodb.org/ecosystem/drivers/java/).
 Each driver or wrapper has it's own distinct features and advantages. The focus of _Immutables_ repository generation
 is to provide the best possible API that matches well for storing documents expressed as immutable objects.
