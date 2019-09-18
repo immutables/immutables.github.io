@@ -33,8 +33,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <section class="documentation">
   <h2>Overview</h2>
 
-<div markdown="span" class="alert alert-warning" role="alert"><i class="fa fa-warning"></i> <b>Important:</b> Criteria API is currently considered in preview phase. We encourage users to try it out and give feedback but reserve the right to modify its API.</div>
-
 <p>The focus of Immutables Criteria is to provide database agnostic and efficient API for storing, querying and modifying documents expressed as immutable objects.</p>
 
 <h3>Features</h3>
@@ -215,10 +213,10 @@ read, write, watch) and control execution model of the repository (sync / async 
 <h4>Projections</h4>
 
 <p>Use <code>select</code> operation to reduce number of attributes returned by the backend. The concept is similar to <a href="https://en.wikipedia.org/wiki/Projection_(relational_algebra)">projection</a>
-in relational algebra. </p>
+in relational algebra.</p>
 
-<p>To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in <code>select</code> operation (eg. <code>Optional&lt;String&gt;</code>). One can pass<br>
-lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use <code>Tuple</code> (see below).</p>
+<p>To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in <code>select</code> operation (eg. <code>Optional&lt;String&gt;</code>). 
+One can pass lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use <code>Tuple</code> (see below).</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span>
    <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
    <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">)</span> <span class="c1">// project two fields of person: nickName and age</span>
