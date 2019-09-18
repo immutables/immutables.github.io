@@ -248,6 +248,39 @@ List<String> list = repository.findAll()
   .fetch();
 ```
 
+#### Fetching
+Standard way to return all results is to use `fetch()` function, however typical [Fetcher](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java) has a richer API.
+
+Use `fetch()` when you want to return full result set (which can have zero, one or multiple elements):
+
+```java
+// get all results (size of the result can be 0, 1, 2 or more)
+List<Person> result = repository.find(person.age.atLeast(33)).limit(10).fetch();
+```
+
+Use `one()` when you expect *exactly one* element in the result set. Conveniently, the method will return only that element. Exception is thrown (usually with query information) when there is zero, two
+or more elements. Depending on the facet, method will return [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) or [CompletionStage<T>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html): 
+
+```java
+// throw exception if there is no exactly one match
+// may return Single / CompletionStage depending on the facet
+Person person = repository.find(person.fullName.is("John Doe")).one();
+```
+
+Use `oneOrNone()` when you require *at most one* element in the result set. Depending on facet sync / rxjava / async etc. the return type will be [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) / [Maybe](http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html) or [CompletionStage<Optional>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html):
+
+```java
+// may return Maybe / CompletionStage<Optional> depending on facet 
+Optional<Person> maybeOne = repository.find(person.fullName.is("John Doe2")).oneOrNone();
+```
+
+Use `exists()` when you need to check if criteria filter matches any records.
+
+```java
+// may return Single<Boolean> / CompletionStage<Boolean> depending on the facet
+boolean exists = repository.find(person.active.isTrue().fullName.is("John Doe3")).exists();
+```
+
 ### Inserting / Deleting
 
 `*Writable` facet is required to enable write operations. Examples of write / delete operations:
