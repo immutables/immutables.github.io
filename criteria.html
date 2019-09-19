@@ -22,7 +22,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <!-- End Google Tag Manager -->
 
 <header>
-
   <div class="container">
     <a href="/">Immutables</a> &larr;
 
@@ -39,7 +38,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <h3>Features</h3>
 
 <ul>
-<li><strong>Expressive and type-safe API</strong> Compile-type validation of the query.</li>
+<li><strong>Expressive and type-safe API</strong> Compile-type validation of the query</li>
 <li><strong>Dynamic</strong> Combine predicates at runtime based on some logic</li>
 <li><strong>Data-source agnostic</strong> Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)</li>
 <li><strong>Blocking / asynchronous operations</strong> Generated repositories allow querying data in blocking, non-blocking and <a href="https://www.reactive-streams.org/">reactive</a> fashion</li>
@@ -192,8 +191,7 @@ User has the option to customize repository generation by using facets. </p>
 <span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
 </code></pre></div>
 <p>By default, table (collection, index etc.) name is derived from simple class name (<code>MyClass</code> resolves to <code>myClass</code> table). It is possible to override this behaviour using annotation (<code>@Criteria.Repository(name =&quot;custom&quot;)</code>) as well as 
- by registring custom name resolution strategy (see <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java">ContainerNaming</a> interface). The later
-is done during backend instantiation. </p>
+ by registring custom name resolution strategy (see <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java">ContainerNaming</a> interface). The later is done during backend instantiation. </p>
 
 <h3>Facet</h3>
 
@@ -206,7 +204,8 @@ read, write, watch) and control execution model of the repository (sync / async 
 <li>Synchronous. Returning List / Optional / void / etc.</li>
 <li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
 <li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
-<li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / Single / Completable</li>
+<li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a>. </li>
+<li><a href="https://projectreactor.io">Project Reactor</a>. Returning <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a> / <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>. </li>
 </ul>
 
 <h3>Querying</h3>
@@ -253,7 +252,7 @@ One can pass lambda function or method reference to transform incoming value(s).
 </code></pre></div>
 <h4>Fetching</h4>
 
-<p>Standard way to return all results is to use <code>fetch()</code> function, however typical <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java">Fetcher</a> has a richer API.</p>
+<p>Common way to return all results is to use <code>fetch()</code> function, however typical <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java">Fetcher</a> has a richer API.</p>
 
 <p>Use <code>fetch()</code> when you want to return full result set (which can have zero, one or multiple elements):</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// get all results (size of the result can be 0, 1, 2 or more)</span>
