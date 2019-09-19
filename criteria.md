@@ -13,7 +13,7 @@ The focus of Immutables Criteria is to provide database agnostic and efficient A
 
 ### Features
 
-- **Expressive and type-safe API** Compile-type validation of the query.
+- **Expressive and type-safe API** Compile-type validation of the query
 - **Dynamic** Combine predicates at runtime based on some logic
 - **Data-source agnostic** Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)
 - **Blocking / asynchronous operations** Generated repositories allow querying data in blocking, non-blocking and [reactive](https://www.reactive-streams.org/) fashion
@@ -182,8 +182,7 @@ Flowable<Person> persons = repository.watcher(PersonCriteria.person.active.isFal
 ```
 
 By default, table (collection, index etc.) name is derived from simple class name (`MyClass` resolves to `myClass` table). It is possible to override this behaviour using annotation (`@Criteria.Repository(name ="custom")`) as well as 
- by registring custom name resolution strategy (see [ContainerNaming](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java) interface). The later
-is done during backend instantiation. 
+ by registring custom name resolution strategy (see [ContainerNaming](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java) interface). The later is done during backend instantiation. 
 
 ### Facet
 
@@ -195,7 +194,8 @@ Several implementatins for execution model are available out of the box:
 - Synchronous. Returning List / Optional / void / etc.
 - Asyncronous. Returning [CompletionStage](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html)
 - Reactive streams. Returning [Publisher](https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html)
-- [RxJava](https://github.com/ReactiveX/RxJava). Returning [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) / Single / Completable
+- [RxJava](https://github.com/ReactiveX/RxJava). Returning [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) / [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) / [Maybe](http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html). 
+- [Project Reactor](https://projectreactor.io). Returning [Flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html) / [Mono](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html). 
 
 ### Querying
 Add one of the `*Readable` facets for query operations to become available. 
