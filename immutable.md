@@ -1055,7 +1055,7 @@ Basic Java binary serialization is supported in the following way:
 Advanced Java binary serialization annotations are available in the `serial` module
 (since v2.0.12):
 
-- [org.immutables:serial:{{v}}]({{ depUri }}/serial/{{ v }}/jar)
+- [org.immutables:serial:{{site.v}}]({{site.depUri}}/serial/{{site.v}}/jar)
 
 + `@Serial.Version` — to apply a serial version to enclosing value types
 + `@Serial.Structural` — enables special structural serialization. Using structural serialization enables you to evolve your data in a flexible manner. Having new optional fields added, scalars changed to arrays or collection kind changed from `Set` to `List` will not break compatibility of serialized value objects.

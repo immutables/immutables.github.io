@@ -197,8 +197,8 @@ Gson
 
 ### Dependencies
 
-- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
-- [org.immutables:gson:{{v}}]({{ depUri }}/gson/{{ v }}/jar)
+- [org.immutables:value:{{site.v}}]({{site.depUri}}/value/{{site.v}}/jar)
+- [org.immutables:gson:{{site.v}}]({{site.depUri}}/gson/{{site.v}}/jar)
 
 Gson integration requires the `com.google.gson:gson` compile and runtime modules.
 The `org.immutables:gson` module contains compile-time annotations to generate `TypeAdapter` factories.
@@ -212,14 +212,14 @@ Optionally, the `org.immutables:gson` module can also be used at runtime to enab
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>gson</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <!-- If you don't need runtime capabilities - make it compile-only
   <scope>provided</scope>-->
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 ```

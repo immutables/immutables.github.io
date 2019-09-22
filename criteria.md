@@ -3,9 +3,6 @@ title: 'Criteria'
 layout: page
 ---
 
-{% capture v %}2.7.4{% endcapture %}
-{% capture depUri %}https://search.maven.org/artifact/org.immutables.criteria{% endcapture %}
-
 Overview
 --------
 
@@ -30,7 +27,7 @@ Quick Start
     <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>criteria-inmemory</artifactId>
-      <version>2.7.4</version>
+      <version>{{site.v}}</version>
     </dependency>
     ```
 

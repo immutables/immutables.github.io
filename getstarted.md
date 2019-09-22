@@ -12,7 +12,7 @@ Java 7 or higher is required to run the _Immutables_ annotation processor.
 
 Add the required dependencies for basic immutable object generation:
 
-- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
+- [org.immutables:value:{{site.v}}]({{site.depUri}}/value/{{site.v}}/jar)
   + Compile-only annotation processing tool. All in one artifact: annotations, processor with properly repackaged embedded dependencies.
 
 Snippet of Maven dependencies:
@@ -21,7 +21,7 @@ Snippet of Maven dependencies:
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 ```
@@ -116,20 +116,20 @@ apply plugin: "android-apt"
 // ...
 dependencies {
   compile fileTree(dir: "libs", include: ["*.jar"])
-  apt "org.immutables:value:{{v}}" // <-- for annotation processor
-  provided "org.immutables:value:{{v}}" // <-- for annotation API
+  apt "org.immutables:value:{{site.v}}" // <-- for annotation processor
+  provided "org.immutables:value:{{site.v}}" // <-- for annotation API
 }
 ```
 
-Other compile-only dependencies applicable to Android should be added in the `provided` scope. Jar files with annotations such as [org.immutables:builder:{{v}}]({{ depUri }}/builder/{{ v }}/jar) (see [Factory Builders](factory.html)) or [org.immutables:gson:{{v}}]({{ depUri }}/gson/{{ v }}/jar) (see [GSON support](json.html#gson)) don't have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the `gson` module provides optional runtime classes which are not suitable for Android apps.
+Other compile-only dependencies applicable to Android should be added in the `provided` scope. Jar files with annotations such as [org.immutables:builder:{{site.v}}]({{site.depUri}}/builder/{{site.v}}/jar) (see [Factory Builders](factory.html)) or [org.immutables:gson:{{site.v}}]({{site.depUri}}/gson/{{site.v}}/jar) (see [GSON support](json.html#gson)) don't have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the `gson` module provides optional runtime classes which are not suitable for Android apps.
 
 ```javascript
 dependencies {
   // ...
-  apt "org.immutables:value:{{v}}" // for annotation processor
-  provided "org.immutables:value-annotations:{{v}}" // for annotations
-  provided "org.immutables:builder:{{v}}" // for annotations
-  provided "org.immutables:gson:{{v}}" // for annotations
+  apt "org.immutables:value:{{site.v}}" // for annotation processor
+  provided "org.immutables:value-annotations:{{site.v}}" // for annotations
+  provided "org.immutables:builder:{{site.v}}" // for annotations
+  provided "org.immutables:gson:{{site.v}}" // for annotations
 }
 ```
 
@@ -141,10 +141,10 @@ required at runtime). The above example with the alternative dependencies could 
 ```javascript
 dependencies {
   // ...
-  apt "org.immutables:value:{{v}}" // for annotation processor
-  provided "org.immutables:value:{{v}}:annotations" // annotation-only artifact
-  provided "org.immutables:builder:{{v}}" // there are only annotations anyway
-  provided "org.immutables:gson:{{v}}:annotations" // annotation-only artifact
+  apt "org.immutables:value:{{site.v}}" // for annotation processor
+  provided "org.immutables:value:{{site.v}}:annotations" // annotation-only artifact
+  provided "org.immutables:builder:{{site.v}}" // there are only annotations anyway
+  provided "org.immutables:gson:{{site.v}}:annotations" // annotation-only artifact
 }
 ```
 

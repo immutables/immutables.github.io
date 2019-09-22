@@ -118,20 +118,20 @@ Function<Xyz, String> fn = XyzFunctions.computeZ("Y");
 
 This feature has the following compile-time dependencies in addition to a runtime dependency on Guava:
 
-- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
-- [org.immutables:func:{{v}}]({{ depUri }}/func/{{ v }}/jar)
+- [org.immutables:value:{{site.v}}]({{site.depUri}}/value/{{site.v}}/jar)
+- [org.immutables:func:{{site.v}}]({{site.depUri}}/func/{{site.v}}/jar)
 
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>func</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 ```

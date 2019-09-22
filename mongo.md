@@ -79,7 +79,7 @@ In addition to code annotation-processor, it's necessary to add the `mongo` anno
 
 <a name="dependencies"></a>
 
-- [org.immutables:mongo:{{v}}]({{ depUri }}/mongo/{{ v }}/jar)
+- [org.immutables:mongo:{{site.v}}]({{site.depUri}}/mongo/{{site.v}}/jar)
   + Compile and runtime utilities used during marshaling
 
 _Mongo_ artifact required to be used for compilation as well be available at runtime.
@@ -92,13 +92,13 @@ Snippet of Maven dependencies:
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>mongo</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
 </dependency>
 ```
 

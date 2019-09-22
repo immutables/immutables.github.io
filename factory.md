@@ -20,20 +20,20 @@ This handles the common case of constructing immutable objects. However, if extr
 
 Compile dependencies:
 
-- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
-- [org.immutables:builder:{{v}}]({{ depUri }}/builder/{{ v }}/jar)
+- [org.immutables:value:{{site.v}}]({{site.depUri}}/value/{{site.v}}/jar)
+- [org.immutables:builder:{{site.v}}]({{site.depUri}}/builder/{{site.v}}/jar)
 
 ```xml
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 <dependency>
   <groupId>org.immutables</groupId>
   <artifactId>builder</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 ```

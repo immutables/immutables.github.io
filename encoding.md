@@ -43,9 +43,9 @@ We'll progress by gradually editing files and compiling projects.
 
 Here are the Immutable modules we will use
 
-- [org.immutables:value:{{v}}]({{ depUri }}/value/{{ v }}/jar)
+- [org.immutables:value:{{site.v}}]({{site.depUri}}/value/{{site.v}}/jar)
   + the annotation processor used to compile encodings and value objects
-- [org.immutables:encode:{{v}}]({{ depUri }}/encoding/{{ v }}/jar)
+- [org.immutables:encode:{{site.v}}]({{site.depUri}}/encoding/{{site.v}}/jar)
   + the annotation API to define encoding classes
 
 Maven dependencies will look like following snippets:
@@ -56,14 +56,14 @@ Maven dependencies will look like following snippets:
   <!-- the annotation processor, compile only -->
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 <dependency>
   <!-- annotation to encodings, need to be reexported transitively, so annotation can be read at compile time for using modules -->
   <groupId>org.immutables</groupId>
   <artifactId>encode</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
 </dependency>
 <dependency>
   <!-- we'll encode ImmutableTable, so we need guava dependency, while user of the encoding will have to reference at least Table/ImmutableTable we can skip reexport,
@@ -81,7 +81,7 @@ Maven dependencies will look like following snippets:
   <!-- the annotation processor, compile only -->
   <groupId>org.immutables</groupId>
   <artifactId>value</artifactId>
-  <version>{{ v }}</version>
+  <version>{{site.v}}</version>
   <scope>provided</scope>
 </dependency>
 <dependency>
