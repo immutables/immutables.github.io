@@ -23,7 +23,7 @@ Criteria API requires JDK 8 (or later) plus backend specific dependencies (like 
 
 Quick Start
 -----
-1. Add criteria module dependency (on the top of existing immutables annotation processor)
+1. Add criteria module dependency (on the top of [existing](getstarted.html) immutables annotation processor)
 
     ```xml
     <!-- Maven dependency -->
