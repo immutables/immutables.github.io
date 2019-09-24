@@ -930,6 +930,16 @@ object graphs, then it may become inefficient to recompute `hashCode` value agai
 For such cases, hash codes can be precomputed on construction and stored for fast retrieval.
 Just use the `@Value.Immutable(prehash = true)` annotation parameter to precompute hash values in advance.
 
+<a name="lazyhash"></a>
+### Lazy computation of hashCode
+Similarly to [prehashed](#prehashed) hash codes, one can configure immutables to calculate hash code lazily. 
+Hash value will be computed (and cached) on first call to `hashCode()` method. The approach is 
+similar to `hashCode()` function in String class (also called *racy single check* in Effective Java book). 
+Note that lazy-hash approach doesn't use synchronization/volatile primitives and double calculation is possible under certain race conditions.
+
+The difference between `prehash` and `lazyhash` is that former calculates hashCode eagerly (in object constructor) while
+later does it lazily (in `hashCode()` method).
+
 <a name="redacted"></a>
 ### Redacted attributes
 
