@@ -937,9 +937,9 @@ Just use the <code>@Value.Immutable(prehash = true)</code> annotation parameter 
 <p>Similarly to <a href="#prehashed">prehashed</a> hash codes, one can configure immutables to calculate hash code lazily. 
 Hash value will be computed (and cached) on first call to <code>hashCode()</code> method. The approach is 
 similar to <code>hashCode()</code> function in String class (also called <em>racy single check</em> in Effective Java book). 
-Note that lazy-hash approach doesn&#39;t use synchronization/volatile primitives and double calculation is possible under certain race conditions </p>
+Note that lazy-hash approach doesn&#39;t use synchronization/volatile primitives and double calculation is possible under certain race conditions.</p>
 
-<p>The difference between <code>prehash</code> and <code>lazyhash</code> is that former calculates hashcode eagerly (in object constructor) while
+<p>The difference between <code>prehash</code> and <code>lazyhash</code> is that former calculates hashCode eagerly (in object constructor) while
 later does it lazily (in <code>hashCode()</code> method).</p>
 
 <p><a name="redacted"></a></p>
