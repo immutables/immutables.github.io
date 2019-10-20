@@ -229,10 +229,21 @@ List<String> list = repository
 
 When possible, prefer using basic `select` variant of projection (as opposed to `Tuple`) since it enforces type-safety. 
 
+#### Counting 
+
+Simple result-set counting can be achieved using `count()` operator. This operator is considered a terminal operator similar to `fetch()` and will return long / Mono / Single / Future types
+depending on facet used.
+
+```java
+// count all records (assumes RxJava facet)
+Single<Long> count = repository.findAll().count();
+// or apply a filter before count
+Single<Long> count = repository.find(person.age.greaterThan(33)).count();
+```
 
 #### Aggregations
 
-Standard aggregations like `count` / `min` / `max` / `sum` / `avg` are supported. 
+Standard aggregations like `count` / `min` / `max` / `sum` / `avg` on specific attributes are also supported. Aggregation is a projection combined with `groupBy()` operator. 
 
 `count` operator is available on all types. For `min` / `max` attribute needs to be of type [Comparable](https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html). For `sum` / `avg` attribute needs to be of type [Number](https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html).
 
@@ -245,7 +256,7 @@ List<String> list = repository.findAll()
   .fetch();
 ```
 
-#### Fetching
+#### Fetching Variations
 
 Common way to return all results is to use `fetch()` function, however typical [Fetcher](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java) has a richer API.
 
