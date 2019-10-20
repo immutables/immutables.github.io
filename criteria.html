@@ -408,6 +408,37 @@ used for all queries unless it is an aggregation or <a href="https://www.elastic
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">GemFireCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
 <span class="n">GeodeBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GeodeBackend</span><span class="o">(</span><span class="n">GeodeSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">cache</span><span class="o">));</span>
 </code></pre></div>
+<hr>
+
+<h2>JavaBeans</h2>
+
+<p>Limited support for <a href="https://en.wikipedia.org/wiki/JavaBeans">JavaBeans</a> is provided.
+It is intended for projects which may want to leverage criteria (runtime and DSL) as data access layer but are not yet fully migrated to immutables model. 
+You may be able to generate Criteria DSL assuming your class follows <a href="https://www.oracle.com/technetwork/articles/javaee/spec-136004.html">JavaBeans spec</a>.</p>
+
+<p>Requirements for JavaBean classes:</p>
+
+<ol>
+<li>Has to be non-abstract and not an enum.</li>
+<li>Both getters (<code>get*</code> / <code>is*</code>) and setters (<code>set*</code>) should be present for the same attribute.</li>
+<li>Class should have a (non-static) field derived from getter/setter. Example <code>name</code> for <code>getName/setName</code>, <code>URL</code> for <code>getURL/setURL</code>, <code>a</code> for <code>getA/setA</code> 
+For more details see <em>8.8 Capitalization of inferred names</em> in JavaBeans spec</li>
+</ol>
+
+<p>Just annotate your existing bean with <code>@Criteria</code> and immutables will generate Criteria DSL for it.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Example of a valid JavaBean</span>
+<span class="nd">@Criteria</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyBean</span> <span class="o">{</span>
+  <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div>
+<p>Note that all attributes are considered nullable by default in JavaBean model.</p>
+
 </section>
 <footer class="jumbotron">
   <div class="container">
