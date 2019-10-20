@@ -30,6 +30,15 @@ Quick Start
       <version>{{site.v}}</version>
     </dependency>
     ```
+    
+    or gradle
+    
+    ```groovy
+    // Gradle dependecy
+    dependencies {
+       implementation 'org.immutables:criteria-common:{{site.v}}'
+    }
+    ```
 
 2. Define a model with two annotations present `@Criteria` and `@Criteria.Repository`:
 
@@ -48,10 +57,10 @@ Quick Start
 
     ```java
     // instantiate a backend
-    final Backend backend = new InMemoryBackend();
+    Backend backend = new InMemoryBackend();
     
     // attach repository to the backend
-    final PersonRepository repository = new PersonRepository(backend);
+    PersonRepository repository = new PersonRepository(backend);
     
     // insert some documents
     repository.insert(ImmutablePerson.builder().id("id1").fullName("John").build());
@@ -299,7 +308,7 @@ boolean exists = repository.find(person.active.isTrue().fullName.is("John Doe3")
 @Criteria.Repository(facets=RxJavaWritable.class)
 interface Person {}
 
-WriteResult result = repository.insert(person1, person2); // for sync
+WriteResult result = repository.insertAll(Arrays.asList(person1, person2)); // for sync 
 Single<WriteResult> result = repository.insert(person1); // for rxjava2
 CompletionStage<WriteResult> result = repository.insert(person1); // for async
 Publisher<WriteResult> result = repository.insert(person1); // for reactive 
