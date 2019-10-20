@@ -56,7 +56,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>criteria-inmemory<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.8.0<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.8.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></li>
 <li><p>Define a model with two annotations present <code>@Criteria</code> and <code>@Criteria.Repository</code>:</p>
@@ -238,9 +238,18 @@ One can pass lambda function or method reference to transform incoming value(s).
 </code></pre></div>
 <p>When possible, prefer using basic <code>select</code> variant of projection (as opposed to <code>Tuple</code>) since it enforces type-safety. </p>
 
+<h4>Counting</h4>
+
+<p>Simple result-set counting can be achieved using <code>count()</code> operator. This operator is considered a terminal operator similar to <code>fetch()</code> and will return long / Mono / Single / Future types
+depending on facet used.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// count all records (assumes RxJava facet)</span>
+<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">().</span><span class="na">count</span><span class="o">();</span>
+<span class="c1">// or apply a filter before count</span>
+<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">count</span><span class="o">();</span>
+</code></pre></div>
 <h4>Aggregations</h4>
 
-<p>Standard aggregations like <code>count</code> / <code>min</code> / <code>max</code> / <code>sum</code> / <code>avg</code> are supported. </p>
+<p>Standard aggregations like <code>count</code> / <code>min</code> / <code>max</code> / <code>sum</code> / <code>avg</code> on specific attributes are also supported. Aggregation is a projection combined with <code>groupBy()</code> operator. </p>
 
 <p><code>count</code> operator is available on all types. For <code>min</code> / <code>max</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>. For <code>sum</code> / <code>avg</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html">Number</a>.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">()</span>
@@ -250,7 +259,7 @@ One can pass lambda function or method reference to transform incoming value(s).
   <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">&quot;nick=&quot;</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; max=&quot;</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">&quot; min=&quot;</span> <span class="o">+</span> <span class="n">min</span> <span class="o">+</span> <span class="s">&quot; count=&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">&quot; sum=&quot;</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span>
   <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
 </code></pre></div>
-<h4>Fetching</h4>
+<h4>Fetching Variations</h4>
 
 <p>Common way to return all results is to use <code>fetch()</code> function, however typical <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java">Fetcher</a> has a richer API.</p>
 
