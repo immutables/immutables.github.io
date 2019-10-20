@@ -441,3 +441,36 @@ GemFireCache cache = ... // provided
 GeodeBackend backend = new GeodeBackend(GeodeSetup.of(cache));
 ```
 
+
+----
+JavaBeans
+----
+
+Limited support for [JavaBeans](https://en.wikipedia.org/wiki/JavaBeans) is provided.
+It is intended for projects which may want to leverage criteria (runtime and DSL) as data access layer but are not yet fully migrated to immutables model. 
+You may be able to generate Criteria DSL assuming your class follows [JavaBeans spec](https://www.oracle.com/technetwork/articles/javaee/spec-136004.html).
+
+Requirements for JavaBean classes:
+
+1. Has to be non-abstract and not an enum.
+2. Both getters (`get*` / `is*`) and setters (`set*`) should be present for the same attribute.
+3. Class should have a (non-static) field derived from getter/setter. Example `name` for `getName/setName`, `URL` for `getURL/setURL`, `a` for `getA/setA` 
+For more details see _8.8 Capitalization of inferred names_ in JavaBeans spec
+
+Just annotate your existing bean with `@Criteria` and immutables will generate Criteria DSL for it.
+
+```java
+// Example of a valid JavaBean
+@Criteria
+public class MyBean {
+  private String name;
+  
+  public String getName() { return name; }
+  
+  public void setName(String name) { this.name = name; }
+  
+}
+```
+
+Note that all attributes are considered nullable by default in JavaBean model.
+
