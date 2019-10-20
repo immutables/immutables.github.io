@@ -58,6 +58,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <span class="nt">&lt;artifactId&gt;</span>criteria-inmemory<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>2.8.1<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+<p>or gradle</p>
+<div class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="c1">// Gradle dependecy</span>
+<span class="n">dependencies</span> <span class="o">{</span>
+   <span class="n">implementation</span> <span class="s1">&#39;org.immutables:criteria-common:2.8.1&#39;</span>
+<span class="o">}</span>
 </code></pre></div></li>
 <li><p>Define a model with two annotations present <code>@Criteria</code> and <code>@Criteria.Repository</code>:</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
@@ -71,10 +77,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </code></pre></div></li>
 <li><p>Instantiate a backend (we&#39;ll use simple <code>InMemoryBackend</code>) and perform some CRUD operations:</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// instantiate a backend</span>
-<span class="kd">final</span> <span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryBackend</span><span class="o">();</span>
+<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryBackend</span><span class="o">();</span>
 
 <span class="c1">// attach repository to the backend</span>
-<span class="kd">final</span> <span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
 
 <span class="c1">// insert some documents</span>
 <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">&quot;id1&quot;</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
@@ -288,7 +294,7 @@ or more elements. Depending on the facet, method will return <a href="http://rea
 <span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="n">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
 
-<span class="n">WriteResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">,</span> <span class="n">person2</span><span class="o">);</span> <span class="c1">// for sync</span>
+<span class="n">WriteResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insertAll</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">person1</span><span class="o">,</span> <span class="n">person2</span><span class="o">));</span> <span class="c1">// for sync </span>
 <span class="n">Single</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for rxjava2</span>
 <span class="n">CompletionStage</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for async</span>
 <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for reactive </span>
