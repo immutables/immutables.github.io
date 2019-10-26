@@ -197,11 +197,12 @@ read, write, watch) and control execution model of the repository (sync / async 
 
 Several implementatins for execution model are available out of the box:
 
+- Reactive streams. Returning [Publisher](https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html)
 - Synchronous. Returning List / Optional / void / etc.
 - Asyncronous. Returning [CompletionStage](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html)
-- Reactive streams. Returning [Publisher](https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html)
 - [RxJava](https://github.com/ReactiveX/RxJava). Returning [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) / [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) / [Maybe](http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html). 
 - [Project Reactor](https://projectreactor.io). Returning [Flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html) / [Mono](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html). 
+
 
 ### Querying
 Add one of the `*Readable` facets for query operations to become available. 
@@ -238,17 +239,6 @@ List<String> list = repository
 
 When possible, prefer using basic `select` variant of projection (as opposed to `Tuple`) since it enforces type-safety. 
 
-#### Counting 
-
-Simple result-set counting can be achieved using `count()` operator. This operator is considered a terminal operator similar to `fetch()` and will return long / Mono / Single / Future types
-depending on facet used.
-
-```java
-// count all records (assumes RxJava facet)
-Single<Long> count = repository.findAll().count();
-// or apply a filter before count
-Single<Long> count = repository.find(person.age.greaterThan(33)).count();
-```
 
 #### Aggregations
 
@@ -297,6 +287,15 @@ Use `exists()` when you need to check if criteria filter matches any records.
 ```java
 // may return Single<Boolean> / CompletionStage<Boolean> depending on the facet
 boolean exists = repository.find(person.active.isTrue().fullName.is("John Doe3")).exists();
+```
+
+Simple result-set counting can be achieved using `count()` operator. This operator is considered a terminal operator similar to `fetch()` and will return `long` / `Mono<Long>` / `Single<Long>` / `Future<Long>` types depending on facet used.
+
+```java
+// count all records (assumes RxJava facet)
+Single<Long> count = repository.findAll().count();
+// or apply a filter before count
+Single<Long> count = repository.find(person.age.greaterThan(33)).count();
 ```
 
 ### Inserting / Deleting
