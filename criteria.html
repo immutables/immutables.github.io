@@ -207,9 +207,9 @@ read, write, watch) and control execution model of the repository (sync / async 
 <p>Several implementatins for execution model are available out of the box:</p>
 
 <ul>
+<li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
 <li>Synchronous. Returning List / Optional / void / etc.</li>
 <li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
-<li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
 <li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a>. </li>
 <li><a href="https://projectreactor.io">Project Reactor</a>. Returning <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a> / <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>. </li>
 </ul>
@@ -244,15 +244,6 @@ One can pass lambda function or method reference to transform incoming value(s).
 </code></pre></div>
 <p>When possible, prefer using basic <code>select</code> variant of projection (as opposed to <code>Tuple</code>) since it enforces type-safety. </p>
 
-<h4>Counting</h4>
-
-<p>Simple result-set counting can be achieved using <code>count()</code> operator. This operator is considered a terminal operator similar to <code>fetch()</code> and will return long / Mono / Single / Future types
-depending on facet used.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// count all records (assumes RxJava facet)</span>
-<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">().</span><span class="na">count</span><span class="o">();</span>
-<span class="c1">// or apply a filter before count</span>
-<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">count</span><span class="o">();</span>
-</code></pre></div>
 <h4>Aggregations</h4>
 
 <p>Standard aggregations like <code>count</code> / <code>min</code> / <code>max</code> / <code>sum</code> / <code>avg</code> on specific attributes are also supported. Aggregation is a projection combined with <code>groupBy()</code> operator. </p>
@@ -286,6 +277,12 @@ or more elements. Depending on the facet, method will return <a href="http://rea
 <p>Use <code>exists()</code> when you need to check if criteria filter matches any records.</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// may return Single&lt;Boolean&gt; / CompletionStage&lt;Boolean&gt; depending on the facet</span>
 <span class="kt">boolean</span> <span class="n">exists</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">().</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John Doe3&quot;</span><span class="o">)).</span><span class="na">exists</span><span class="o">();</span>
+</code></pre></div>
+<p>Simple result-set counting can be achieved using <code>count()</code> operator. This operator is considered a terminal operator similar to <code>fetch()</code> and will return <code>long</code> / <code>Mono&lt;Long&gt;</code> / <code>Single&lt;Long&gt;</code> / <code>Future&lt;Long&gt;</code> types depending on facet used.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// count all records (assumes RxJava facet)</span>
+<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">().</span><span class="na">count</span><span class="o">();</span>
+<span class="c1">// or apply a filter before count</span>
+<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">count</span><span class="o">();</span>
 </code></pre></div>
 <h3>Inserting / Deleting</h3>
 
