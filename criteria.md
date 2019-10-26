@@ -298,7 +298,7 @@ Single<Long> count = repository.findAll().count();
 Single<Long> count = repository.find(person.age.greaterThan(33)).count();
 ```
 
-### Inserting / Deleting
+### Inserting / Updating / Deleting
 
 `*Writable` facet is required to enable write operations. Examples of write / delete operations:
 
@@ -312,6 +312,16 @@ Single<WriteResult> result = repository.insert(person1); // for rxjava2
 CompletionStage<WriteResult> result = repository.insert(person1); // for async
 Publisher<WriteResult> result = repository.insert(person1); // for reactive 
 repository.delete(PersonCriteria.person.active.isTrue()); // delete by query
+```
+
+#### In-place updates by query
+If supported by back-end, one can also perform in-place updates by query:
+
+```java
+repository.update(person.id.is(123))
+            .set(person.fullName, "Changed Name")
+            .set(peson.age, 33)
+            .execute();
 ```
 
 ### Pub/Sub (aka Watching)
