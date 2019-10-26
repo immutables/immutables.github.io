@@ -284,7 +284,7 @@ or more elements. Depending on the facet, method will return <a href="http://rea
 <span class="c1">// or apply a filter before count</span>
 <span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">count</span><span class="o">();</span>
 </code></pre></div>
-<h3>Inserting / Deleting</h3>
+<h3>Inserting / Updating / Deleting</h3>
 
 <p><code>*Writable</code> facet is required to enable write operations. Examples of write / delete operations:</p>
 <div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// one of RxJavaWritable / SyncWritable / AsyncWritable etc.</span>
@@ -296,6 +296,14 @@ or more elements. Depending on the facet, method will return <a href="http://rea
 <span class="n">CompletionStage</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for async</span>
 <span class="n">Publisher</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for reactive </span>
 <span class="n">repository</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">());</span> <span class="c1">// delete by query</span>
+</code></pre></div>
+<h4>In-place updates by query</h4>
+
+<p>If supported by back-end, one can also perform in-place updates by query:</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">repository</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mi">123</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">,</span> <span class="s">&quot;Changed Name&quot;</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">peson</span><span class="o">.</span><span class="na">age</span><span class="o">,</span> <span class="mi">33</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">execute</span><span class="o">();</span>
 </code></pre></div>
 <h3>Pub/Sub (aka Watching)</h3>
 
