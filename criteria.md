@@ -36,7 +36,7 @@ Quick Start
     ```groovy
     // Gradle dependecy
     dependencies {
-       implementation 'org.immutables:criteria-common:{{site.v}}'
+       implementation 'org.immutables:criteria-inmemory:{{site.v}}'
     }
     ```
 
