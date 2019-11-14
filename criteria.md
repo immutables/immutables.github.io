@@ -255,6 +255,20 @@ List<String> list = repository.findAll()
   .fetch();
 ```
 
+#### Distinct / Limit / Offset
+To reduce number of returned elements use `limit / offset` statements (eg. for pagination). When using projections you can also request result to be de-duplicated with `distinct` keyword (note: distinct is available 
+only after projection).
+
+```java
+repository.find(persion.active.isTrue())
+    .orderBy(person.fullName.asc())
+    .select(person.fullName)
+    .distinct()
+    .limit(10)
+    .offset(10)
+    .fetch();
+```
+
 #### Fetching Variations
 
 Common way to return all results is to use `fetch()` function, however typical [Fetcher](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java) has a richer API.
