@@ -256,6 +256,18 @@ One can pass lambda function or method reference to transform incoming value(s).
   <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">&quot;nick=&quot;</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; max=&quot;</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">&quot; min=&quot;</span> <span class="o">+</span> <span class="n">min</span> <span class="o">+</span> <span class="s">&quot; count=&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">&quot; sum=&quot;</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span>
   <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
 </code></pre></div>
+<h4>Distinct / Limit / Offset</h4>
+
+<p>To reduce number of returned elements use <code>limit / offset</code> statements (eg. for pagination). When using projections you can also request result to be de-duplicated with <code>distinct</code> keyword (note: distinct is available 
+only after projection).</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">persion</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
+    <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">distinct</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">offset</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
+</code></pre></div>
 <h4>Fetching Variations</h4>
 
 <p>Common way to return all results is to use <code>fetch()</code> function, however typical <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java">Fetcher</a> has a richer API.</p>
