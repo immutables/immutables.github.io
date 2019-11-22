@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>2.8.2 Release Notes</title>
+</head>
+<body class="page">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PMJSKV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PMJSKV');</script>
+<!-- End Google Tag Manager -->
+
+<header>
+  <div class="container">
+    <a href="/">Immutables</a> &larr;
+
+    <h1>2.8.2 Release Notes <iframe src="https://ghbtns.com/github-btn.html?user=immutables&repo=immutables&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+</h1>
+  </div>
+</header>
+<aside id="toc"></aside>
+<section class="documentation">
+  <h2>Overview</h2>
+
+<p>Main feature of this release is <code>DISTINCT</code> statement in Criteria. Plus, small functionalities and bugfixes.</p>
+
+<h1>Notable changes</h1>
+
+<h3>Criteria</h3>
+
+<ul>
+<li>Support for <code>DISTINCT</code> modifier in queries. Simple DSL to allow chaining <code>DISTINCT / LIMIT / OFFSET</code> modifiers (<a href="https://github.com/immutables/immutables/commit/9d6392258ce5b47b09d7d6b35a5f5b168de3471b">9d639225</a>)</li>
+</ul>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// example of DISTINCT query</span>
+<span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">isActive</span><span class="o">.</span><span class="na">isTrue</span><span class="o">())</span>
+     <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
+     <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">name</span><span class="o">)</span>
+     <span class="o">.</span><span class="na">distinct</span><span class="o">()</span>
+     <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+     <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
+</code></pre></div>
+<h3>Geode backend</h3>
+
+<ul>
+<li>Escape <a href="https://geode.apache.org/docs/guide/19/developing/querying_basics/reserved_words.html">reserved words</a> (eg. <code>type</code>, <code>time</code>) in OQL (<a href="https://github.com/immutables/immutables/commit/da9b7e1a8052442dd8e0abf0ff1a5a544a8c6b4f">da9b7e1</a>)</li>
+</ul>
+
+<h3>Codegen</h3>
+
+<ul>
+<li>Remove unnecessary empty line between <code>hashCode()</code> and <code>toString()</code> functions introduced by previous commit</li>
+</ul>
+
+<h3>Gson / JSON Adapters</h3>
+
+<ul>
+<li>Fixed issue where integers are always printed as doubles (<a href="https://github.com/immutables/immutables/pull/1120">#1120</a>) by Ben Mazzarol (@bmazzarol)</li>
+<li>Fixed issue using the jackson XML streaming parser where boolean tokens are always strings (<a href="https://github.com/immutables/immutables/pull/1120">#1120</a>) by Ben Mazzarol (@bmazzarol)</li>
+</ul>
+
+<h3>Other changes</h3>
+
+<ul>
+<li>Change dependency scope of <code>jackson-datatype-guava</code> and <code>jackson-datatype-jdk8</code> to <code>test</code> in ElasticSearch backend. They were used only in tests. </li>
+<li>Enable <a href="https://errorprone.info/">errorprone</a> static analysis in criteria module (<a href="https://github.com/immutables/immutables/commit/ef5f1a2672daca5955ecb2c755a5a975964ae603">ef5f1a267</a>)</li>
+</ul>
+
+<p>Thanks to all contributors:
+- <a href="https://github.com/bmazzarol">Ben Mazzarol</a></p>
+
+</section>
+<footer class="jumbotron">
+  <div class="container">
+    <h2>Guides</h2>
+
+<ul>
+<li><a href="/getstarted.html">Get started!</a></li>
+<li><a href="/intro.html">Inception</a></li>
+<li><a href="/immutable.html">Immutable objects</a></li>
+<li><a href="/factory.html">Factory builders</a></li>
+<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+<li><a href="/style.html">Style customization</a></li>
+<li><a href="/json.html">JSON serialization</a></li>
+<li><a href="/criteria.html">Criteria</a></li>
+<li><a href="/mongo.html">MongoDB repositories</a></li>
+<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2>Get involved</h2>
+
+<ul>
+<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
+    <!--<div><h2>Posts</h2>
+      <ul>
+        
+      </ul>
+    </div>-->
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({
+    container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+</body>
+</html>
