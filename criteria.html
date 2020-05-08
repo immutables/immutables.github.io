@@ -159,17 +159,44 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="o">.</span><span class="na">or</span><span class="o">()</span>
     <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">any</span><span class="o">().</span><span class="na">name</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;fluffy&quot;</span><span class="o">);</span> <span class="c1">// person has a pet which sounds like fluffy</span>
 </code></pre></div>
-<p>You will notice that there are no <code>and</code> statements (conjunctions) that is because criteria uses 
-<a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive Normal Form</a> (in short DNF) by default. Statements are
-combined using logical <code>and</code> unless disjunction <code>or()</code> is explicitly used.</p>
+<p>You will need to add <code>@Criteria</code> to all classes to be queried. For example, to filter on <code>Person.pets.name</code>,
+ <code>Pet</code> class needs to have <code>@Criteria</code> annotation (otherwise generic <code>ObjectMatcher</code> is used).</p>
 
-<p>For more complex expressions, one can still combine criterias arbitrarily using <code>and</code>s / <code>or</code>s / <code>not</code>s. 
-Statement like <code>A and (B or C)</code> can be written as follows:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span>
+<h3>Query DSL Syntax</h3>
+
+<p>In the previous query example you will notice that there are no <code>and</code> statements (conjunctions) that is because criteria uses 
+<a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive Normal Form</a> (in short DNF). By default, statements are
+combined using logical <code>and</code> (<a href="https://en.wikipedia.org/wiki/Logical_conjunction">conjunction</a>) unless <code>or</code> (<a href="https://en.wikipedia.org/wiki/Logical_disjunction">disjunction</a>) is explicitly used.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Some examples of Query DSL</span>
+<span class="c1">// left side (DSL) // right side SQL equivalent</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)</span> <span class="c1">// fullName = &#39;John&#39;</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span> <span class="c1">// fullName = &#39;John&#39; AND age &gt; 21</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">).</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span> <span class="c1">// fullName = &#39;John&#39; AND age &gt; 21 AND nickName != null</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">)</span> <span class="c1">// fullName = &#39;John&#39; OR fullName = &#39;Mary&#39;</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">or</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">)</span> <span class="c1">// (fullName = &#39;John&#39; AND age &gt; 21) OR fullName = &#39;Mary&#39;</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
+   <span class="o">.</span><span class="na">or</span><span class="o">()</span>
+   <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">)</span> <span class="c1">// (fullName = &#39;John&#39; AND age &gt; 21) OR (fullName = &#39;Mary&#39; AND age &gt; 22)</span>
 </code></pre></div>
-<p>You need to add <code>@Criteria</code> to all classes to be queried. For example, to filter on <code>Person.pets.name</code>,
- <code>Pet</code> class needs to have <code>@Criteria</code> annotation (otherwise generic ObjectMatcher is used).</p>
+<h4>More complex logical expressions</h4>
 
+<p>For more complex expressions, one can still combine criterias using <code>and</code>s / <code>or</code>s / <code>not</code>s. Boolean algebra methods
+allow composition of existing criterias with each other using <code>and</code> / <code>or</code>  / <code>not</code> logic.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// fullName = &#39;John&#39; AND (age &gt; 22 OR nickName != null)</span>
+<span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span>
+</code></pre></div>
+<p>Since criteria objects are immutable one can safely pass them as variables, constants or function arguments.</p>
+<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">PersonCriteria</span> <span class="n">crit</span> <span class="o">=</span> <span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">;</span>
+<span class="n">drinkingAge</span> <span class="o">=</span> <span class="n">crit</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">21</span><span class="o">);</span>
+<span class="n">hasNickname</span> <span class="o">=</span> <span class="n">crit</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span>
+<span class="n">isActive</span> <span class="o">=</span> <span class="n">crit</span><span class="o">.</span><span class="na">isActive</span><span class="o">.</span><span class="na">isTrue</span><span class="o">();</span>
+
+<span class="c1">// ...</span>
+<span class="c1">// (age &gt; 21 OR nickName != null) AND isActive = true</span>
+<span class="k">return</span> <span class="n">drinkingAge</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="n">hasNickname</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">isActive</span><span class="o">);</span>
+</code></pre></div>
 <hr>
 
 <h2>Repository</h2>
