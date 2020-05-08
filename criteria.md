@@ -144,19 +144,52 @@ person
     .pets.any().name.contains("fluffy"); // person has a pet which sounds like fluffy
 ```
 
-You will notice that there are no `and` statements (conjunctions) that is because criteria uses 
-[Disjunctive Normal Form](https://en.wikipedia.org/wiki/Disjunctive_normal_form) (in short DNF) by default. Statements are
-combined using logical `and` unless disjunction `or()` is explicitly used.
+You will need to add `@Criteria` to all classes to be queried. For example, to filter on `Person.pets.name`,
+ `Pet` class needs to have `@Criteria` annotation (otherwise generic `ObjectMatcher` is used).
+ 
+### Query DSL Syntax
 
-For more complex expressions, one can still combine criterias arbitrarily using `and`s / `or`s / `not`s. 
-Statement like `A and (B or C)` can be written as follows:
+In the previous query example you will notice that there are no `and` statements (conjunctions) that is because criteria uses 
+[Disjunctive Normal Form](https://en.wikipedia.org/wiki/Disjunctive_normal_form) (in short DNF). By default, statements are
+combined using logical `and` ([conjunction](https://en.wikipedia.org/wiki/Logical_conjunction)) unless `or` ([disjunction](https://en.wikipedia.org/wiki/Logical_disjunction)) is explicitly used.
 
 ```java
+// Some examples of Query DSL
+// left side (DSL) // right side SQL equivalent
+.fullName.is("John") // fullName = 'John'
+.fullName.is("John").age.greaterThan(21) // fullName = 'John' AND age > 21
+.fullName.is("John").age.greaterThan(21).nickName.isPresent() // fullName = 'John' AND age > 21 AND nickName != null
+.fullName.is("John").or().fullName.is("Mary") // fullName = 'John' OR fullName = 'Mary'
+.fullName.is("John").age.greaterThan(21)
+    .or()
+    .fullName.is("Mary") // (fullName = 'John' AND age > 21) OR fullName = 'Mary'
+.fullName.is("John").age.greaterThan(21)
+   .or()
+   .fullName.is("Mary").age.greaterThan(22) // (fullName = 'John' AND age > 21) OR (fullName = 'Mary' AND age > 22)
+```
+
+#### More complex logical expressions
+For more complex expressions, one can still combine criterias using `and`s / `or`s / `not`s. Boolean algebra methods
+allow composition of existing criterias with each other using `and` / `or`  / `not` logic.
+
+```java
+// fullName = 'John' AND (age > 22 OR nickName != null)
 person.fullName.is("John").and(person.age.greaterThan(22).or().nickName.isPresent())
 ```
 
-You need to add `@Criteria` to all classes to be queried. For example, to filter on `Person.pets.name`,
- `Pet` class needs to have `@Criteria` annotation (otherwise generic ObjectMatcher is used).
+Since criteria objects are immutable one can safely pass them as variables, constants or function arguments.
+
+```java
+PersonCriteria crit = PersonCriteria.person;
+drinkingAge = crit.age.atLeast(21);
+hasNickname = crit.nickName.isPresent()
+isActive = crit.isActive.isTrue();
+
+// ...
+// (age > 21 OR nickName != null) AND isActive = true
+return drinkingAge.or(hasNickname).and(isActive);
+```
+
 
 ----
 Repository
