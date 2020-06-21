@@ -28,6 +28,22 @@ Snippet of Maven dependencies:
 
 In Maven, the dependency can be declared in the "provided" scope, or made "optional". The artifact is not required at runtime; it is compile-only dependency.
 
+If you are using multiple dependencies like `org.immutables:serial` you can import the bill of materials (BoM) in your dependency management and go without specifying the version of the dependency individually:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>bom</artifactId>
+      <version>{{site.v}}</version>
+      <scope>import</scope>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
 The _Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend (assuming that annotation processing is not disabled in build tool configuration).
 The _Eclipse JDT compiler_ (ECJ) also supports this annotation processor. See [Using annotation processor in IDE](/apt.html).
 
