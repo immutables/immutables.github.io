@@ -608,6 +608,9 @@ interface Val {
 }
 ```
 
+Since version `2.0.15`, the `defaultAsDefault` style parameter (`@Value.Style(strictBuilder = true, ...)`) is supported.
+This instructes generated builders to treat Java 8 default methods in interfaces as if they were annotated with `@Value.Default`. 
+
 <a name="derived-attribute"></a>
 ### Derived attributes
 Derived attributes are attributes with values that are read from existing immutable instances, but
