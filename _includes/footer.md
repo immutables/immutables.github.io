@@ -9,6 +9,7 @@
 - [JSON serialization](/json.html)
 - [Criteria](/criteria.html)
 - [MongoDB repositories](/mongo.html)
+- [DynamoDB integration](/dynamodb.html)
 - [Encoding: Customizing attributes and builders (experimental)](/encoding.html)
 - [Using annotation processor in IDE](/apt.html)
 
