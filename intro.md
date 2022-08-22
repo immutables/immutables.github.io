@@ -27,7 +27,7 @@ Generated code can extend user written code, but the two are never mixed in one 
 
 It may seem that the use of _Immutables_ may result in some sort of [anemic domain model](http://www.martinfowler.com/bliki/AnemicDomainModel.html).
 However, this impression is false - we see great benefits in the process of proper domain modelling. But we need solid building blocks — value objects,
-[smart data](http://immutables.github.com/immutable.html#smart-data) objects,
+[smart data](/immutable.html#smart-data) objects,
 and immutable values containing methods that compute other values and reduce the complexity of services and entities.
 
 Another aspect of modelling is the representation of system state and domain entities as sequences of _events_ or _snapshots_.
