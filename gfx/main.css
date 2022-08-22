@@ -123,7 +123,7 @@ aside > ul {
   border-bottom: 1px solid #888;*/
 }
 
-.illustration .highlight {
+.illustration div.highlight {
   float: left;
   width: 450px;
   padding: 0.5em;
