@@ -116,11 +116,9 @@ aside > ul {
 }
 
 .illustration,
-.documentation .highlight {
-  margin: auto;
+/*.documentation .highlight,*/
+.documentation > .highlighter-rouge {
   background-color: #2B303B;
-  padding-top: 10px;
-  padding-bottom: 10px;
   /*border-top: 1px solid #444;
   border-bottom: 1px solid #888;*/
 }
@@ -208,8 +206,8 @@ section.documentation > span {
 }
 
 aside > ul,
-section.documentation > *,
-section.documentation > .highlight > pre {
+section.documentation > *:not(.highlighter-rouge),
+section.documentation > .highlighter-rouge > div.highlight {
   margin-left: auto;
   margin-right: auto;
   padding-left: 15px;
@@ -234,8 +232,8 @@ section.documentation > ul li {
     margin-bottom: 9px;
   }
   aside > ul,
-  section.documentation > *,
-  section.documentation > .highlight > pre {
+  section.documentation > *:not(.highlighter-rouge),
+  section.documentation > .highlighter-rouge > div.highlight {
     max-width: 750px;
   }
   section.feature {
@@ -246,8 +244,8 @@ section.documentation > ul li {
 
 @media (min-width: 992px) {
   aside > ul,
-  section.documentation > *,
-  section.documentation > .highlight > pre {
+  section.documentation > *:not(.highlighter-rouge),
+  section.documentation > .highlighter-rouge > div.highlight {
     max-width: 970px;
   }
   section.feature {
@@ -258,8 +256,8 @@ section.documentation > ul li {
 
 @media (min-width: 1200px) {
   aside > ul,
-  section.documentation > *,
-  section.documentation > .highlight > pre {
+  section.documentation > *:not(.highlighter-rouge),
+  section.documentation > .highlighter-rouge > div.highlight {
     max-width: 1170px;
   }
   section.feature {

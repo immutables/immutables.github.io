@@ -20,63 +20,63 @@ Criteria API requires JDK 8 (or later) plus backend specific dependencies (like 
 
 Quick Start
 -----
-1. Add criteria module dependency (on the top of [existing](getstarted.html) immutables annotation processor)
+1) Add criteria module dependency (on the top of [existing](getstarted.html) immutables annotation processor)
 
-    ```xml
-    <!-- Maven dependency -->
-    <dependency>
-      <groupId>org.immutables</groupId>
-      <artifactId>criteria-inmemory</artifactId>
-      <version>{{site.v}}</version>
-    </dependency>
-    ```
-    
-    or gradle
-    
-    ```groovy
-    // Gradle dependecy
-    dependencies {
-       implementation 'org.immutables:criteria-inmemory:{{site.v}}'
-    }
-    ```
+```xml
+<!-- Maven dependency -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-inmemory</artifactId>
+  <version>{{site.v}}</version>
+</dependency>
+```
 
-2. Define a model with two annotations present `@Criteria` and `@Criteria.Repository`:
+or gradle
 
-    ```java
-    @Value.Immutable
-    @Criteria // generate criteria
-    @Criteria.Repository // means generate repository (different from @Criteria)
-    interface Person {
-        @Criteria.Id 
-        String id();
-        String fullName();
-    }
-    ```
+```groovy
+// Gradle dependecy
+dependencies {
+   implementation 'org.immutables:criteria-inmemory:{{site.v}}'
+}
+```
 
-3. Instantiate a backend (we'll use simple `InMemoryBackend`) and perform some CRUD operations:
+2) Define a model with two annotations present `@Criteria` and `@Criteria.Repository`:
 
-    ```java
-    // instantiate a backend
-    Backend backend = new InMemoryBackend();
-    
-    // attach repository to the backend
-    PersonRepository repository = new PersonRepository(backend);
-    
-    // insert some documents
-    repository.insert(ImmutablePerson.builder().id("id1").fullName("John").build());
-    repository.insert(ImmutablePerson.builder().id("id2").fullName("Mary").build());
-    
-    // query
-    Person john = repository.find(PersonCriteria.person.fullName.is("John")).fetch().get(0);
-    Person mary = repository.find(PersonCriteria.person.fullName.isNot("John")).fetch().get(0);
-    ```
+```java
+@Value.Immutable
+@Criteria // generate criteria
+@Criteria.Repository // means generate repository (different from @Criteria)
+interface Person {
+    @Criteria.Id
+    String id();
+    String fullName();
+}
+```
+
+3) Instantiate a backend (we'll use simple `InMemoryBackend`) and perform some CRUD operations:
+
+```java
+// instantiate a backend
+Backend backend = new InMemoryBackend();
+
+// attach repository to the backend
+PersonRepository repository = new PersonRepository(backend);
+
+// insert some documents
+repository.insert(ImmutablePerson.builder().id("id1").fullName("John").build());
+repository.insert(ImmutablePerson.builder().id("id2").fullName("Mary").build());
+
+// query
+Person john = repository.find(PersonCriteria.person.fullName.is("John")).fetch().get(0);
+Person mary = repository.find(PersonCriteria.person.fullName.isNot("John")).fetch().get(0);
+```
 
 Introduction
 ----
 Criteria module uses several abstractions which are useful to understand. Below are the most important ones:
 
-- [Criteria](#criteria) code-generated DSL to query a model. 
-- [Repository](#repository)  Data Access API to perform queries, updates, pub/sub or other operations. Uses _Backend_ and _Criteria_. 
+- [Criteria](#criteria) code-generated DSL to query a model.
+- [Repository](#repository)  Data Access API to perform queries, updates, pub/sub or other operations. Uses _Backend_ and _Criteria_.
 - [Backend](#backend) adapter to a data-source (database). Uses vendor specific API and transforms queries/operations into native calls.
 
 
@@ -89,7 +89,7 @@ In order to enable criteria generation add `@Criteria` annotation to any existin
 @Criteria // generate criteria
 @Criteria.Repository // means generate repository (different from @Criteria)
 interface Person {
-    @Criteria.Id 
+    @Criteria.Id
     String id();
     String fullName();
     Optional<String> nickName();  
@@ -99,7 +99,7 @@ interface Person {
 }
 
 @Value.Immutable
-@Criteria 
+@Criteria
 interface Pet {
   enum PetType {parrot, panda, iguana, gecko}
   PetType type();
@@ -107,7 +107,7 @@ interface Pet {
 }
 
 @Value.Immutable
-@Criteria 
+@Criteria
 interface Friend {
    String hobby();
 }
@@ -135,7 +135,7 @@ person
     .age.atLeast(21) // comparable attribute
     .or()
     .not(p -> p.nickName.hasLength(4)); // negation on a Optional<String> attribute
-    .bestFriend.value().hobby.endsWith("ing") // chaining criterias on other entities like Optional<Friend> 
+    .bestFriend.value().hobby.endsWith("ing") // chaining criterias on other entities like Optional<Friend>
 
 // apply specific predicate to elements of a collection
 person
@@ -146,10 +146,10 @@ person
 
 You will need to add `@Criteria` to all classes to be queried. For example, to filter on `Person.pets.name`,
  `Pet` class needs to have `@Criteria` annotation (otherwise generic `ObjectMatcher` is used).
- 
+
 ### Query DSL Syntax
 
-In the previous query example you will notice that there are no `and` statements (conjunctions) that is because criteria uses 
+In the previous query example you will notice that there are no `and` statements (conjunctions) that is because criteria uses
 [Disjunctive Normal Form](https://en.wikipedia.org/wiki/Disjunctive_normal_form) (in short DNF). By default, statements are
 combined using logical `and` ([conjunction](https://en.wikipedia.org/wiki/Logical_conjunction)) unless `or` ([disjunction](https://en.wikipedia.org/wiki/Logical_disjunction)) is explicitly used.
 
@@ -190,14 +190,11 @@ isActive = crit.isActive.isTrue();
 return drinkingAge.or(hasNickname).and(isActive);
 ```
 
-
-----
-Repository
-----
+### Repository
 
 Repository is a User facing API to perform queries, updates, pub/sub or other CRUD operations (think data-access abstraction).
 Similarly to criteria, repositories are auto-generated when `@Criteria.Repository` annotation is added to immutables class.
-User has the option to customize repository generation by using facets. 
+User has the option to customize repository generation by using facets.
 
 Repositories delegate all operations to the Backend (more on that later).
 
@@ -220,8 +217,8 @@ Flowable<Person> persons = repository
 Flowable<Person> persons = repository.watcher(PersonCriteria.person.active.isFalse()).watch();
 ```
 
-By default, table (collection, index etc.) name is derived from simple class name (`MyClass` resolves to `myClass` table). It is possible to override this behaviour using annotation (`@Criteria.Repository(name ="custom")`) as well as 
- by registring custom name resolution strategy (see [ContainerNaming](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java) interface). The later is done during backend instantiation. 
+By default, table (collection, index etc.) name is derived from simple class name (`MyClass` resolves to `myClass` table). It is possible to override this behaviour using annotation (`@Criteria.Repository(name ="custom")`) as well as
+ by registring custom name resolution strategy (see [ContainerNaming](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java) interface). The later is done during backend instantiation.
 
 ### Facet
 
@@ -233,21 +230,21 @@ Several implementatins for execution model are available out of the box:
 - Reactive streams. Returning [Publisher](https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html)
 - Synchronous. Returning List / Optional / void / etc.
 - Asyncronous. Returning [CompletionStage](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html)
-- [RxJava](https://github.com/ReactiveX/RxJava). Returning [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) / [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) / [Maybe](http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html). 
-- [Project Reactor](https://projectreactor.io). Returning [Flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html) / [Mono](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html). 
+- [RxJava](https://github.com/ReactiveX/RxJava). Returning [Flowable](http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html) / [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) / [Maybe](http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html).
+- [Project Reactor](https://projectreactor.io). Returning [Flux](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html) / [Mono](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html).
 
 
 ### Querying
-Add one of the `*Readable` facets for query operations to become available. 
+Add one of the `*Readable` facets for query operations to become available.
 
-Currently `Readable` allows filter / select / order / limit / offset operations. 
+Currently `Readable` allows filter / select / order / limit / offset operations.
 
 #### Projections
 
 Use `select` operation to reduce number of attributes returned by the backend. The concept is similar to [projection](https://en.wikipedia.org/wiki/Projection_(relational_algebra))
 in relational algebra.
 
-To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in `select` operation (eg. `Optional<String>`). 
+To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in `select` operation (eg. `Optional<String>`).
 One can pass lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use `Tuple` (see below).
 
 ```java
@@ -256,7 +253,7 @@ List<String> list = repository
    .select(person.nickName, person.age) // project two fields of person: nickName and age
    .map((nickName, age) -> nickName.orElse(null) + " " + (age - 10)) // map operator required after projection. Note that nickName is Optional<String> and age is of type Integer
    //.map((nickName, age) -> NickNameAndAge::new) // alternative with method reference
-   .fetch(); 
+   .fetch();
 ```
 
 When list of attributes is unknown at compile time or when default mapping function can't be used (eg. due to number of arguments threshold) use generic `Tuple` in projection. `select(Iterable)` method overload will return `Tuple`.
@@ -266,16 +263,16 @@ List<Projection<?>> projections = ....; // build list of projections
 List<String> list = repository
    .find(person.age.atLeast(33))
    .select(Arrays.asList(person.nickName, person.age)) // select(Iterable) method overload
-   .map(tuple -> tuple.get(person.nickName).orElse(null) + (tuple.get(person.age) - 10)) // using single argument mapper with Tuple API 
-   .fetch(); 
+   .map(tuple -> tuple.get(person.nickName).orElse(null) + (tuple.get(person.age) - 10)) // using single argument mapper with Tuple API
+   .fetch();
 ```
 
-When possible, prefer using basic `select` variant of projection (as opposed to `Tuple`) since it enforces type-safety. 
+When possible, prefer using basic `select` variant of projection (as opposed to `Tuple`) since it enforces type-safety.
 
 
 #### Aggregations
 
-Standard aggregations like `count` / `min` / `max` / `sum` / `avg` on specific attributes are also supported. Aggregation is a projection combined with `groupBy()` operator. 
+Standard aggregations like `count` / `min` / `max` / `sum` / `avg` on specific attributes are also supported. Aggregation is a projection combined with `groupBy()` operator.
 
 `count` operator is available on all types. For `min` / `max` attribute needs to be of type [Comparable](https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html). For `sum` / `avg` attribute needs to be of type [Number](https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html).
 
@@ -289,7 +286,7 @@ List<String> list = repository.findAll()
 ```
 
 #### Distinct / Limit / Offset
-To reduce number of returned elements use `limit / offset` statements (eg. for pagination). When using projections you can also request result to be de-duplicated with `distinct` keyword (note: distinct is available 
+To reduce number of returned elements use `limit / offset` statements (eg. for pagination). When using projections you can also request result to be de-duplicated with `distinct` keyword (note: distinct is available
 only after projection).
 
 ```java
@@ -314,7 +311,7 @@ List<Person> result = repository.find(person.age.atLeast(33)).limit(10).fetch();
 ```
 
 Use `one()` when you expect *exactly one* element in the result set. Conveniently, the method will return only that element. Exception is thrown (usually with query information) when there is zero, two
-or more elements. Depending on the facet, method will return [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) or [CompletionStage<T>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html): 
+or more elements. Depending on the facet, method will return [Single](http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html) or [CompletionStage<T>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html):
 
 ```java
 // throw exception if there is no exactly one match
@@ -325,7 +322,7 @@ Person person = repository.find(person.fullName.is("John Doe")).one();
 Use `oneOrNone()` when you require *at most one* element in the result set. Depending on facet sync / rxjava / async etc. the return type will be [Optional](https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html) / [Maybe](http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html) or [CompletionStage<Optional>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html):
 
 ```java
-// may return Maybe / CompletionStage<Optional> depending on facet 
+// may return Maybe / CompletionStage<Optional> depending on facet
 Optional<Person> maybeOne = repository.find(person.fullName.is("John Doe2")).oneOrNone();
 ```
 
@@ -354,10 +351,10 @@ Single<Long> count = repository.find(person.age.greaterThan(33)).count();
 @Criteria.Repository(facets=RxJavaWritable.class)
 interface Person {}
 
-WriteResult result = repository.insertAll(Arrays.asList(person1, person2)); // for sync 
+WriteResult result = repository.insertAll(Arrays.asList(person1, person2)); // for sync
 Single<WriteResult> result = repository.insert(person1); // for rxjava2
 CompletionStage<WriteResult> result = repository.insert(person1); // for async
-Publisher<WriteResult> result = repository.insert(person1); // for reactive 
+Publisher<WriteResult> result = repository.insert(person1); // for reactive
 repository.delete(PersonCriteria.person.active.isTrue()); // delete by query
 ```
 
@@ -372,8 +369,8 @@ repository.update(person.id.is(123))
 ```
 
 ### Pub/Sub (aka Watching)
-Watching allows to continuously observe events on the backend in real-time. When available, it is built on the top of existing oferring like 
-[change streams](https://docs.mongodb.com/manual/changeStreams) in mongo or 
+Watching allows to continuously observe events on the backend in real-time. When available, it is built on the top of existing oferring like
+[change streams](https://docs.mongodb.com/manual/changeStreams) in mongo or
 [continuous querying](https://geode.apache.org/docs/guide/19/developing/continuous_querying/how_continuous_querying_works.html) in Geode.
 
 Use `*Watchable` facet to enable this functionality on a repository.
@@ -387,7 +384,7 @@ Flowable<Person> flow = repository.watcher(PersonCriteria.person.active.isFalse(
 ```
 
 ### Custom Repositories
-While `@Criteria.Repository` will auto-generate repository class based on facets, one can also write repository implementation manually. Facets are just 
+While `@Criteria.Repository` will auto-generate repository class based on facets, one can also write repository implementation manually. Facets are just
 classes which can be leveraged to compose functionality.
 
 ```java
@@ -411,7 +408,7 @@ public class MyCustomRepository implements Repository<Person> {
 Backend
 ----
 
-Backend is responsible for interpreting expressions and operations into native queries and API calls using vendor drivers. It is the adapter 
+Backend is responsible for interpreting expressions and operations into native queries and API calls using vendor drivers. It is the adapter
 between criteria abstraction and native API.
 
 Usually it is instantiated using vendor API (eg. MongoDatabase)
@@ -446,8 +443,8 @@ PersonRepository repository = new PersonRepository(backend);
 
 #### Jackson/Bson integration
 Out of box, criteria provides integration with [jackson](https://github.com/FasterXML/jackson) library. This allows
-use of standard jackson binding infrastructure but still serializing documents in [BSON format](http://bsonspec.org/) (including non-JSON types like Decimal128, 
-timestamp or date). Jackson (BSON) adapter will delegate calls to native [BsonReader and BsonWriter](http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/) without intermediate object transformation (eg. `BSON -> String -> POJO`) thus avoiding 
+use of standard jackson binding infrastructure but still serializing documents in [BSON format](http://bsonspec.org/) (including non-JSON types like Decimal128,
+timestamp or date). Jackson (BSON) adapter will delegate calls to native [BsonReader and BsonWriter](http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/) without intermediate object transformation (eg. `BSON -> String -> POJO`) thus avoiding
 extra parsing and memory allocation.
 
 
@@ -477,8 +474,8 @@ public interface Person {}
 ```
 
 ### Elastic Search
-`ElasticsearchBackend` leverages [low-level rest client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html) 
-to communicate with elastic search cluster. Because of object binding and JSON parsing [Jackson](https://github.com/FasterXML/jackson) 
+`ElasticsearchBackend` leverages [low-level rest client](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html)
+to communicate with elastic search cluster. Because of object binding and JSON parsing [Jackson](https://github.com/FasterXML/jackson)
 is currently a hard dependency of this module.
 
 ```java
@@ -491,7 +488,7 @@ ElasticsearchBackend backend = new ElasticsearchBackend(ElasticsearchSetup.of(re
 The only required depedency of `ElasticsearchSetup` is [RestClient](https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-low.html) however you can also override default instances  
 of `ObjectMapper`, `scrollSize`, `indexResolver` etc.
 
-By default, [scrolling](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll) is 
+By default, [scrolling](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll) is
 used for all queries unless it is an aggregation or [offset/from](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-from-size) request.
 
 [Mapping types](https://www.elastic.co/guide/en/elasticsearch/reference/master/removal-of-types.html) are not supported (to be removed by vendor in 7.x).
@@ -512,14 +509,14 @@ JavaBeans
 ----
 
 Limited support for [JavaBeans](https://en.wikipedia.org/wiki/JavaBeans) is provided.
-It is intended for projects which may want to leverage criteria (runtime and DSL) as data access layer but are not yet fully migrated to immutables model. 
+It is intended for projects which may want to leverage criteria (runtime and DSL) as data access layer but are not yet fully migrated to immutables model.
 You may be able to generate Criteria DSL assuming your class follows [JavaBeans spec](https://www.oracle.com/technetwork/articles/javaee/spec-136004.html).
 
 Requirements for JavaBean classes:
 
 1. Has to be non-abstract and not an enum.
 2. Both getters (`get*` / `is*`) and setters (`set*`) should be present for the same attribute.
-3. Class should have a (non-static) field derived from getter/setter. Example `name` for `getName/setName`, `URL` for `getURL/setURL`, `a` for `getA/setA` 
+3. Class should have a (non-static) field derived from getter/setter. Example `name` for `getName/setName`, `URL` for `getURL/setURL`, `a` for `getA/setA`
 For more details see _8.8 Capitalization of inferred names_ in JavaBeans spec
 
 Just annotate your existing bean with `@Criteria` and immutables will generate Criteria DSL for it.
@@ -529,13 +526,12 @@ Just annotate your existing bean with `@Criteria` and immutables will generate C
 @Criteria
 public class MyBean {
   private String name;
-  
+
   public String getName() { return name; }
-  
+
   public void setName(String name) { this.name = name; }
-  
+
 }
 ```
 
 Note that all attributes are considered nullable by default in JavaBean model.
-
