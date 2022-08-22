@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"-->
+  <link rel="stylesheet" href="/gfx/bootstrap.min.css">
+  <link rel="stylesheet" href="/gfx/main.css">
+  <link rel="stylesheet" href="/gfx/code.css">
+  <title>DynamoDB integration</title>
+</head>
+<body class="page">
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PMJSKV"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PMJSKV');</script>
+<!-- End Google Tag Manager -->
+
+<header>
+  <div class="container">
+    <a href="/">Immutables</a> &larr;
+
+    <h1>DynamoDB integration <iframe src="https://ghbtns.com/github-btn.html?user=immutables&repo=immutables&type=star&count=true&size=large" frameborder="0" scrolling="0" width="160px" height="30px"></iframe>
+</h1>
+  </div>
+</header>
+<aside id="toc"></aside>
+<section class="documentation">
+  <h2 id="overview">Overview</h2>
+
+<p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.html"><code class="language-plaintext highlighter-rouge">DynamoDBMapper</code></a> provides an easy way to map POJOs to data in <a href="https://docs.aws.amazon.com/dynamodb/index.html"><code class="language-plaintext highlighter-rouge">DynamoDB</code></a>.
+Most of the code POJOs are verbose and it makes a perfect sense to use <em>Immutables</em> to reduce boilerplate.</p>
+
+<h2 id="how-to-use">How to use</h2>
+
+<p><strong>NOTE</strong>: provided snippets show the idea that could be improved and / or modified to address specific needs.</p>
+
+<p>In the project with more than one entity it makes sense to create custom <a href="/style.html"><code class="language-plaintext highlighter-rouge">Style</code></a> that would allow 
+to enable <em>Immutables</em> for POJO.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Target</span><span class="o">(</span><span class="nc">ElementType</span><span class="o">.</span><span class="na">TYPE</span><span class="o">)</span>
+<span class="nd">@Retention</span><span class="o">(</span><span class="nc">RetentionPolicy</span><span class="o">.</span><span class="na">CLASS</span><span class="o">)</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Style</span><span class="o">(</span>
+        <span class="n">create</span> <span class="o">=</span> <span class="s">"new"</span><span class="o">,</span>
+        <span class="n">isInitialized</span> <span class="o">=</span> <span class="s">"wasInitialized"</span><span class="o">,</span>
+        <span class="n">allParameters</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span>
+        <span class="n">beanFriendlyModifiables</span> <span class="o">=</span> <span class="kc">true</span><span class="o">,</span>
+        <span class="n">passAnnotations</span> <span class="o">=</span> <span class="o">{</span>
+                <span class="nc">DynamoDBTable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+                <span class="nc">DynamoDBHashKey</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+                <span class="nc">DynamoDBRangeKey</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+                <span class="nc">DynamoDBAttribute</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+                <span class="nc">DynamoDBTyped</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+                <span class="nc">DynamoDBTypeConvertedEnum</span><span class="o">.</span><span class="na">class</span>
+                <span class="c1">// more DynamoDB annotations to be added</span>
+        <span class="o">}</span>
+<span class="o">)</span>
+<span class="kd">public</span> <span class="nd">@interface</span> <span class="nc">DynamoDBStyle</span> <span class="o">{}</span>
+</code></pre></div></div>
+
+<p>Application of the newly created style could look like:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@DynamoDBStyle</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Modifiable</span>
+<span class="nd">@DynamoDBTable</span><span class="o">(</span><span class="n">tableName</span> <span class="o">=</span> <span class="s">"people"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="nd">@DynamoDBHashKey</span><span class="o">(</span><span class="n">attributeName</span> <span class="o">=</span> <span class="s">"name"</span><span class="o">)</span>
+    <span class="nc">String</span> <span class="nf">getName</span><span class="o">();</span>
+
+    <span class="nd">@DynamoDBAttribute</span><span class="o">(</span><span class="n">attributeName</span> <span class="o">=</span> <span class="s">"age"</span><span class="o">)</span>
+    <span class="kt">int</span> <span class="nf">getAge</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>We apply both <code class="language-plaintext highlighter-rouge">@Value.Immutable</code> and <code class="language-plaintext highlighter-rouge">@Value.Modifiable</code>. The former is bread and butter
+of <em>Immutables</em> as it provides all nice features while the latter enables usage
+of generated classes with <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.html"><code class="language-plaintext highlighter-rouge">DynamoDBMapper</code></a>. <a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBMapper.html"><code class="language-plaintext highlighter-rouge">DynamoDBMapper</code></a>
+expects the POJO to have no-arg ctor with setters and newly created <code class="language-plaintext highlighter-rouge">DynamoDBStyle</code>
+annotation configures <em>Immutables</em> to generated the required structure.</p>
+
+<p>The usage is pretty straightforward with only one caveat: <code class="language-plaintext highlighter-rouge">Modifiable...</code> implementation
+should be used any time data is loaded from the <a href="https://docs.aws.amazon.com/dynamodb/index.html"><code class="language-plaintext highlighter-rouge">DynamoDB</code></a>.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// assuming mapper is an instance of `DynamoDBMapper`</span>
+
+<span class="nc">Person</span> <span class="n">john</span> <span class="o">=</span> <span class="nc">ImmutablePerson</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"John"</span><span class="o">,</span> <span class="mi">42</span><span class="o">);</span>
+
+<span class="n">mapper</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">john</span><span class="o">);</span>
+<span class="n">john</span> <span class="o">=</span> <span class="n">mapper</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="nc">ModifiablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="s">"John"</span><span class="o">);</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">john</span><span class="o">);</span>  <span class="c1">// prints ModifiablePerson{name=John, age=42}</span>
+</code></pre></div></div>
+
+
+</section>
+<footer class="jumbotron">
+  <div class="container">
+    <h2 id="guides">Guides</h2>
+
+<ul>
+  <li><a href="/getstarted.html">Get started!</a></li>
+  <li><a href="/intro.html">Inception</a></li>
+  <li><a href="/immutable.html">Immutable objects</a></li>
+  <li><a href="/factory.html">Factory builders</a></li>
+  <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+  <li><a href="/style.html">Style customization</a></li>
+  <li><a href="/json.html">JSON serialization</a></li>
+  <li><a href="/criteria.html">Criteria</a></li>
+  <li><a href="/mongo.html">MongoDB repositories</a></li>
+  <li><a href="/dynamodb.html">DynamoDB integration</a></li>
+  <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+  <li><a href="/apt.html">Using annotation processor in IDE</a></li>
+</ul>
+
+<h2 id="get-involved">Get involved</h2>
+
+<ul>
+  <li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+  <li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+  <li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+</ul>
+
+<p><a href="/license.html">Apache License 2.0</a></p>
+
+    <!--<div><h2>Posts</h2>
+      <ul>
+        
+      </ul>
+    </div>-->
+  </div>
+</footer>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script>
+$(function() {
+  $('#toc').toc({
+    container: '.documentation',
+    selectors: 'h1,h2,h3,h4',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+</body>
+</html>

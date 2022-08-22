@@ -31,164 +31,180 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </header>
 <aside id="toc"></aside>
 <section class="documentation">
-  <h2>Overview</h2>
+  <h2 id="overview">Overview</h2>
 
 <p>The focus of Immutables Criteria is to provide database agnostic and efficient API for storing, querying and modifying documents expressed as immutable objects.</p>
 
-<h3>Features</h3>
+<h3 id="features">Features</h3>
 
 <ul>
-<li><strong>Expressive and type-safe API</strong> Compile-type validation of the query</li>
-<li><strong>Dynamic</strong> Combine predicates at runtime based on some logic</li>
-<li><strong>Data-source agnostic</strong> Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)</li>
-<li><strong>Blocking / asynchronous operations</strong> Generated repositories allow querying data in blocking, non-blocking and <a href="https://www.reactive-streams.org/">reactive</a> fashion</li>
+  <li><strong>Expressive and type-safe API</strong> Compile-type validation of the query</li>
+  <li><strong>Dynamic</strong> Combine predicates at runtime based on some logic</li>
+  <li><strong>Data-source agnostic</strong> Define criteria once and apply to different data-sources (Map, JDBC, Mongo, Elastic etc.)</li>
+  <li><strong>Blocking / asynchronous operations</strong> Generated repositories allow querying data in blocking, non-blocking and <a href="https://www.reactive-streams.org/">reactive</a> fashion</li>
 </ul>
 
-<h3>Requirements</h3>
-
+<h3 id="requirements">Requirements</h3>
 <p>Criteria API requires JDK 8 (or later) plus backend specific dependencies (like mongo java driver).</p>
 
-<h2>Quick Start</h2>
-
+<h2 id="quick-start">Quick Start</h2>
 <ol>
-<li><p>Add criteria module dependency (on the top of <a href="getstarted.html">existing</a> immutables annotation processor)</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="c">&lt;!-- Maven dependency --&gt;</span>
-<span class="nt">&lt;dependency&gt;</span>
-  <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
-  <span class="nt">&lt;artifactId&gt;</span>criteria-inmemory<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.8.2<span class="nt">&lt;/version&gt;</span>
-<span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div>
-<p>or gradle</p>
-<div class="highlight"><pre><code class="language-groovy" data-lang="groovy"><span></span><span class="c1">// Gradle dependecy</span>
-<span class="n">dependencies</span> <span class="o">{</span>
-   <span class="n">implementation</span> <span class="s1">&#39;org.immutables:criteria-inmemory:2.8.2&#39;</span>
-<span class="o">}</span>
-</code></pre></div></li>
-<li><p>Define a model with two annotations present <code>@Criteria</code> and <code>@Criteria.Repository</code>:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
-<span class="nd">@Criteria</span> <span class="c1">// generate criteria</span>
-<span class="nd">@Criteria.Repository</span> <span class="c1">// means generate repository (different from @Criteria)</span>
-<span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
-    <span class="nd">@Criteria.Id</span> 
-    <span class="n">String</span> <span class="nf">id</span><span class="o">();</span>
-    <span class="n">String</span> <span class="nf">fullName</span><span class="o">();</span>
-<span class="o">}</span>
-</code></pre></div></li>
-<li><p>Instantiate a backend (we&#39;ll use simple <code>InMemoryBackend</code>) and perform some CRUD operations:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// instantiate a backend</span>
-<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryBackend</span><span class="o">();</span>
+  <li>
+    <p>Add criteria module dependency (on the top of <a href="getstarted.html">existing</a> immutables annotation processor)</p>
 
-<span class="c1">// attach repository to the backend</span>
-<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c">&lt;!-- Maven dependency --&gt;</span>
+ <span class="nt">&lt;dependency&gt;</span>
+   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
+   <span class="nt">&lt;artifactId&gt;</span>criteria-inmemory<span class="nt">&lt;/artifactId&gt;</span>
+   <span class="nt">&lt;version&gt;</span>2.9.1<span class="nt">&lt;/version&gt;</span>
+ <span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>    </div>
 
-<span class="c1">// insert some documents</span>
-<span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">&quot;id1&quot;</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
-<span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">&quot;id2&quot;</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
+    <p>or gradle</p>
 
-<span class="c1">// query</span>
-<span class="n">Person</span> <span class="n">john</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)).</span><span class="na">fetch</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
-<span class="n">Person</span> <span class="n">mary</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)).</span><span class="na">fetch</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
-</code></pre></div></li>
+    <div class="language-groovy highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// Gradle dependecy</span>
+ <span class="n">dependencies</span> <span class="o">{</span>
+    <span class="n">implementation</span> <span class="s1">'org.immutables:criteria-inmemory:2.9.1'</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Define a model with two annotations present <code class="language-plaintext highlighter-rouge">@Criteria</code> and <code class="language-plaintext highlighter-rouge">@Criteria.Repository</code>:</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+ <span class="nd">@Criteria</span> <span class="c1">// generate criteria</span>
+ <span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span> <span class="c1">// means generate repository (different from @Criteria)</span>
+ <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
+     <span class="nd">@Criteria</span><span class="o">.</span><span class="na">Id</span> 
+     <span class="nc">String</span> <span class="nf">id</span><span class="o">();</span>
+     <span class="nc">String</span> <span class="nf">fullName</span><span class="o">();</span>
+ <span class="o">}</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Instantiate a backend (we’ll use simple <code class="language-plaintext highlighter-rouge">InMemoryBackend</code>) and perform some CRUD operations:</p>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c1">// instantiate a backend</span>
+ <span class="nc">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InMemoryBackend</span><span class="o">();</span>
+    
+ <span class="c1">// attach repository to the backend</span>
+ <span class="nc">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+    
+ <span class="c1">// insert some documents</span>
+ <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nc">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">"id1"</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
+ <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="nc">ImmutablePerson</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">id</span><span class="o">(</span><span class="s">"id2"</span><span class="o">).</span><span class="na">fullName</span><span class="o">(</span><span class="s">"Mary"</span><span class="o">).</span><span class="na">build</span><span class="o">());</span>
+    
+ <span class="c1">// query</span>
+ <span class="nc">Person</span> <span class="n">john</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">)).</span><span class="na">fetch</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+ <span class="nc">Person</span> <span class="n">mary</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">"John"</span><span class="o">)).</span><span class="na">fetch</span><span class="o">().</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+</code></pre></div>    </div>
+  </li>
 </ol>
 
-<h2>Introduction</h2>
-
+<h2 id="introduction">Introduction</h2>
 <p>Criteria module uses several abstractions which are useful to understand. Below are the most important ones:</p>
 
 <ul>
-<li><a href="#criteria">Criteria</a> code-generated DSL to query a model. </li>
-<li><a href="#repository">Repository</a>  Data Access API to perform queries, updates, pub/sub or other operations. Uses <em>Backend</em> and <em>Criteria</em>. </li>
-<li><a href="#backend">Backend</a> adapter to a data-source (database). Uses vendor specific API and transforms queries/operations into native calls.</li>
+  <li><a href="#criteria">Criteria</a> code-generated DSL to query a model.</li>
+  <li><a href="#repository">Repository</a>  Data Access API to perform queries, updates, pub/sub or other operations. Uses <em>Backend</em> and <em>Criteria</em>.</li>
+  <li><a href="#backend">Backend</a> adapter to a data-source (database). Uses vendor specific API and transforms queries/operations into native calls.</li>
 </ul>
 
-<h2>Criteria</h2>
+<h2 id="criteria">Criteria</h2>
+<p>In order to enable criteria generation add <code class="language-plaintext highlighter-rouge">@Criteria</code> annotation to any existing immutable interface or abstract class. Criteria will be generated as a class with a <code class="language-plaintext highlighter-rouge">Criteria</code> suffix in the same package.</p>
 
-<p>In order to enable criteria generation add <code>@Criteria</code> annotation to any existing immutable interface or abstract class. Criteria will be generated as a class with a <code>Criteria</code> suffix in the same package.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="nd">@Criteria</span> <span class="c1">// generate criteria</span>
-<span class="nd">@Criteria.Repository</span> <span class="c1">// means generate repository (different from @Criteria)</span>
+<span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span> <span class="c1">// means generate repository (different from @Criteria)</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
-    <span class="nd">@Criteria.Id</span> 
-    <span class="n">String</span> <span class="nf">id</span><span class="o">();</span>
-    <span class="n">String</span> <span class="nf">fullName</span><span class="o">();</span>
-    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">nickName</span><span class="o">();</span>  
+    <span class="nd">@Criteria</span><span class="o">.</span><span class="na">Id</span> 
+    <span class="nc">String</span> <span class="nf">id</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="nf">fullName</span><span class="o">();</span>
+    <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">nickName</span><span class="o">();</span>  
     <span class="kt">int</span> <span class="nf">age</span><span class="o">();</span>
-    <span class="n">List</span><span class="o">&lt;</span><span class="n">Pet</span><span class="o">&gt;</span> <span class="nf">pets</span><span class="o">();</span>
-    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Friend</span><span class="o">&gt;</span> <span class="nf">bestFriend</span><span class="o">();</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Pet</span><span class="o">&gt;</span> <span class="nf">pets</span><span class="o">();</span>
+    <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">Friend</span><span class="o">&gt;</span> <span class="nf">bestFriend</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="nd">@Value.Immutable</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="nd">@Criteria</span> 
 <span class="kd">interface</span> <span class="nc">Pet</span> <span class="o">{</span>
-  <span class="kd">enum</span> <span class="n">PetType</span> <span class="o">{</span><span class="n">parrot</span><span class="o">,</span> <span class="n">panda</span><span class="o">,</span> <span class="n">iguana</span><span class="o">,</span> <span class="n">gecko</span><span class="o">}</span>
-  <span class="n">PetType</span> <span class="nf">type</span><span class="o">();</span>
-  <span class="n">String</span> <span class="nf">name</span><span class="o">();</span>
+  <span class="kd">enum</span> <span class="nc">PetType</span> <span class="o">{</span><span class="n">parrot</span><span class="o">,</span> <span class="n">panda</span><span class="o">,</span> <span class="n">iguana</span><span class="o">,</span> <span class="n">gecko</span><span class="o">}</span>
+  <span class="nc">PetType</span> <span class="nf">type</span><span class="o">();</span>
+  <span class="nc">String</span> <span class="nf">name</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="nd">@Value.Immutable</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="nd">@Criteria</span> 
 <span class="kd">interface</span> <span class="nc">Friend</span> <span class="o">{</span>
-   <span class="n">String</span> <span class="nf">hobby</span><span class="o">();</span>
+   <span class="nc">String</span> <span class="nf">hobby</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre></div>
-<p>Generated <code>PersonCriteria</code> class closely follows <code>Person</code> model and allows type-safe queries. Criteria objects are immutable and can be stored as constants, serialized or otherwise safely passed around. They have methods corresponding to document attributes and relevant matchers (attribute predicates).</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// basic query by id</span>
-<span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">in</span><span class="o">(</span><span class="s">&quot;id1&quot;</span><span class="o">,</span> <span class="s">&quot;id2&quot;</span><span class="o">,</span> <span class="s">&quot;id3&quot;</span><span class="o">);</span>
-<span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">notIn</span><span class="o">(</span><span class="s">&quot;bad_id&quot;</span><span class="o">);</span>
+
+</code></pre></div></div>
+
+<p>Generated <code class="language-plaintext highlighter-rouge">PersonCriteria</code> class closely follows <code class="language-plaintext highlighter-rouge">Person</code> model and allows type-safe queries. Criteria objects are immutable and can be stored as constants, serialized or otherwise safely passed around. They have methods corresponding to document attributes and relevant matchers (attribute predicates).</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// basic query by id</span>
+<span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">in</span><span class="o">(</span><span class="s">"id1"</span><span class="o">,</span> <span class="s">"id2"</span><span class="o">,</span> <span class="s">"id3"</span><span class="o">);</span>
+<span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">notIn</span><span class="o">(</span><span class="s">"bad_id"</span><span class="o">);</span>
 
 <span class="c1">// query on Strings, Comparables, Optionals and other Criterias</span>
 <span class="n">person</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)</span> <span class="c1">// basic equal</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">)</span> <span class="c1">// not equal</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;Smith&quot;</span><span class="o">)</span> <span class="c1">// string condition</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mf">3.1415D</span><span class="o">)</span> <span class="c1">// ERROR! will not compile since fullName is String (not double)</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">)</span> <span class="c1">// basic equal</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">"Mary"</span><span class="o">)</span> <span class="c1">// not equal</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">"Smith"</span><span class="o">)</span> <span class="c1">// string condition</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mf">3.1415</span><span class="no">D</span><span class="o">)</span> <span class="c1">// ERROR! will not compile since fullName is String (not double)</span>
     <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span> <span class="c1">// for Optional attribute</span>
-    <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&quot;Adam&quot;</span><span class="o">)</span> <span class="c1">// special matcher Optional&lt;String&gt; which is intersetion type between OptionalMatcher and StringMatcher</span>
+    <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"Adam"</span><span class="o">)</span> <span class="c1">// special matcher Optional&lt;String&gt; which is intersetion type between OptionalMatcher and StringMatcher</span>
     <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">notEmpty</span><span class="o">()</span> <span class="c1">// condition on an Iterable</span>
     <span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">()</span> <span class="c1">// boolean</span>
     <span class="o">.</span><span class="na">or</span><span class="o">()</span> <span class="c1">// disjunction (equivalent to logical OR)</span>
     <span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span> <span class="c1">// comparable attribute</span>
     <span class="o">.</span><span class="na">or</span><span class="o">()</span>
     <span class="o">.</span><span class="na">not</span><span class="o">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="n">p</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">hasLength</span><span class="o">(</span><span class="mi">4</span><span class="o">));</span> <span class="c1">// negation on a Optional&lt;String&gt; attribute</span>
-    <span class="o">.</span><span class="na">bestFriend</span><span class="o">.</span><span class="na">value</span><span class="o">().</span><span class="na">hobby</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;ing&quot;</span><span class="o">)</span> <span class="c1">// chaining criterias on other entities like Optional&lt;Friend&gt; </span>
+    <span class="o">.</span><span class="na">bestFriend</span><span class="o">.</span><span class="na">value</span><span class="o">().</span><span class="na">hobby</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">"ing"</span><span class="o">)</span> <span class="c1">// chaining criterias on other entities like Optional&lt;Friend&gt; </span>
 
 <span class="c1">// apply specific predicate to elements of a collection</span>
 <span class="n">person</span>
-    <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">none</span><span class="o">().</span><span class="na">type</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="n">Pet</span><span class="o">.</span><span class="na">PetType</span><span class="o">.</span><span class="na">iguana</span><span class="o">)</span>  <span class="c1">// no Iguanas</span>
+    <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">none</span><span class="o">().</span><span class="na">type</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="nc">Pet</span><span class="o">.</span><span class="na">PetType</span><span class="o">.</span><span class="na">iguana</span><span class="o">)</span>  <span class="c1">// no Iguanas</span>
     <span class="o">.</span><span class="na">or</span><span class="o">()</span>
-    <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">any</span><span class="o">().</span><span class="na">name</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">&quot;fluffy&quot;</span><span class="o">);</span> <span class="c1">// person has a pet which sounds like fluffy</span>
-</code></pre></div>
-<p>You will need to add <code>@Criteria</code> to all classes to be queried. For example, to filter on <code>Person.pets.name</code>,
- <code>Pet</code> class needs to have <code>@Criteria</code> annotation (otherwise generic <code>ObjectMatcher</code> is used).</p>
+    <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">any</span><span class="o">().</span><span class="na">name</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"fluffy"</span><span class="o">);</span> <span class="c1">// person has a pet which sounds like fluffy</span>
+</code></pre></div></div>
 
-<h3>Query DSL Syntax</h3>
+<p>You will need to add <code class="language-plaintext highlighter-rouge">@Criteria</code> to all classes to be queried. For example, to filter on <code class="language-plaintext highlighter-rouge">Person.pets.name</code>,
+ <code class="language-plaintext highlighter-rouge">Pet</code> class needs to have <code class="language-plaintext highlighter-rouge">@Criteria</code> annotation (otherwise generic <code class="language-plaintext highlighter-rouge">ObjectMatcher</code> is used).</p>
 
-<p>In the previous query example you will notice that there are no <code>and</code> statements (conjunctions) that is because criteria uses 
+<h3 id="query-dsl-syntax">Query DSL Syntax</h3>
+
+<p>In the previous query example you will notice that there are no <code class="language-plaintext highlighter-rouge">and</code> statements (conjunctions) that is because criteria uses 
 <a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive Normal Form</a> (in short DNF). By default, statements are
-combined using logical <code>and</code> (<a href="https://en.wikipedia.org/wiki/Logical_conjunction">conjunction</a>) unless <code>or</code> (<a href="https://en.wikipedia.org/wiki/Logical_disjunction">disjunction</a>) is explicitly used.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Some examples of Query DSL</span>
-<span class="c1">// left side (DSL) // right side SQL equivalent</span>
-<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)</span> <span class="c1">// fullName = &#39;John&#39;</span>
-<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span> <span class="c1">// fullName = &#39;John&#39; AND age &gt; 21</span>
-<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">).</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span> <span class="c1">// fullName = &#39;John&#39; AND age &gt; 21 AND nickName != null</span>
-<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">)</span> <span class="c1">// fullName = &#39;John&#39; OR fullName = &#39;Mary&#39;</span>
-<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
-    <span class="o">.</span><span class="na">or</span><span class="o">()</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">)</span> <span class="c1">// (fullName = &#39;John&#39; AND age &gt; 21) OR fullName = &#39;Mary&#39;</span>
-<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
-   <span class="o">.</span><span class="na">or</span><span class="o">()</span>
-   <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">)</span> <span class="c1">// (fullName = &#39;John&#39; AND age &gt; 21) OR (fullName = &#39;Mary&#39; AND age &gt; 22)</span>
-</code></pre></div>
-<h4>More complex logical expressions</h4>
+combined using logical <code class="language-plaintext highlighter-rouge">and</code> (<a href="https://en.wikipedia.org/wiki/Logical_conjunction">conjunction</a>) unless <code class="language-plaintext highlighter-rouge">or</code> (<a href="https://en.wikipedia.org/wiki/Logical_disjunction">disjunction</a>) is explicitly used.</p>
 
-<p>For more complex expressions, one can still combine criterias using <code>and</code>s / <code>or</code>s / <code>not</code>s. Boolean algebra methods
-allow composition of existing criterias with each other using <code>and</code> / <code>or</code>  / <code>not</code> logic.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// fullName = &#39;John&#39; AND (age &gt; 22 OR nickName != null)</span>
-<span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span>
-</code></pre></div>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Some examples of Query DSL</span>
+<span class="c1">// left side (DSL) // right side SQL equivalent</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">)</span> <span class="c1">// fullName = 'John'</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span> <span class="c1">// fullName = 'John' AND age &gt; 21</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">).</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span> <span class="c1">// fullName = 'John' AND age &gt; 21 AND nickName != null</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"Mary"</span><span class="o">)</span> <span class="c1">// fullName = 'John' OR fullName = 'Mary'</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">or</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"Mary"</span><span class="o">)</span> <span class="c1">// (fullName = 'John' AND age &gt; 21) OR fullName = 'Mary'</span>
+<span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span>
+   <span class="o">.</span><span class="na">or</span><span class="o">()</span>
+   <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"Mary"</span><span class="o">).</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">)</span> <span class="c1">// (fullName = 'John' AND age &gt; 21) OR (fullName = 'Mary' AND age &gt; 22)</span>
+</code></pre></div></div>
+
+<h4 id="more-complex-logical-expressions">More complex logical expressions</h4>
+<p>For more complex expressions, one can still combine criterias using <code class="language-plaintext highlighter-rouge">and</code>s / <code class="language-plaintext highlighter-rouge">or</code>s / <code class="language-plaintext highlighter-rouge">not</code>s. Boolean algebra methods
+allow composition of existing criterias with each other using <code class="language-plaintext highlighter-rouge">and</code> / <code class="language-plaintext highlighter-rouge">or</code>  / <code class="language-plaintext highlighter-rouge">not</code> logic.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// fullName = 'John' AND (age &gt; 22 OR nickName != null)</span>
+<span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">22</span><span class="o">).</span><span class="na">or</span><span class="o">().</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span>
+</code></pre></div></div>
+
 <p>Since criteria objects are immutable one can safely pass them as variables, constants or function arguments.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">PersonCriteria</span> <span class="n">crit</span> <span class="o">=</span> <span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">;</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">PersonCriteria</span> <span class="n">crit</span> <span class="o">=</span> <span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">;</span>
 <span class="n">drinkingAge</span> <span class="o">=</span> <span class="n">crit</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">21</span><span class="o">);</span>
 <span class="n">hasNickname</span> <span class="o">=</span> <span class="n">crit</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span>
 <span class="n">isActive</span> <span class="o">=</span> <span class="n">crit</span><span class="o">.</span><span class="na">isActive</span><span class="o">.</span><span class="na">isTrue</span><span class="o">();</span>
@@ -196,37 +212,40 @@ allow composition of existing criterias with each other using <code>and</code> /
 <span class="c1">// ...</span>
 <span class="c1">// (age &gt; 21 OR nickName != null) AND isActive = true</span>
 <span class="k">return</span> <span class="n">drinkingAge</span><span class="o">.</span><span class="na">or</span><span class="o">(</span><span class="n">hasNickname</span><span class="o">).</span><span class="na">and</span><span class="o">(</span><span class="n">isActive</span><span class="o">);</span>
-</code></pre></div>
-<hr>
+</code></pre></div></div>
 
-<h2>Repository</h2>
+<hr />
+<p>Repository
+—-</p>
 
 <p>Repository is a User facing API to perform queries, updates, pub/sub or other CRUD operations (think data-access abstraction).
-Similarly to criteria, repositories are auto-generated when <code>@Criteria.Repository</code> annotation is added to immutables class.
-User has the option to customize repository generation by using facets. </p>
+Similarly to criteria, repositories are auto-generated when <code class="language-plaintext highlighter-rouge">@Criteria.Repository</code> annotation is added to immutables class.
+User has the option to customize repository generation by using facets.</p>
 
 <p>Repositories delegate all operations to the Backend (more on that later).</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// add insert / find / delete / watch operations which return rxjava types</span>
-<span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span> <span class="o">=</span> <span class="o">{</span><span class="n">RxJavaReadable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">RxJavaWatchable</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// add insert / find / delete / watch operations which return rxjava types</span>
+<span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span><span class="o">(</span><span class="n">facets</span> <span class="o">=</span> <span class="o">{</span><span class="nc">RxJavaReadable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="nc">RxJavaWatchable</span><span class="o">.</span><span class="na">class</span><span class="o">})</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
 <span class="o">}</span>
 
 <span class="c1">// query datasource and return reactive type: Flowable</span>
-<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span>
-         <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
-         <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
+<span class="nc">Flowable</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span>
+         <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
+         <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
          <span class="o">.</span><span class="na">offset</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span>
          <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
          <span class="o">.</span><span class="na">fetch</span><span class="o">();</span> <span class="c1">// return rxjava flowable because of RxJavaReadable facet</span>
 
 
 <span class="c1">// unbounded stream of events using watch API (if backend supports it)</span>
-<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
-</code></pre></div>
-<p>By default, table (collection, index etc.) name is derived from simple class name (<code>MyClass</code> resolves to <code>myClass</code> table). It is possible to override this behaviour using annotation (<code>@Criteria.Repository(name =&quot;custom&quot;)</code>) as well as 
- by registring custom name resolution strategy (see <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java">ContainerNaming</a> interface). The later is done during backend instantiation. </p>
+<span class="nc">Flowable</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
+</code></pre></div></div>
 
-<h3>Facet</h3>
+<p>By default, table (collection, index etc.) name is derived from simple class name (<code class="language-plaintext highlighter-rouge">MyClass</code> resolves to <code class="language-plaintext highlighter-rouge">myClass</code> table). It is possible to override this behaviour using annotation (<code class="language-plaintext highlighter-rouge">@Criteria.Repository(name ="custom")</code>) as well as 
+ by registring custom name resolution strategy (see <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/backend/ContainerNaming.java">ContainerNaming</a> interface). The later is done during backend instantiation.</p>
+
+<h3 id="facet">Facet</h3>
 
 <p>Facets allow fine-tuning of repository behaviour. They (mostly) serve two purposes: define a set of operations supported by repository (like
 read, write, watch) and control execution model of the repository (sync / async / reactive).</p>
@@ -234,216 +253,245 @@ read, write, watch) and control execution model of the repository (sync / async 
 <p>Several implementatins for execution model are available out of the box:</p>
 
 <ul>
-<li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
-<li>Synchronous. Returning List / Optional / void / etc.</li>
-<li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
-<li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a>. </li>
-<li><a href="https://projectreactor.io">Project Reactor</a>. Returning <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a> / <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>. </li>
+  <li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
+  <li>Synchronous. Returning List / Optional / void / etc.</li>
+  <li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
+  <li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a>.</li>
+  <li><a href="https://projectreactor.io">Project Reactor</a>. Returning <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a> / <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>.</li>
 </ul>
 
-<h3>Querying</h3>
+<h3 id="querying">Querying</h3>
+<p>Add one of the <code class="language-plaintext highlighter-rouge">*Readable</code> facets for query operations to become available.</p>
 
-<p>Add one of the <code>*Readable</code> facets for query operations to become available. </p>
+<p>Currently <code class="language-plaintext highlighter-rouge">Readable</code> allows filter / select / order / limit / offset operations.</p>
 
-<p>Currently <code>Readable</code> allows filter / select / order / limit / offset operations. </p>
+<h4 id="projections">Projections</h4>
 
-<h4>Projections</h4>
-
-<p>Use <code>select</code> operation to reduce number of attributes returned by the backend. The concept is similar to <a href="https://en.wikipedia.org/wiki/Projection_(relational_algebra)">projection</a>
+<p>Use <code class="language-plaintext highlighter-rouge">select</code> operation to reduce number of attributes returned by the backend. The concept is similar to <a href="https://en.wikipedia.org/wiki/Projection_(relational_algebra)">projection</a>
 in relational algebra.</p>
 
-<p>To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in <code>select</code> operation (eg. <code>Optional&lt;String&gt;</code>). 
-One can pass lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use <code>Tuple</code> (see below).</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span>
+<p>To preserve type-safety, basic projection requires a mapping function. Mapping function argument types match individual types of the projection(s) in <code class="language-plaintext highlighter-rouge">select</code> operation (eg. <code class="language-plaintext highlighter-rouge">Optional&lt;String&gt;</code>). 
+One can pass lambda function or method reference to transform incoming value(s). Currently mapping function can have up to 5 arguments. If projection on more than 5 fields is necessary use <code class="language-plaintext highlighter-rouge">Tuple</code> (see below).</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span>
    <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
    <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">)</span> <span class="c1">// project two fields of person: nickName and age</span>
-   <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">age</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="o">(</span><span class="n">age</span> <span class="o">-</span> <span class="mi">10</span><span class="o">))</span> <span class="c1">// map operator required after projection. Note that nickName is Optional&lt;String&gt; and age is of type Integer</span>
+   <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">age</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">" "</span> <span class="o">+</span> <span class="o">(</span><span class="n">age</span> <span class="o">-</span> <span class="mi">10</span><span class="o">))</span> <span class="c1">// map operator required after projection. Note that nickName is Optional&lt;String&gt; and age is of type Integer</span>
    <span class="c1">//.map((nickName, age) -&gt; NickNameAndAge::new) // alternative with method reference</span>
    <span class="o">.</span><span class="na">fetch</span><span class="o">();</span> 
-</code></pre></div>
-<p>When list of attributes is unknown at compile time or when default mapping function can&#39;t be used (eg. due to number of arguments threshold) use generic <code>Tuple</code> in projection. <code>select(Iterable)</code> method overload will return <code>Tuple</code>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">Projection</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">projections</span> <span class="o">=</span> <span class="o">....;</span> <span class="c1">// build list of projections</span>
-<span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span>
+</code></pre></div></div>
+
+<p>When list of attributes is unknown at compile time or when default mapping function can’t be used (eg. due to number of arguments threshold) use generic <code class="language-plaintext highlighter-rouge">Tuple</code> in projection. <code class="language-plaintext highlighter-rouge">select(Iterable)</code> method overload will return <code class="language-plaintext highlighter-rouge">Tuple</code>.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">Projection</span><span class="o">&lt;?&gt;&gt;</span> <span class="n">projections</span> <span class="o">=</span> <span class="o">....;</span> <span class="c1">// build list of projections</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span>
    <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
-   <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">))</span> <span class="c1">// select(Iterable) method overload</span>
+   <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">))</span> <span class="c1">// select(Iterable) method overload</span>
    <span class="o">.</span><span class="na">map</span><span class="o">(</span><span class="n">tuple</span> <span class="o">-&gt;</span> <span class="n">tuple</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">).</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="o">(</span><span class="n">tuple</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">)</span> <span class="o">-</span> <span class="mi">10</span><span class="o">))</span> <span class="c1">// using single argument mapper with Tuple API </span>
    <span class="o">.</span><span class="na">fetch</span><span class="o">();</span> 
-</code></pre></div>
-<p>When possible, prefer using basic <code>select</code> variant of projection (as opposed to <code>Tuple</code>) since it enforces type-safety. </p>
+</code></pre></div></div>
 
-<h4>Aggregations</h4>
+<p>When possible, prefer using basic <code class="language-plaintext highlighter-rouge">select</code> variant of projection (as opposed to <code class="language-plaintext highlighter-rouge">Tuple</code>) since it enforces type-safety.</p>
 
-<p>Standard aggregations like <code>count</code> / <code>min</code> / <code>max</code> / <code>sum</code> / <code>avg</code> on specific attributes are also supported. Aggregation is a projection combined with <code>groupBy()</code> operator. </p>
+<h4 id="aggregations">Aggregations</h4>
 
-<p><code>count</code> operator is available on all types. For <code>min</code> / <code>max</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>. For <code>sum</code> / <code>avg</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html">Number</a>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">()</span>
+<p>Standard aggregations like <code class="language-plaintext highlighter-rouge">count</code> / <code class="language-plaintext highlighter-rouge">min</code> / <code class="language-plaintext highlighter-rouge">max</code> / <code class="language-plaintext highlighter-rouge">sum</code> / <code class="language-plaintext highlighter-rouge">avg</code> on specific attributes are also supported. Aggregation is a projection combined with <code class="language-plaintext highlighter-rouge">groupBy()</code> operator.</p>
+
+<p><code class="language-plaintext highlighter-rouge">count</code> operator is available on all types. For <code class="language-plaintext highlighter-rouge">min</code> / <code class="language-plaintext highlighter-rouge">max</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html">Comparable</a>. For <code class="language-plaintext highlighter-rouge">sum</code> / <code class="language-plaintext highlighter-rouge">avg</code> attribute needs to be of type <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/Number.html">Number</a>.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">()</span>
   <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">desc</span><span class="o">())</span>
   <span class="o">.</span><span class="na">groupBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">)</span>
   <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">max</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">min</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">count</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">sum</span><span class="o">())</span>
-  <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">&quot;nick=&quot;</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; max=&quot;</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">&quot; min=&quot;</span> <span class="o">+</span> <span class="n">min</span> <span class="o">+</span> <span class="s">&quot; count=&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">&quot; sum=&quot;</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span>
+  <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">"nick="</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">" max="</span> <span class="o">+</span> <span class="n">max</span> <span class="o">+</span> <span class="s">" min="</span> <span class="o">+</span> <span class="n">min</span> <span class="o">+</span> <span class="s">" count="</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">" sum="</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span>
   <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
-</code></pre></div>
-<h4>Distinct / Limit / Offset</h4>
+</code></pre></div></div>
 
-<p>To reduce number of returned elements use <code>limit / offset</code> statements (eg. for pagination). When using projections you can also request result to be de-duplicated with <code>distinct</code> keyword (note: distinct is available 
+<h4 id="distinct--limit--offset">Distinct / Limit / Offset</h4>
+<p>To reduce number of returned elements use <code class="language-plaintext highlighter-rouge">limit / offset</code> statements (eg. for pagination). When using projections you can also request result to be de-duplicated with <code class="language-plaintext highlighter-rouge">distinct</code> keyword (note: distinct is available 
 only after projection).</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">persion</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">())</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">persion</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">())</span>
     <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
     <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">)</span>
     <span class="o">.</span><span class="na">distinct</span><span class="o">()</span>
     <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
     <span class="o">.</span><span class="na">offset</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
     <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
-</code></pre></div>
-<h4>Fetching Variations</h4>
+</code></pre></div></div>
 
-<p>Common way to return all results is to use <code>fetch()</code> function, however typical <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java">Fetcher</a> has a richer API.</p>
+<h4 id="fetching-variations">Fetching Variations</h4>
 
-<p>Use <code>fetch()</code> when you want to return full result set (which can have zero, one or multiple elements):</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// get all results (size of the result can be 0, 1, 2 or more)</span>
-<span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="na">fetch</span><span class="o">();</span>
-</code></pre></div>
-<p>Use <code>one()</code> when you expect <em>exactly one</em> element in the result set. Conveniently, the method will return only that element. Exception is thrown (usually with query information) when there is zero, two
-or more elements. Depending on the facet, method will return <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> or <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage<T></a>: </p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// throw exception if there is no exactly one match</span>
+<p>Common way to return all results is to use <code class="language-plaintext highlighter-rouge">fetch()</code> function, however typical <a href="https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/repository/sync/SyncFetcher.java">Fetcher</a> has a richer API.</p>
+
+<p>Use <code class="language-plaintext highlighter-rouge">fetch()</code> when you want to return full result set (which can have zero, one or multiple elements):</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// get all results (size of the result can be 0, 1, 2 or more)</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">).</span><span class="na">fetch</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">one()</code> when you expect <em>exactly one</em> element in the result set. Conveniently, the method will return only that element. Exception is thrown (usually with query information) when there is zero, two
+or more elements. Depending on the facet, method will return <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> or [CompletionStage<T>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html):</T></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// throw exception if there is no exactly one match</span>
 <span class="c1">// may return Single / CompletionStage depending on the facet</span>
-<span class="n">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John Doe&quot;</span><span class="o">)).</span><span class="na">one</span><span class="o">();</span>
-</code></pre></div>
-<p>Use <code>oneOrNone()</code> when you require <em>at most one</em> element in the result set. Depending on facet sync / rxjava / async etc. the return type will be <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html">Optional</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a> or <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage<Optional></a>:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// may return Maybe / CompletionStage&lt;Optional&gt; depending on facet </span>
-<span class="n">Optional</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">maybeOne</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John Doe2&quot;</span><span class="o">)).</span><span class="na">oneOrNone</span><span class="o">();</span>
-</code></pre></div>
-<p>Use <code>exists()</code> when you need to check if criteria filter matches any records.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// may return Single&lt;Boolean&gt; / CompletionStage&lt;Boolean&gt; depending on the facet</span>
-<span class="kt">boolean</span> <span class="n">exists</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">().</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John Doe3&quot;</span><span class="o">)).</span><span class="na">exists</span><span class="o">();</span>
-</code></pre></div>
-<p>Simple result-set counting can be achieved using <code>count()</code> operator. This operator is considered a terminal operator similar to <code>fetch()</code> and will return <code>long</code> / <code>Mono&lt;Long&gt;</code> / <code>Single&lt;Long&gt;</code> / <code>Future&lt;Long&gt;</code> types depending on facet used.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// count all records (assumes RxJava facet)</span>
-<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">().</span><span class="na">count</span><span class="o">();</span>
-<span class="c1">// or apply a filter before count</span>
-<span class="n">Single</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">count</span><span class="o">();</span>
-</code></pre></div>
-<h3>Inserting / Updating / Deleting</h3>
+<span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John Doe"</span><span class="o">)).</span><span class="na">one</span><span class="o">();</span>
+</code></pre></div></div>
 
-<p><code>*Writable</code> facet is required to enable write operations. Examples of write / delete operations:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// one of RxJavaWritable / SyncWritable / AsyncWritable etc.</span>
-<span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="n">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<p>Use <code class="language-plaintext highlighter-rouge">oneOrNone()</code> when you require <em>at most one</em> element in the result set. Depending on facet sync / rxjava / async etc. the return type will be <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Optional.html">Optional</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a> or [CompletionStage<Optional>](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html):</Optional></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// may return Maybe / CompletionStage&lt;Optional&gt; depending on facet </span>
+<span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">maybeOne</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John Doe2"</span><span class="o">)).</span><span class="na">oneOrNone</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">exists()</code> when you need to check if criteria filter matches any records.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// may return Single&lt;Boolean&gt; / CompletionStage&lt;Boolean&gt; depending on the facet</span>
+<span class="kt">boolean</span> <span class="n">exists</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">().</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John Doe3"</span><span class="o">)).</span><span class="na">exists</span><span class="o">();</span>
+</code></pre></div></div>
+
+<p>Simple result-set counting can be achieved using <code class="language-plaintext highlighter-rouge">count()</code> operator. This operator is considered a terminal operator similar to <code class="language-plaintext highlighter-rouge">fetch()</code> and will return <code class="language-plaintext highlighter-rouge">long</code> / <code class="language-plaintext highlighter-rouge">Mono&lt;Long&gt;</code> / <code class="language-plaintext highlighter-rouge">Single&lt;Long&gt;</code> / <code class="language-plaintext highlighter-rouge">Future&lt;Long&gt;</code> types depending on facet used.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// count all records (assumes RxJava facet)</span>
+<span class="nc">Single</span><span class="o">&lt;</span><span class="nc">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">().</span><span class="na">count</span><span class="o">();</span>
+<span class="c1">// or apply a filter before count</span>
+<span class="nc">Single</span><span class="o">&lt;</span><span class="nc">Long</span><span class="o">&gt;</span> <span class="n">count</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">greaterThan</span><span class="o">(</span><span class="mi">33</span><span class="o">)).</span><span class="na">count</span><span class="o">();</span>
+</code></pre></div></div>
+
+<h3 id="inserting--updating--deleting">Inserting / Updating / Deleting</h3>
+
+<p><code class="language-plaintext highlighter-rouge">*Writable</code> facet is required to enable write operations. Examples of write / delete operations:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// one of RxJavaWritable / SyncWritable / AsyncWritable etc.</span>
+<span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="nc">RxJavaWritable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
 
-<span class="n">WriteResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insertAll</span><span class="o">(</span><span class="n">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">person1</span><span class="o">,</span> <span class="n">person2</span><span class="o">));</span> <span class="c1">// for sync </span>
-<span class="n">Single</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for rxjava2</span>
-<span class="n">CompletionStage</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for async</span>
-<span class="n">Publisher</span><span class="o">&lt;</span><span class="n">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for reactive </span>
-<span class="n">repository</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">());</span> <span class="c1">// delete by query</span>
-</code></pre></div>
-<h4>In-place updates by query</h4>
+<span class="nc">WriteResult</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insertAll</span><span class="o">(</span><span class="nc">Arrays</span><span class="o">.</span><span class="na">asList</span><span class="o">(</span><span class="n">person1</span><span class="o">,</span> <span class="n">person2</span><span class="o">));</span> <span class="c1">// for sync </span>
+<span class="nc">Single</span><span class="o">&lt;</span><span class="nc">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for rxjava2</span>
+<span class="nc">CompletionStage</span><span class="o">&lt;</span><span class="nc">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for async</span>
+<span class="nc">Publisher</span><span class="o">&lt;</span><span class="nc">WriteResult</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">person1</span><span class="o">);</span> <span class="c1">// for reactive </span>
+<span class="n">repository</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">());</span> <span class="c1">// delete by query</span>
+</code></pre></div></div>
 
+<h4 id="in-place-updates-by-query">In-place updates by query</h4>
 <p>If supported by back-end, one can also perform in-place updates by query:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">repository</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mi">123</span><span class="o">))</span>
-            <span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">,</span> <span class="s">&quot;Changed Name&quot;</span><span class="o">)</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">repository</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mi">123</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">,</span> <span class="s">"Changed Name"</span><span class="o">)</span>
             <span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">peson</span><span class="o">.</span><span class="na">age</span><span class="o">,</span> <span class="mi">33</span><span class="o">)</span>
             <span class="o">.</span><span class="na">execute</span><span class="o">();</span>
-</code></pre></div>
-<h3>Pub/Sub (aka Watching)</h3>
+</code></pre></div></div>
 
+<h3 id="pubsub-aka-watching">Pub/Sub (aka Watching)</h3>
 <p>Watching allows to continuously observe events on the backend in real-time. When available, it is built on the top of existing oferring like 
 <a href="https://docs.mongodb.com/manual/changeStreams">change streams</a> in mongo or 
 <a href="https://geode.apache.org/docs/guide/19/developing/continuous_querying/how_continuous_querying_works.html">continuous querying</a> in Geode.</p>
 
-<p>Use <code>*Watchable</code> facet to enable this functionality on a repository.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="n">RxJavaWatchable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<p>Use <code class="language-plaintext highlighter-rouge">*Watchable</code> facet to enable this functionality on a repository.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="nc">RxJavaWatchable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
 
 <span class="c1">// if remote database allows filtering in real-time</span>
-<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">flow</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
-</code></pre></div>
-<h3>Custom Repositories</h3>
+<span class="nc">Flowable</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">flow</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">watcher</span><span class="o">(</span><span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isFalse</span><span class="o">()).</span><span class="na">watch</span><span class="o">();</span>
+</code></pre></div></div>
 
-<p>While <code>@Criteria.Repository</code> will auto-generate repository class based on facets, one can also write repository implementation manually. Facets are just 
+<h3 id="custom-repositories">Custom Repositories</h3>
+<p>While <code class="language-plaintext highlighter-rouge">@Criteria.Repository</code> will auto-generate repository class based on facets, one can also write repository implementation manually. Facets are just 
 classes which can be leveraged to compose functionality.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyCustomRepository</span> <span class="kd">implements</span> <span class="n">Repository</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="o">{</span>
-   <span class="kd">private</span> <span class="kd">final</span> <span class="n">RxJavaReadable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">readable</span><span class="o">;</span>
 
-   <span class="kd">public</span> <span class="nf">MyCustomRepository</span><span class="o">(</span><span class="n">Backend</span> <span class="n">backend</span><span class="o">)</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyCustomRepository</span> <span class="kd">implements</span> <span class="nc">Repository</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">RxJavaReadable</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">readable</span><span class="o">;</span>
+
+   <span class="kd">public</span> <span class="nf">MyCustomRepository</span><span class="o">(</span><span class="nc">Backend</span> <span class="n">backend</span><span class="o">)</span> <span class="o">{</span>
      <span class="c1">// open backend session for Person class</span>
-     <span class="n">Backend</span><span class="o">.</span><span class="na">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="n">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-     <span class="k">this</span><span class="o">.</span><span class="na">readable</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RxJavaReadable</span><span class="o">(</span><span class="n">session</span><span class="o">);</span>
+     <span class="nc">Backend</span><span class="o">.</span><span class="na">Session</span> <span class="n">session</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="na">open</span><span class="o">(</span><span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+     <span class="k">this</span><span class="o">.</span><span class="na">readable</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RxJavaReadable</span><span class="o">(</span><span class="n">session</span><span class="o">);</span>
    <span class="o">}</span>
 
-   <span class="kd">public</span> <span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="nf">findPeopleOlderThan</span><span class="o">(</span><span class="n">Period</span> <span class="n">period</span><span class="o">)</span> <span class="o">{</span>
-     <span class="n">PersonCriteria</span> <span class="n">criteria</span> <span class="o">=</span> <span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">dateOfBirth</span><span class="o">.</span><span class="na">atMost</span><span class="o">(</span><span class="n">LocalDate</span><span class="o">.</span><span class="na">now</span><span class="o">().</span><span class="na">minus</span><span class="o">(</span><span class="n">period</span><span class="o">));</span>
+   <span class="kd">public</span> <span class="nc">Flowable</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="nf">findPeopleOlderThan</span><span class="o">(</span><span class="nc">Period</span> <span class="n">period</span><span class="o">)</span> <span class="o">{</span>
+     <span class="nc">PersonCriteria</span> <span class="n">criteria</span> <span class="o">=</span> <span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">dateOfBirth</span><span class="o">.</span><span class="na">atMost</span><span class="o">(</span><span class="nc">LocalDate</span><span class="o">.</span><span class="na">now</span><span class="o">().</span><span class="na">minus</span><span class="o">(</span><span class="n">period</span><span class="o">));</span>
      <span class="k">return</span> <span class="n">readable</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">criteria</span><span class="o">).</span><span class="na">fetch</span><span class="o">();</span>
    <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div>
-<hr>
+</code></pre></div></div>
 
-<h2>Backend</h2>
+<hr />
+<p>Backend
+—-</p>
 
 <p>Backend is responsible for interpreting expressions and operations into native queries and API calls using vendor drivers. It is the adapter 
 between criteria abstraction and native API.</p>
 
 <p>Usually it is instantiated using vendor API (eg. MongoDatabase)</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// can be Mongo / Elasticsearch or any other backend</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// can be Mongo / Elasticsearch or any other backend</span>
 
 <span class="c1">// instantiate repository using existing backend</span>
-<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
-</code></pre></div>
-<h3>InMemory</h3>
+<span class="nc">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+</code></pre></div></div>
 
-<p><code>InMemoryBackend</code> is the simplest form of backend which doesn&#39;t have any external dependencies. Internally it uses <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a> and reflections
+<h3 id="inmemory">InMemory</h3>
+<p><code class="language-plaintext highlighter-rouge">InMemoryBackend</code> is the simplest form of backend which doesn’t have any external dependencies. Internally it uses <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a> and reflections
 to evaluate expressions and perform CRUD operations.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// instantiate InMemoryBackend</span>
-<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InMemoryBackend</span><span class="o">();</span>
-</code></pre></div>
-<h3>Mongo</h3>
 
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// instantiate InMemoryBackend</span>
+<span class="nc">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InMemoryBackend</span><span class="o">();</span>
+</code></pre></div></div>
+
+<h3 id="mongo">Mongo</h3>
 <p>Mongo backend uses <a href="https://mongodb.github.io/mongo-java-driver-reactivestreams/">reactive streams</a> driver. There is always an
 option for repository to expose synchronous (or other) API by using facets.</p>
 
-<p>To instantiate mongo backend use <code>CollectionResolver</code>. The later is responsible for mapping an entity class eg. <code>Person</code> to <code>MongoCollection&lt;Person&gt;</code>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// get database (with correct CodecRegistry)</span>
-<span class="n">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">MongoSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">database</span><span class="o">));</span>
-<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
-</code></pre></div>
-<h4>Jackson/Bson integration</h4>
+<p>To instantiate mongo backend use <code class="language-plaintext highlighter-rouge">CollectionResolver</code>. The later is responsible for mapping an entity class eg. <code class="language-plaintext highlighter-rouge">Person</code> to <code class="language-plaintext highlighter-rouge">MongoCollection&lt;Person&gt;</code>.</p>
 
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// get database (with correct CodecRegistry)</span>
+<span class="nc">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MongoBackend</span><span class="o">(</span><span class="nc">MongoSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">database</span><span class="o">));</span>
+<span class="nc">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+</code></pre></div></div>
+
+<h4 id="jacksonbson-integration">Jackson/Bson integration</h4>
 <p>Out of box, criteria provides integration with <a href="https://github.com/FasterXML/jackson">jackson</a> library. This allows
 use of standard jackson binding infrastructure but still serializing documents in <a href="http://bsonspec.org/">BSON format</a> (including non-JSON types like Decimal128, 
-timestamp or date). Jackson (BSON) adapter will delegate calls to native <a href="http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/">BsonReader and BsonWriter</a> without intermediate object transformation (eg. <code>BSON -&gt; String -&gt; POJO</code>) thus avoiding 
+timestamp or date). Jackson (BSON) adapter will delegate calls to native <a href="http://mongodb.github.io/mongo-java-driver/3.9/bson/readers-and-writers/">BsonReader and BsonWriter</a> without intermediate object transformation (eg. <code class="language-plaintext highlighter-rouge">BSON -&gt; String -&gt; POJO</code>) thus avoiding 
 extra parsing and memory allocation.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">()</span>
-       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">BsonModule</span><span class="o">())</span>  <span class="c1">// register default codecs like Jsr310, BsonValueCodec, ValueCodecProvider etc.</span>
-       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">GuavaModule</span><span class="o">())</span> <span class="c1">// for Immutable* classes from Guava (eg. ImmutableList)</span>
-       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">Jdk8Module</span><span class="o">())</span> <span class="c1">// used for java 8 types like Optional / OptionalDouble etc.</span>
-       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">IdAnnotationModule</span><span class="o">());</span> <span class="c1">// used for Criteria.Id to &#39;_id&#39; attribute mapping</span>
 
-<span class="n">CodecRegistry</span> <span class="n">registry</span> <span class="o">=</span> <span class="n">JacksonCodecs</span><span class="o">.</span><span class="na">registryFromMapper</span><span class="o">(</span><span class="n">mapper</span><span class="o">);</span> <span class="c1">// create CodecRegistry (adapter) from ObjectMapper</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectMapper</span><span class="o">()</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">BsonModule</span><span class="o">())</span>  <span class="c1">// register default codecs like Jsr310, BsonValueCodec, ValueCodecProvider etc.</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">GuavaModule</span><span class="o">())</span> <span class="c1">// for Immutable* classes from Guava (eg. ImmutableList)</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">Jdk8Module</span><span class="o">())</span> <span class="c1">// used for java 8 types like Optional / OptionalDouble etc.</span>
+       <span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">IdAnnotationModule</span><span class="o">());</span> <span class="c1">// used for Criteria.Id to '_id' attribute mapping</span>
 
-<span class="n">MongoClient</span> <span class="n">client</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// &quot;connect&quot; / get client</span>
-<span class="n">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">getDatabase</span><span class="o">(</span><span class="s">&quot;myDB&quot;</span><span class="o">).</span><span class="na">withCodecRegistry</span><span class="o">(</span><span class="n">registry</span><span class="o">);</span> <span class="c1">// override with &quot;jackson&quot; CodecRegistry</span>
-<span class="n">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(</span><span class="n">MongoSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">database</span><span class="o">));</span> <span class="c1">// create backend instance</span>
-</code></pre></div>
-<p>Don&#39;t forget to add <code>@JsonSerialize</code> and <code>@JsonDeserialize</code> to your model. Admittedly, number of annotations is becoming noticeable.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<span class="nc">CodecRegistry</span> <span class="n">registry</span> <span class="o">=</span> <span class="nc">JacksonCodecs</span><span class="o">.</span><span class="na">registryFromMapper</span><span class="o">(</span><span class="n">mapper</span><span class="o">);</span> <span class="c1">// create CodecRegistry (adapter) from ObjectMapper</span>
+
+<span class="nc">MongoClient</span> <span class="n">client</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// "connect" / get client</span>
+<span class="nc">MongoDatabase</span> <span class="n">database</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="na">getDatabase</span><span class="o">(</span><span class="s">"myDB"</span><span class="o">).</span><span class="na">withCodecRegistry</span><span class="o">(</span><span class="n">registry</span><span class="o">);</span> <span class="c1">// override with "jackson" CodecRegistry</span>
+<span class="nc">MongoBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MongoBackend</span><span class="o">(</span><span class="nc">MongoSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">database</span><span class="o">));</span> <span class="c1">// create backend instance</span>
+</code></pre></div></div>
+
+<p>Don’t forget to add <code class="language-plaintext highlighter-rouge">@JsonSerialize</code> and <code class="language-plaintext highlighter-rouge">@JsonDeserialize</code> to your model. Admittedly, number of annotations is becoming noticeable.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="nd">@Criteria</span>
-<span class="nd">@Criteria.Repository</span>
-<span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span>
+<span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="nc">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="nc">ImmutablePerson</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
-</code></pre></div>
-<h3>Elastic Search</h3>
+</code></pre></div></div>
 
-<p><code>ElasticsearchBackend</code> leverages <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html">low-level rest client</a> 
+<h3 id="elastic-search">Elastic Search</h3>
+<p><code class="language-plaintext highlighter-rouge">ElasticsearchBackend</code> leverages <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/current/java-rest-low.html">low-level rest client</a> 
 to communicate with elastic search cluster. Because of object binding and JSON parsing <a href="https://github.com/FasterXML/jackson">Jackson</a> 
 is currently a hard dependency of this module.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">RestClient</span> <span class="n">restClient</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">RestClient</span> <span class="n">restClient</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
 
 <span class="c1">// use default resolver which maps entity (class) to index name</span>
-<span class="n">ElasticsearchBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ElasticsearchBackend</span><span class="o">(</span><span class="n">ElasticsearchSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">restClient</span><span class="o">));</span>
-</code></pre></div>
-<p>The only required depedency of <code>ElasticsearchSetup</code> is <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-low.html">RestClient</a> however you can also override default instances<br>
-of <code>ObjectMapper</code>, <code>scrollSize</code>, <code>indexResolver</code> etc.</p>
+<span class="nc">ElasticsearchBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ElasticsearchBackend</span><span class="o">(</span><span class="nc">ElasticsearchSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">restClient</span><span class="o">));</span>
+</code></pre></div></div>
+
+<p>The only required depedency of <code class="language-plaintext highlighter-rouge">ElasticsearchSetup</code> is <a href="https://www.elastic.co/guide/en/elasticsearch/client/java-rest/master/java-rest-low.html">RestClient</a> however you can also override default instances<br />
+of <code class="language-plaintext highlighter-rouge">ObjectMapper</code>, <code class="language-plaintext highlighter-rouge">scrollSize</code>, <code class="language-plaintext highlighter-rouge">indexResolver</code> etc.</p>
 
 <p>By default, <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-scroll">scrolling</a> is 
 used for all queries unless it is an aggregation or <a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-from-size">offset/from</a> request.</p>
@@ -452,15 +500,16 @@ used for all queries unless it is an aggregation or <a href="https://www.elastic
 
 <p>At least version 6.2 of Elastic is recommended for criteria API. Generally we follow official <a href="https://www.elastic.co/support/eol">EoL schedule</a></p>
 
-<h3>Geode</h3>
+<h3 id="geode">Geode</h3>
+<p>The only required dependency of <code class="language-plaintext highlighter-rouge">GeodeBackend</code> is <a href="https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/GemFireCache.html">GemFireCache</a>. Below is an example of how to instantiate <code class="language-plaintext highlighter-rouge">GeodeBackend</code>.</p>
 
-<p>The only required dependency of <code>GeodeBackend</code> is <a href="https://geode.apache.org/releases/latest/javadoc/org/apache/geode/cache/GemFireCache.html">GemFireCache</a>. Below is an example of how to instantiate <code>GeodeBackend</code>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">GemFireCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
-<span class="n">GeodeBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GeodeBackend</span><span class="o">(</span><span class="n">GeodeSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">cache</span><span class="o">));</span>
-</code></pre></div>
-<hr>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">GemFireCache</span> <span class="n">cache</span> <span class="o">=</span> <span class="o">...</span> <span class="c1">// provided</span>
+<span class="nc">GeodeBackend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GeodeBackend</span><span class="o">(</span><span class="nc">GeodeSetup</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="n">cache</span><span class="o">));</span>
+</code></pre></div></div>
 
-<h2>JavaBeans</h2>
+<hr />
+<p>JavaBeans
+—-</p>
 
 <p>Limited support for <a href="https://en.wikipedia.org/wiki/JavaBeans">JavaBeans</a> is provided.
 It is intended for projects which may want to leverage criteria (runtime and DSL) as data access layer but are not yet fully migrated to immutables model. 
@@ -469,51 +518,55 @@ You may be able to generate Criteria DSL assuming your class follows <a href="ht
 <p>Requirements for JavaBean classes:</p>
 
 <ol>
-<li>Has to be non-abstract and not an enum.</li>
-<li>Both getters (<code>get*</code> / <code>is*</code>) and setters (<code>set*</code>) should be present for the same attribute.</li>
-<li>Class should have a (non-static) field derived from getter/setter. Example <code>name</code> for <code>getName/setName</code>, <code>URL</code> for <code>getURL/setURL</code>, <code>a</code> for <code>getA/setA</code> 
+  <li>Has to be non-abstract and not an enum.</li>
+  <li>Both getters (<code class="language-plaintext highlighter-rouge">get*</code> / <code class="language-plaintext highlighter-rouge">is*</code>) and setters (<code class="language-plaintext highlighter-rouge">set*</code>) should be present for the same attribute.</li>
+  <li>Class should have a (non-static) field derived from getter/setter. Example <code class="language-plaintext highlighter-rouge">name</code> for <code class="language-plaintext highlighter-rouge">getName/setName</code>, <code class="language-plaintext highlighter-rouge">URL</code> for <code class="language-plaintext highlighter-rouge">getURL/setURL</code>, <code class="language-plaintext highlighter-rouge">a</code> for <code class="language-plaintext highlighter-rouge">getA/setA</code> 
 For more details see <em>8.8 Capitalization of inferred names</em> in JavaBeans spec</li>
 </ol>
 
-<p>Just annotate your existing bean with <code>@Criteria</code> and immutables will generate Criteria DSL for it.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Example of a valid JavaBean</span>
+<p>Just annotate your existing bean with <code class="language-plaintext highlighter-rouge">@Criteria</code> and immutables will generate Criteria DSL for it.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Example of a valid JavaBean</span>
 <span class="nd">@Criteria</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyBean</span> <span class="o">{</span>
-  <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
-
-  <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
-
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
-
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+  
+  <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
+  
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span> <span class="o">}</span>
+  
 <span class="o">}</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <p>Note that all attributes are considered nullable by default in JavaBean model.</p>
+
 
 </section>
 <footer class="jumbotron">
   <div class="container">
-    <h2>Guides</h2>
+    <h2 id="guides">Guides</h2>
 
 <ul>
-<li><a href="/getstarted.html">Get started!</a></li>
-<li><a href="/intro.html">Inception</a></li>
-<li><a href="/immutable.html">Immutable objects</a></li>
-<li><a href="/factory.html">Factory builders</a></li>
-<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
-<li><a href="/style.html">Style customization</a></li>
-<li><a href="/json.html">JSON serialization</a></li>
-<li><a href="/criteria.html">Criteria</a></li>
-<li><a href="/mongo.html">MongoDB repositories</a></li>
-<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
-<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+  <li><a href="/getstarted.html">Get started!</a></li>
+  <li><a href="/intro.html">Inception</a></li>
+  <li><a href="/immutable.html">Immutable objects</a></li>
+  <li><a href="/factory.html">Factory builders</a></li>
+  <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+  <li><a href="/style.html">Style customization</a></li>
+  <li><a href="/json.html">JSON serialization</a></li>
+  <li><a href="/criteria.html">Criteria</a></li>
+  <li><a href="/mongo.html">MongoDB repositories</a></li>
+  <li><a href="/dynamodb.html">DynamoDB integration</a></li>
+  <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+  <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 
-<h2>Get involved</h2>
+<h2 id="get-involved">Get involved</h2>
 
 <ul>
-<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
-<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
-<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+  <li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+  <li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+  <li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
 </ul>
 
 <p><a href="/license.html">Apache License 2.0</a></p>

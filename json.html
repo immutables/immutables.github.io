@@ -31,325 +31,355 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </header>
 <aside id="toc"></aside>
 <section class="documentation">
-  <h2>Overview</h2>
+  
+<h2 id="overview">Overview</h2>
 
-<p>It&#39;s not uncommon to use immutable object as messages or documents to transfer or store data.
+<p>It’s not uncommon to use immutable object as messages or documents to transfer or store data.
 JSON is a simple and flexible format. Moreover, using libraries like <a href="http://wiki.fasterxml.com/JacksonHome">Jackson</a>, you can use various additional textual and binary formats:
 <a href="https://github.com/FasterXML/jackson-dataformat-smile">Smile</a>,
 <a href="https://github.com/michel-kraemer/bson4jackson">BSON</a>,
 <a href="https://github.com/FasterXML/jackson-dataformat-cbor">CBOR</a>,
-<a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML</a>... etc.</p>
+<a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML</a>… etc.</p>
 
 <p><em>Immutables</em> JSON integration underwent an overhaul for 2.0. This made integration a lot less exotic and more comprehensible.</p>
 
 <p>Instead of the old generated marshaler infrastructure based on <em>Jackson</em> streaming (jackson-core), two new integrations available:</p>
 
 <ul>
-<li>Simplified <em>Jackson</em> integration
-
-<ul>
-<li>Generation of <code>@JsonCreator</code>, <code>@JsonProperty</code> annotations and a helper class.</li>
-<li>Delegates everything back to Jackson using its powerful binding engine</li>
-</ul></li>
-<li>Comprehensive <em>Gson</em> integration
-
-<ul>
-<li>No custom runtime APIs, Gson APIs are used</li>
-<li>Generation of <em>TypeAdapterFactories</em> which use no reflection.</li>
-<li>Helper classes to integrate <em>Gson</em> streaming with <em>Jackson</em> streaming to squeeze maximum performance.</li>
-</ul></li>
+  <li>Simplified <em>Jackson</em> integration
+    <ul>
+      <li>Generation of <code class="language-plaintext highlighter-rouge">@JsonCreator</code>, <code class="language-plaintext highlighter-rouge">@JsonProperty</code> annotations and a helper class.</li>
+      <li>Delegates everything back to Jackson using its powerful binding engine</li>
+    </ul>
+  </li>
+  <li>Comprehensive <em>Gson</em> integration
+    <ul>
+      <li>No custom runtime APIs, Gson APIs are used</li>
+      <li>Generation of <em>TypeAdapterFactories</em> which use no reflection.</li>
+      <li>Helper classes to integrate <em>Gson</em> streaming with <em>Jackson</em> streaming to squeeze maximum performance.</li>
+    </ul>
+  </li>
 </ul>
 
-<p><a name="jackson"></a></p>
+<p><a name="jackson"></a>
+Jackson
+——-</p>
 
-<h2>Jackson</h2>
-
-<p>Overall <em>Jackson</em> doesn&#39;t require any serious code generation to be flexible and highly performant
+<p>Overall <em>Jackson</em> doesn’t require any serious code generation to be flexible and highly performant
 on the JVM. No additional dependencies are required except for <em>Immutables</em> processor and <em>Jackson</em>
 library. It is recommended to use <em>Jackson</em> version 2.4+, but earlier versions can work also.</p>
 
-<p>Integration works by generating <code>@JsonCreator</code> factory method and puts <code>@JsonProperty</code>
-annotations on immutable implementations. To enable this, you should use <code>@JsonSerialize</code>
-or <code>@JsonDeserialize</code> annotation. Point to an immutable
-implementation class in <code>as</code> annotation attribute:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.fasterxml.jackson.annotation.*</span><span class="o">;</span>
+<p>Integration works by generating <code class="language-plaintext highlighter-rouge">@JsonCreator</code> factory method and puts <code class="language-plaintext highlighter-rouge">@JsonProperty</code>
+annotations on immutable implementations. To enable this, you should use <code class="language-plaintext highlighter-rouge">@JsonSerialize</code>
+or <code class="language-plaintext highlighter-rouge">@JsonDeserialize</code> annotation. Point to an immutable
+implementation class in <code class="language-plaintext highlighter-rouge">as</code> annotation attribute:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">com.fasterxml.jackson.annotation.*</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">org.immutables.value.Value</span><span class="o">;</span>
 
-<span class="nd">@Value.Immutable</span>
-<span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutableVal</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
-<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="n">ImmutableVal</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@JsonSerialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="nc">ImmutableVal</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">as</span> <span class="o">=</span> <span class="nc">ImmutableVal</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Val</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="nf">a</span><span class="o">();</span>
-  <span class="nd">@JsonProperty</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="nf">second</span><span class="o">();</span>
+  <span class="nd">@JsonProperty</span><span class="o">(</span><span class="s">"b"</span><span class="o">)</span> <span class="nc">String</span> <span class="nf">second</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre></div>
-<p>While <code>ImmutableVal</code> may not be generated yet, the above will compile properly.
-<code>as = ImmutableVal.class</code> attribute have to be added if your codebase predominantly use abstract value
-as a canonical type, if you mostly use immutable type, then it&#39;s not required to use <code>as</code> attribute.
-You can use <code>@JsonProperty</code> to customize JSON field names. You can freely use any other facilities
+
+</code></pre></div></div>
+<p>While <code class="language-plaintext highlighter-rouge">ImmutableVal</code> may not be generated yet, the above will compile properly.
+<code class="language-plaintext highlighter-rouge">as = ImmutableVal.class</code> attribute have to be added if your codebase predominantly use abstract value
+as a canonical type, if you mostly use immutable type, then it’s not required to use <code class="language-plaintext highlighter-rouge">as</code> attribute.
+You can use <code class="language-plaintext highlighter-rouge">@JsonProperty</code> to customize JSON field names. You can freely use any other facilities
 of the <em>Jackson</em> library if applicable.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">objectMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">();</span>
-<span class="n">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">objectMapper</span><span class="o">.</span><span class="na">writeValueAsString</span><span class="o">(</span>
-    <span class="n">ImmutableVal</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectMapper</span> <span class="n">objectMapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectMapper</span><span class="o">();</span>
+<span class="nc">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">objectMapper</span><span class="o">.</span><span class="na">writeValueAsString</span><span class="o">(</span>
+    <span class="nc">ImmutableVal</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
         <span class="o">.</span><span class="na">a</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">second</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">second</span><span class="o">(</span><span class="s">"B"</span><span class="o">)</span>
         <span class="o">.</span><span class="na">build</span><span class="o">());</span>
-</code></pre></div><div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="p">{</span> <span class="s2">&quot;a&quot;</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="s2">&quot;b&quot;</span><span class="o">:</span> <span class="s2">&quot;B&quot;</span> <span class="p">}</span>
-</code></pre></div>
-<p>Recently (since 2.3.7) we&#39;ve added an alternative way of Jackson integration using builder. It works when you point <code>@JsonDeserialize(builder)</code> to a generated or &quot;extending&quot; builder. The example will make it clear:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
-<span class="nd">@Value.Style</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="s">&quot;new&quot;</span><span class="o">)</span> <span class="c1">// builder has to have constructor</span>
-<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="n">ImmutableVal</span><span class="o">.</span><span class="na">Builder</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span> <span class="dl">"</span><span class="s2">a</span><span class="dl">"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">b</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">B</span><span class="dl">"</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Recently (since 2.3.7) we’ve added an alternative way of Jackson integration using builder. It works when you point <code class="language-plaintext highlighter-rouge">@JsonDeserialize(builder)</code> to a generated or “extending” builder. The example will make it clear:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Style</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="s">"new"</span><span class="o">)</span> <span class="c1">// builder has to have constructor</span>
+<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="nc">ImmutableVal</span><span class="o">.</span><span class="na">Builder</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Val</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="nf">a</span><span class="o">();</span>
-  <span class="nd">@JsonProperty</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="nf">second</span><span class="o">();</span>
+  <span class="nd">@JsonProperty</span><span class="o">(</span><span class="s">"b"</span><span class="o">)</span> <span class="nc">String</span> <span class="nf">second</span><span class="o">();</span>
 <span class="o">}</span>
 
 <span class="c1">// or using extending builder</span>
-<span class="nd">@Value.Immutable</span>
-<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="n">Val</span><span class="o">.</span><span class="na">Builder</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@JsonDeserialize</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="nc">Val</span><span class="o">.</span><span class="na">Builder</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Val</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="nf">a</span><span class="o">();</span>
-  <span class="nd">@JsonProperty</span><span class="o">(</span><span class="s">&quot;b&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="nf">second</span><span class="o">();</span>
-  <span class="kd">class</span> <span class="nc">Builder</span> <span class="kd">extends</span> <span class="n">ImmutableVal</span><span class="o">.</span><span class="na">Builder</span> <span class="o">{}</span>
+  <span class="nd">@JsonProperty</span><span class="o">(</span><span class="s">"b"</span><span class="o">)</span> <span class="nc">String</span> <span class="nf">second</span><span class="o">();</span>
+  <span class="kd">class</span> <span class="nc">Builder</span> <span class="kd">extends</span> <span class="nc">ImmutableVal</span><span class="o">.</span><span class="na">Builder</span> <span class="o">{}</span>
 <span class="o">}</span>
-</code></pre></div>
-<p>Using the approach shown above, generated builders will have attributes annotated with <code>@JsonProperty</code> so deserialization will work properly.</p>
+</code></pre></div></div>
+
+<p>Using the approach shown above, generated builders will have attributes annotated with <code class="language-plaintext highlighter-rouge">@JsonProperty</code> so deserialization will work properly.</p>
 
 <p><strong>Things to be aware of</strong></p>
 
 <ul>
-<li>Make sure that <em>Jackson</em> can serialize any other type that is used as attribute type.</li>
-<li>Not all Jackson annotations are propagated by default to the generated code. You can use <code>Value.Style.additionalJsonAnnotations</code> style attribute to specify such annotation types.</li>
-<li>If using <code>@JsonIgnore</code>, you should explicitly make an attribute non-mandatory. In Immutables, an attribute can be declared as non-mandatory via <code>@Nullable</code>, <code>Optional</code> or <code>@Value.Default</code> which are all different in their effect and we do not derive anything automatically.</li>
-<li>Use <code>Value.Style.jacksonIntegration = false</code> (since 2.3.7) to disable any out-of-the-box integration triggered <code>@JsonSerialize</code>/<code>@JsonDeserialize</code>, may help if integration is getting in the way</li>
-<li>Use <code>Value.Style.forceJacksonPropertyNames = false</code> to not use literal names in generated <code>@JsonProperty</code> annotations. While somewhat fragile, an absence of the literal names enables the usage of naming strategies and built-in Jackson conventions.</li>
+  <li>Make sure that <em>Jackson</em> can serialize any other type that is used as attribute type.</li>
+  <li>Not all Jackson annotations are propagated by default to the generated code. You can use <code class="language-plaintext highlighter-rouge">Value.Style.additionalJsonAnnotations</code> style attribute to specify such annotation types.</li>
+  <li>If using <code class="language-plaintext highlighter-rouge">@JsonIgnore</code>, you should explicitly make an attribute non-mandatory. In Immutables, an attribute can be declared as non-mandatory via <code class="language-plaintext highlighter-rouge">@Nullable</code>, <code class="language-plaintext highlighter-rouge">Optional</code> or <code class="language-plaintext highlighter-rouge">@Value.Default</code> which are all different in their effect and we do not derive anything automatically.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Value.Style.jacksonIntegration = false</code> (since 2.3.7) to disable any out-of-the-box integration triggered <code class="language-plaintext highlighter-rouge">@JsonSerialize</code>/<code class="language-plaintext highlighter-rouge">@JsonDeserialize</code>, may help if integration is getting in the way</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Value.Style.forceJacksonPropertyNames = false</code> to not use literal names in generated <code class="language-plaintext highlighter-rouge">@JsonProperty</code> annotations. While somewhat fragile, an absence of the literal names enables the usage of naming strategies and built-in Jackson conventions.</li>
 </ul>
 
-<h3>Jackson-Guava</h3>
+<h3 id="jackson-guava">Jackson-Guava</h3>
 
-<p>If you use Guava, make sure to use the special serialization module <code>jackson-datatype-guava</code>.</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
+<p>If you use Guava, make sure to use the special serialization module <code class="language-plaintext highlighter-rouge">jackson-datatype-guava</code>.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>com.fasterxml.jackson.datatype<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>jackson-datatype-guava<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">();</span>
+</code></pre></div></div>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="nc">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectMapper</span><span class="o">();</span>
 <span class="c1">// register module with object mapper</span>
-<span class="n">mapper</span><span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">GuavaModule</span><span class="o">());</span>
-</code></pre></div>
-<h3>Jackson and Java 8</h3>
+<span class="n">mapper</span><span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">GuavaModule</span><span class="o">());</span>
+</code></pre></div></div>
 
-<p>For Java 8 specific datatypes use <code>jackson-datatype-jdk8</code> module.</p>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
+<h3 id="jackson-and-java-8">Jackson and Java 8</h3>
+
+<p>For Java 8 specific datatypes use <code class="language-plaintext highlighter-rouge">jackson-datatype-jdk8</code> module.</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>com.fasterxml.jackson.datatype<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>jackson-datatype-jdk8<span class="nt">&lt;/artifactId&gt;</span>
   <span class="nt">&lt;version&gt;</span>2.6.3<span class="nt">&lt;/version&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div><div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ObjectMapper</span><span class="o">();</span>
-<span class="n">mapper</span><span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">Jdk8Module</span><span class="o">());</span>
-</code></pre></div>
-<p>Sometimes you might use high-level application framework which handles <em>Jackson</em> for you. So in order to register modules you need to get to <code>ObjectMapper</code> during initialization phase and configure it. Here&#39;s the sample of how it looks like for <em>Dropwizard</em></p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="n">AppConfiguration</span> <span class="n">configuration</span><span class="o">,</span> <span class="n">Environment</span> <span class="n">environment</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-  <span class="n">environment</span><span class="o">.</span><span class="na">getObjectMapper</span><span class="o">().</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">GuavaModule</span><span class="o">());</span>
-  <span class="n">environment</span><span class="o">.</span><span class="na">getObjectMapper</span><span class="o">().</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="n">Jdk8Module</span><span class="o">());</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectMapper</span> <span class="n">mapper</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectMapper</span><span class="o">();</span>
+<span class="n">mapper</span><span class="o">.</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">Jdk8Module</span><span class="o">());</span>
+</code></pre></div></div>
+
+<p>Sometimes you might use high-level application framework which handles <em>Jackson</em> for you. So in order to register modules you need to get to <code class="language-plaintext highlighter-rouge">ObjectMapper</code> during initialization phase and configure it. Here’s the sample of how it looks like for <em>Dropwizard</em></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="nc">AppConfiguration</span> <span class="n">configuration</span><span class="o">,</span> <span class="nc">Environment</span> <span class="n">environment</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+  <span class="n">environment</span><span class="o">.</span><span class="na">getObjectMapper</span><span class="o">().</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">GuavaModule</span><span class="o">());</span>
+  <span class="n">environment</span><span class="o">.</span><span class="na">getObjectMapper</span><span class="o">().</span><span class="na">registerModule</span><span class="o">(</span><span class="k">new</span> <span class="nc">Jdk8Module</span><span class="o">());</span>
   <span class="o">...</span>
 <span class="o">}</span>
-</code></pre></div>
-<h3>Reducing annotation clutter</h3>
+</code></pre></div></div>
 
-<p>You can find some number of examples using <em>Immutables</em> and <em>Jackson</em> where annotations are cluttering definitions, annotations are piling on top of each other in many levels. But there are ways to significantly reduce annotation noise. Firstly, if using meta-annotated <a href="/style.html">custom style</a> annotation, you can move it to top level class, package (in corresponding <code>pacakge-info.java</code> file) or even parent package. Secondly, if you mostly use generated value type, rather that abstract value type, you don&#39;t need specify <code>@JsonDeserialize(as = ImmutableForEverySingleValue.class)</code>, you can put <code>@JsonSerialize</code> as meta-annotation as with style annotation, and you can put custom (meta-annotated) annotation and put it on a type or a package.</p>
+<h3 id="reducing-annotation-clutter">Reducing annotation clutter</h3>
 
-<p>Here&#39;s modified example taken from <em>Lagom Framework</em> documentation <a href="http://www.lagomframework.com/documentation/1.0.x/Immutable.html#Example-of-PersistentEntity-Events">Immutable.html page</a>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@JsonSerialize</span> <span class="c1">// Jackson automatic integration, why not?</span>
-<span class="nd">@Value.Style</span><span class="o">(</span>
-    <span class="n">typeAbstract</span> <span class="o">=</span> <span class="s">&quot;Abstract*&quot;</span><span class="o">,</span>
-    <span class="n">typeImmutable</span> <span class="o">=</span> <span class="s">&quot;*&quot;</span><span class="o">,</span>
-    <span class="n">visibility</span> <span class="o">=</span> <span class="n">ImplementationVisibility</span><span class="o">.</span><span class="na">PUBLIC</span><span class="o">)</span>
-<span class="nd">@interface</span> <span class="n">MyStyle</span> <span class="o">{}</span> <span class="c1">// Custom style</span>
+<p>You can find some number of examples using <em>Immutables</em> and <em>Jackson</em> where annotations are cluttering definitions, annotations are piling on top of each other in many levels. But there are ways to significantly reduce annotation noise. Firstly, if using meta-annotated <a href="/style.html">custom style</a> annotation, you can move it to top level class, package (in corresponding <code class="language-plaintext highlighter-rouge">pacakge-info.java</code> file) or even parent package. Secondly, if you mostly use generated value type, rather that abstract value type, you don’t need specify <code class="language-plaintext highlighter-rouge">@JsonDeserialize(as = ImmutableForEverySingleValue.class)</code>, you can put <code class="language-plaintext highlighter-rouge">@JsonSerialize</code> as meta-annotation as with style annotation, and you can put custom (meta-annotated) annotation and put it on a type or a package.</p>
+
+<p>Here’s modified example taken from <em>Lagom Framework</em> documentation <a href="http://www.lagomframework.com/documentation/1.0.x/Immutable.html#Example-of-PersistentEntity-Events">Immutable.html page</a>.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@JsonSerialize</span> <span class="c1">// Jackson automatic integration, why not?</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Style</span><span class="o">(</span>
+    <span class="n">typeAbstract</span> <span class="o">=</span> <span class="s">"Abstract*"</span><span class="o">,</span>
+    <span class="n">typeImmutable</span> <span class="o">=</span> <span class="s">"*"</span><span class="o">,</span>
+    <span class="n">visibility</span> <span class="o">=</span> <span class="nc">ImplementationVisibility</span><span class="o">.</span><span class="na">PUBLIC</span><span class="o">)</span>
+<span class="nd">@interface</span> <span class="nc">MyStyle</span> <span class="o">{}</span> <span class="c1">// Custom style</span>
 <span class="c1">// ...</span>
 
 <span class="nd">@MyStyle</span> <span class="c1">//&lt;-- Meta annotated with @JsonSerialize and @Value.Style</span>
 <span class="c1">// and applies to nested immutable objects</span>
-<span class="kd">interface</span> <span class="nc">BlogEvent</span> <span class="kd">extends</span> <span class="n">Jsonable</span> <span class="o">{</span>
+<span class="kd">interface</span> <span class="nc">BlogEvent</span> <span class="kd">extends</span> <span class="nc">Jsonable</span> <span class="o">{</span>
 
-  <span class="nd">@Value.Immutable</span> <span class="c1">// &lt;-- looks a lot cleaner, 1 annotation instead of 3</span>
-  <span class="kd">interface</span> <span class="nc">AbstractPostAdded</span> <span class="kd">extends</span> <span class="n">BlogEvent</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="nf">getPostId</span><span class="o">();</span>
-    <span class="n">BodyChanged</span> <span class="nf">getContent</span><span class="o">();</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span> <span class="c1">// &lt;-- looks a lot cleaner, 1 annotation instead of 3</span>
+  <span class="kd">interface</span> <span class="nc">AbstractPostAdded</span> <span class="kd">extends</span> <span class="nc">BlogEvent</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="nf">getPostId</span><span class="o">();</span>
+    <span class="nc">BodyChanged</span> <span class="nf">getContent</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="nd">@Value.Immutable</span>
-  <span class="kd">interface</span> <span class="nc">AbstractBodyChanged</span> <span class="kd">extends</span> <span class="n">BlogEvent</span> <span class="o">{</span>
-    <span class="nd">@Value.Parameter</span>
-    <span class="n">String</span> <span class="nf">getBody</span><span class="o">();</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+  <span class="kd">interface</span> <span class="nc">AbstractBodyChanged</span> <span class="kd">extends</span> <span class="nc">BlogEvent</span> <span class="o">{</span>
+    <span class="nd">@Value</span><span class="o">.</span><span class="na">Parameter</span>
+    <span class="nc">String</span> <span class="nf">getBody</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="nd">@Value.Immutable</span>
-  <span class="kd">interface</span> <span class="nc">AbstractPostPublished</span> <span class="kd">extends</span> <span class="n">BlogEvent</span> <span class="o">{</span>
-    <span class="nd">@Value.Parameter</span>
-    <span class="n">String</span> <span class="nf">getPostId</span><span class="o">();</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+  <span class="kd">interface</span> <span class="nc">AbstractPostPublished</span> <span class="kd">extends</span> <span class="nc">BlogEvent</span> <span class="o">{</span>
+    <span class="nd">@Value</span><span class="o">.</span><span class="na">Parameter</span>
+    <span class="nc">String</span> <span class="nf">getPostId</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div>
-<hr>
 
-<p><a name="gson"></a></p>
+</code></pre></div></div>
 
-<h2>Gson</h2>
+<hr />
+<p><a name="gson"></a>
+Gson
+—-</p>
 
-<h3>Dependencies</h3>
-
-<ul>
-<li><a href="https://search.maven.org/artifact/org.immutables/value/2.8.2/jar">org.immutables:value:2.8.2</a></li>
-<li><a href="https://search.maven.org/artifact/org.immutables/gson/2.8.2/jar">org.immutables:gson:2.8.2</a></li>
-</ul>
-
-<p>Gson integration requires the <code>com.google.gson:gson</code> compile and runtime modules.
-The <code>org.immutables:gson</code> module contains compile-time annotations to generate <code>TypeAdapter</code> factories.
-Optionally, the <code>org.immutables:gson</code> module can also be used at runtime to enable the following functionality:</p>
+<h3 id="dependencies">Dependencies</h3>
 
 <ul>
-<li><a href="#field-naming-strategy">Field naming strategy support</a></li>
-<li><a href="#poly">Polymorphic serialization by structure</a></li>
-<li><a href="#gson-jackson">Gson to Jackson streaming bridge</a></li>
+  <li><a href="https://search.maven.org/artifact/org.immutables/value/2.9.1/jar">org.immutables:value:2.9.1</a></li>
+  <li><a href="https://search.maven.org/artifact/org.immutables/gson/2.9.1/jar">org.immutables:gson:2.9.1</a></li>
 </ul>
-<div class="highlight"><pre><code class="language-xml" data-lang="xml"><span></span><span class="nt">&lt;dependency&gt;</span>
+
+<p>Gson integration requires the <code class="language-plaintext highlighter-rouge">com.google.gson:gson</code> compile and runtime modules.
+The <code class="language-plaintext highlighter-rouge">org.immutables:gson</code> module contains compile-time annotations to generate <code class="language-plaintext highlighter-rouge">TypeAdapter</code> factories.
+Optionally, the <code class="language-plaintext highlighter-rouge">org.immutables:gson</code> module can also be used at runtime to enable the following functionality:</p>
+
+<ul>
+  <li><a href="#field-naming-strategy">Field naming strategy support</a></li>
+  <li><a href="#poly">Polymorphic serialization by structure</a></li>
+  <li><a href="#gson-jackson">Gson to Jackson streaming bridge</a></li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>gson<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.8.2<span class="nt">&lt;/version&gt;</span>
-  <span class="c">&lt;!-- If you don&#39;t need runtime capabilities - make it compile-only</span>
-<span class="c">  &lt;scope&gt;provided&lt;/scope&gt;--&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.9.1<span class="nt">&lt;/version&gt;</span>
+  <span class="c">&lt;!-- If you don't need runtime capabilities - make it compile-only
+  &lt;scope&gt;provided&lt;/scope&gt;--&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.8.2<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.9.1<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
-</code></pre></div>
-<p><strong>Can&#39;t wait to see generated code?</strong></p>
+</code></pre></div></div>
+
+<p><strong>Can’t wait to see generated code?</strong></p>
 
 <ul>
-<li>See the <a href="/typeadapters.html">generated code sample</a></li>
+  <li>See the <a href="/typeadapters.html">generated code sample</a></li>
 </ul>
 
-<h3>Generating Type Adapters</h3>
+<h3 id="generating-type-adapters">Generating Type Adapters</h3>
 
-<p>Use the annotation <code>@org.immutables.gson.Gson.TypeAdapters</code> to generate a <code>TypeAdapaterFactory</code>
+<p>Use the annotation <code class="language-plaintext highlighter-rouge">@org.immutables.gson.Gson.TypeAdapters</code> to generate a <code class="language-plaintext highlighter-rouge">TypeAdapaterFactory</code>
 implementation which produces adapters to any immutable classes enclosed by
-<code>@Gson.TypeAdapters</code> annotations. The annotation can be placed on top-level type or package
-(using <code>package-info.java</code>). The type adapter factory will support all immutable classes in
+<code class="language-plaintext highlighter-rouge">@Gson.TypeAdapters</code> annotations. The annotation can be placed on top-level type or package
+(using <code class="language-plaintext highlighter-rouge">package-info.java</code>). The type adapter factory will support all immutable classes in
 the corresponding type (directly annotated and all nested immutable values) or package. A
-class named <code>GsonAdapters[NameOfAnnotatedElement]</code> will be generated in the same package.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// generated GsonAdaptersAdapt factory will handle all immutable types here:</span>
+class named <code class="language-plaintext highlighter-rouge">GsonAdapters[NameOfAnnotatedElement]</code> will be generated in the same package.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// generated GsonAdaptersAdapt factory will handle all immutable types here:</span>
 <span class="c1">// Adapt, Inr, Nst</span>
-<span class="nd">@Gson.TypeAdapters</span>
-<span class="nd">@Value.Immutable</span>
+<span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Adapt</span> <span class="o">{</span>
   <span class="kt">long</span> <span class="nf">id</span><span class="o">();</span>
-  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
-  <span class="n">Set</span><span class="o">&lt;</span><span class="n">Inr</span><span class="o">&gt;</span> <span class="nf">set</span><span class="o">();</span>
-  <span class="n">Multiset</span><span class="o">&lt;</span><span class="n">Nst</span><span class="o">&gt;</span> <span class="nf">bag</span><span class="o">();</span>
+  <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
+  <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">Inr</span><span class="o">&gt;</span> <span class="nf">set</span><span class="o">();</span>
+  <span class="nc">Multiset</span><span class="o">&lt;</span><span class="nc">Nst</span><span class="o">&gt;</span> <span class="nf">bag</span><span class="o">();</span>
 
-  <span class="nd">@Value.Immutable</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
   <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Inr</span> <span class="o">{</span>
     <span class="kt">int</span><span class="o">[]</span> <span class="nf">arr</span><span class="o">();</span>
-    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">list</span><span class="o">();</span>
-    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">Nst</span><span class="o">&gt;</span> <span class="nf">map</span><span class="o">();</span>
-    <span class="n">SetMultimap</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">,</span> <span class="n">Nst</span><span class="o">&gt;</span> <span class="nf">setMultimap</span><span class="o">();</span>
+    <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="nf">list</span><span class="o">();</span>
+    <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Nst</span><span class="o">&gt;</span> <span class="nf">map</span><span class="o">();</span>
+    <span class="nc">SetMultimap</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Nst</span><span class="o">&gt;</span> <span class="nf">setMultimap</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="nd">@Value.Immutable</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
   <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Nst</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="nf">value</span><span class="o">();</span>
-    <span class="n">String</span> <span class="nf">string</span><span class="o">();</span>
+    <span class="nc">String</span> <span class="nf">string</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <ul>
-<li>See javadocs in <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java">Gson</a></li>
+  <li>See javadocs in <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java">Gson</a></li>
 </ul>
 
 <p><a name="adapter-registration"></a></p>
+<h3 id="type-adapter-registration">Type Adapter registration</h3>
+<p>Type adapter factories are generated in the same package and registered statically as service providers in <code class="language-plaintext highlighter-rouge">META-INF/services/com.google.gson.TypeAdapterFactory</code>.
+You can manually register factories with <code class="language-plaintext highlighter-rouge">GsonBuilder</code>, but the easiest way to register all such factories is by using <code class="language-plaintext highlighter-rouge">java.util.ServiceLoader</code>:</p>
 
-<h3>Type Adapter registration</h3>
-
-<p>Type adapter factories are generated in the same package and registered statically as service providers in <code>META-INF/services/com.google.gson.TypeAdapterFactory</code>.
-You can manually register factories with <code>GsonBuilder</code>, but the easiest way to register all such factories is by using <code>java.util.ServiceLoader</code>:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="kn">import</span> <span class="nn">com.google.gson.GsonBuilder</span><span class="o">;</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">com.google.gson.GsonBuilder</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.gson.Gson</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">com.google.gson.TypeAdapterFactory</span><span class="o">;</span>
 <span class="kn">import</span> <span class="nn">java.util.ServiceLoader</span><span class="o">;</span>
 <span class="o">...</span>
 
-<span class="n">GsonBuilder</span> <span class="n">gsonBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="n">GsonBuilder</span><span class="o">();</span>
-<span class="k">for</span> <span class="o">(</span><span class="n">TypeAdapterFactory</span> <span class="n">factory</span> <span class="o">:</span> <span class="n">ServiceLoader</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="n">TypeAdapterFactory</span><span class="o">.</span><span class="na">class</span><span class="o">))</span> <span class="o">{</span>
+<span class="nc">GsonBuilder</span> <span class="n">gsonBuilder</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GsonBuilder</span><span class="o">();</span>
+<span class="k">for</span> <span class="o">(</span><span class="nc">TypeAdapterFactory</span> <span class="n">factory</span> <span class="o">:</span> <span class="nc">ServiceLoader</span><span class="o">.</span><span class="na">load</span><span class="o">(</span><span class="nc">TypeAdapterFactory</span><span class="o">.</span><span class="na">class</span><span class="o">))</span> <span class="o">{</span>
   <span class="n">gsonBuilder</span><span class="o">.</span><span class="na">registerTypeAdapterFactory</span><span class="o">(</span><span class="n">factory</span><span class="o">);</span>
 <span class="o">}</span>
 
 <span class="c1">// Manual registration is also an option</span>
-<span class="n">gsonBuilder</span><span class="o">.</span><span class="na">registerTypeAdapterFactory</span><span class="o">(</span><span class="k">new</span> <span class="n">GsonAdaptersMyDocument</span><span class="o">());</span>
+<span class="n">gsonBuilder</span><span class="o">.</span><span class="na">registerTypeAdapterFactory</span><span class="o">(</span><span class="k">new</span> <span class="nc">GsonAdaptersMyDocument</span><span class="o">());</span>
 
-<span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="n">gsonBuilder</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+<span class="nc">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="n">gsonBuilder</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
 
-<span class="n">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">toJson</span><span class="o">(</span>
-    <span class="n">ImmutableValueObject</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+<span class="nc">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">toJson</span><span class="o">(</span>
+    <span class="nc">ImmutableValueObject</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
         <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">"A"</span><span class="o">)</span>
         <span class="o">.</span><span class="na">build</span><span class="o">());</span>
-<span class="c1">// { &quot;id&quot;: 1, &quot;name&quot;: &quot;A&quot; }</span>
-</code></pre></div>
+<span class="c1">// { "id": 1, "name": "A" }</span>
+</code></pre></div></div>
+
 <p><strong>Things to be aware of</strong></p>
 
 <ul>
-<li>When type adapters are not registered, Gson will use default reflective serializer. However, it will fail to deserialize!</li>
-<li>There&#39;s the potential to confuse the <code>com.google.gson.Gson</code> object with the <code>@org.immutable.gson.Gson</code> umbrella annotation, but they are usually not used together in the same source file. If this will be huge PITA, please let us know!</li>
+  <li>When type adapters are not registered, Gson will use default reflective serializer. However, it will fail to deserialize!</li>
+  <li>There’s the potential to confuse the <code class="language-plaintext highlighter-rouge">com.google.gson.Gson</code> object with the <code class="language-plaintext highlighter-rouge">@org.immutable.gson.Gson</code> umbrella annotation, but they are usually not used together in the same source file. If this will be huge PITA, please let us know!</li>
 </ul>
 
-<h3>JAX-RS integration</h3>
+<h3 id="jax-rs-integration">JAX-RS integration</h3>
 
 <p>A JAX-RS message body reader/writer is provided out of the box. In itself it is a generic Gson integration provider, but it has following special capabilities:</p>
 
 <ul>
-<li>Auto registration of Gson type adapter factories from <code>META-INF/services/com.google.gson.TypeAdapterFactory</code>.</li>
-<li>Built in support for <a href="#gson-jackson">Gson-Jackson</a> bridge. It is turned on by default if the <em>Jackson</em> library is in the classpath at runtime.</li>
+  <li>Auto registration of Gson type adapter factories from <code class="language-plaintext highlighter-rouge">META-INF/services/com.google.gson.TypeAdapterFactory</code>.</li>
+  <li>Built in support for <a href="#gson-jackson">Gson-Jackson</a> bridge. It is turned on by default if the <em>Jackson</em> library is in the classpath at runtime.</li>
 </ul>
 
 <p>To use immutable types in your JAX-RS services, use
-<code>org.immutables.gson.stream.GsonMessageBodyProvider</code> which implements
-<code>javax.ws.rs.ext.MessageBodyReader</code> and <code>javax.ws.rs.ext.MessageBodyWriter</code>. Also do not forget
-to specify an &quot;application/json&quot; content type, so that the provider will match.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Contrived illustration for marshaling of immutable abstract types: InputValue and OutputValue</span>
+<code class="language-plaintext highlighter-rouge">org.immutables.gson.stream.GsonMessageBodyProvider</code> which implements
+<code class="language-plaintext highlighter-rouge">javax.ws.rs.ext.MessageBodyReader</code> and <code class="language-plaintext highlighter-rouge">javax.ws.rs.ext.MessageBodyWriter</code>. Also do not forget
+to specify an “application/json” content type, so that the provider will match.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Contrived illustration for marshaling of immutable abstract types: InputValue and OutputValue</span>
 <span class="c1">// using GsonMessageBodyProvider</span>
-<span class="nd">@Path</span><span class="o">(</span><span class="s">&quot;/test&quot;</span><span class="o">)</span>
+<span class="nd">@Path</span><span class="o">(</span><span class="s">"/test"</span><span class="o">)</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TestResource</span> <span class="o">{</span>
   <span class="nd">@POST</span>
-  <span class="nd">@Consumes</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
-  <span class="nd">@Produces</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="n">OutputValue</span> <span class="nf">post</span><span class="o">(</span><span class="n">InputValue</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+  <span class="nd">@Consumes</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
+  <span class="nd">@Produces</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">APPLICATION_JSON</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="nc">OutputValue</span> <span class="nf">post</span><span class="o">(</span><span class="nc">InputValue</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">val</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">inputAttribute</span><span class="o">();</span>
-    <span class="k">return</span> <span class="n">ImmutableOutputValue</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+    <span class="k">return</span> <span class="nc">ImmutableOutputValue</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
        <span class="o">.</span><span class="na">outputAttribute</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
        <span class="o">.</span><span class="na">build</span><span class="o">();</span>
   <span class="o">}</span>
   <span class="o">...</span>
 <span class="o">}</span>
-</code></pre></div>
-<p>While this provider can be picked up automatically from the classpath using <code>META-INF/services/javax.ws.rs.ext.*</code> by the JAX-RS engine, sometimes you&#39;ll need to add it manually.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// Dropwizard Application example</span>
+</code></pre></div></div>
+
+<p>While this provider can be picked up automatically from the classpath using <code class="language-plaintext highlighter-rouge">META-INF/services/javax.ws.rs.ext.*</code> by the JAX-RS engine, sometimes you’ll need to add it manually.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Dropwizard Application example</span>
 <span class="nd">@Override</span>
-<span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="n">DwConfiguration</span> <span class="n">configuration</span><span class="o">,</span> <span class="n">Environment</span> <span class="n">environment</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-  <span class="n">environment</span><span class="o">.</span><span class="na">jersey</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">TestResource</span><span class="o">());</span>
-  <span class="n">environment</span><span class="o">.</span><span class="na">jersey</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="n">GsonMessageBodyProvider</span><span class="o">());</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">(</span><span class="nc">DwConfiguration</span> <span class="n">configuration</span><span class="o">,</span> <span class="nc">Environment</span> <span class="n">environment</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+  <span class="n">environment</span><span class="o">.</span><span class="na">jersey</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="nc">TestResource</span><span class="o">());</span>
+  <span class="n">environment</span><span class="o">.</span><span class="na">jersey</span><span class="o">().</span><span class="na">register</span><span class="o">(</span><span class="k">new</span> <span class="nc">GsonMessageBodyProvider</span><span class="o">());</span>
 <span class="o">}</span>
-</code></pre></div>
-<p>You can create a customized <code>GsonMessageBodyProvider</code> instance:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="k">new</span> <span class="n">GsonMessageBodyProvider</span><span class="o">(</span>
-    <span class="k">new</span> <span class="n">GsonProviderOptionsBuilder</span><span class="o">()</span>
-        <span class="o">.</span><span class="na">gson</span><span class="o">(</span><span class="k">new</span> <span class="n">Gson</span><span class="o">())</span> <span class="c1">// build custom Gson instance using GsonBuilder methods</span>
-        <span class="o">.</span><span class="na">addMediaTypes</span><span class="o">(</span><span class="n">MediaType</span><span class="o">.</span><span class="na">TEXT_PLAIN_TYPE</span><span class="o">)</span> <span class="c1">// specify custom media types</span>
+</code></pre></div></div>
+
+<p>You can create a customized <code class="language-plaintext highlighter-rouge">GsonMessageBodyProvider</code> instance:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">new</span> <span class="nc">GsonMessageBodyProvider</span><span class="o">(</span>
+    <span class="k">new</span> <span class="nf">GsonProviderOptionsBuilder</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">gson</span><span class="o">(</span><span class="k">new</span> <span class="nc">Gson</span><span class="o">())</span> <span class="c1">// build custom Gson instance using GsonBuilder methods</span>
+        <span class="o">.</span><span class="na">addMediaTypes</span><span class="o">(</span><span class="nc">MediaType</span><span class="o">.</span><span class="na">TEXT_PLAIN_TYPE</span><span class="o">)</span> <span class="c1">// specify custom media types</span>
         <span class="o">.</span><span class="na">allowJackson</span><span class="o">(</span><span class="kc">false</span><span class="o">)</span> <span class="c1">// you can switch off Gson-Jackson bridge</span>
         <span class="o">.</span><span class="na">lenient</span><span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="c1">// you can enable non-strict mode</span>
         <span class="o">.</span><span class="na">build</span><span class="o">())</span> <span class="o">{</span>
@@ -358,128 +388,144 @@ to specify an &quot;application/json&quot; content type, so that the provider wi
 <span class="c1">// It allows to register couple of GsonMessageBodyProvider with different configuration</span>
 <span class="c1">// by having unique classes.</span>
 <span class="o">};</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <ul>
-<li>See class <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/GsonMessageBodyProvider.java">GsonMessageBodyProvider</a></li>
+  <li>See class <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/GsonMessageBodyProvider.java">GsonMessageBodyProvider</a></li>
 </ul>
 
-<h3>Mapping Features</h3>
+<h3 id="mapping-features">Mapping Features</h3>
 
 <p>Automatically generated bindings are straightforward and generally useful.</p>
 
 <ul>
-<li>Java primitives and Strings — work as built-in types</li>
-<li>Nested documents/objects - supported as long as corresponding type adapter would be registered with Gson</li>
-<li>Lists, Sets, Maps, Optional and other supported containers of the above types:
-
-<ul>
-<li>Collections mapped to JSON arrays</li>
-<li>Map and Multimaps mapped to JSON object (keys always converted to strings)</li>
-<li>Optional attributes - as nullable fields</li>
-</ul></li>
-<li>Immutable values having only constructor - arrays of constructor arguments.</li>
+  <li>Java primitives and Strings — work as built-in types</li>
+  <li>Nested documents/objects - supported as long as corresponding type adapter would be registered with Gson</li>
+  <li>Lists, Sets, Maps, Optional and other supported containers of the above types:
+    <ul>
+      <li>Collections mapped to JSON arrays</li>
+      <li>Map and Multimaps mapped to JSON object (keys always converted to strings)</li>
+      <li>Optional attributes - as nullable fields</li>
+    </ul>
+  </li>
+  <li>Immutable values having only constructor - arrays of constructor arguments.</li>
 </ul>
 
-<p>While there&#39;s certain amount of customization (like changing field names in JSON), the basic idea is
+<p>While there’s certain amount of customization (like changing field names in JSON), the basic idea is
 to have direct and straightforward mappings to JSON derived from the structure of value objects,
 where value objects are adapted to a representation rather than free-form objects having complex
 mappings to JSON representations.</p>
 
 <p>To add custom binding for types, other than immutable values, use Gson APIs. Please refer to <a href="https://sites.google.com/site/gson/gson-user-guide#TOC-Custom-Serialization-and-Deserialization">Gson reference</a></p>
 
-<h4>Generic parameters</h4>
+<h4 id="generic-parameters">Generic parameters</h4>
 
 <p>Generic parameters are supported when some upper level JSON document object specify actual type parameters, so nested document value objects that are parametrized may know exact type used in the context.</p>
 
-<p>Let&#39;s say you have value type <code>Val</code> with the following definition.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Gson.TypeAdapters</span>
-<span class="nd">@Value.Immutable</span>
-<span class="kd">interface</span> <span class="nc">Val</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>
-  <span class="n">T</span> <span class="nf">val</span><span class="o">();</span>
-  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
+<p>Let’s say you have value type <code class="language-plaintext highlighter-rouge">Val</code> with the following definition.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="kd">interface</span> <span class="nc">Val</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+  <span class="no">T</span> <span class="nf">val</span><span class="o">();</span>
+  <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">description</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <p>You cannot serialize parametrized type to or from JSON without specifying actual type parameters.
 But if we put parametrized type in a context document which provide actual type parameters we can use our generated type adapters for JSON conversion.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Gson.TypeAdapters</span>
-<span class="nd">@Value.Immutable</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="kd">interface</span> <span class="nc">Doc</span> <span class="o">{</span>
-  <span class="n">Val</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">str</span><span class="o">();</span> <span class="c1">// actual type T is String</span>
-  <span class="n">Val</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="nf">inte</span><span class="o">();</span> <span class="c1">// actual type T is Integer</span>
-  <span class="n">Val</span><span class="o">&lt;</span><span class="n">Boolean</span><span class="o">&gt;</span> <span class="nf">bool</span><span class="o">();</span>  <span class="c1">// actual type T is Boolean</span>
+  <span class="nc">Val</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">str</span><span class="o">();</span> <span class="c1">// actual type T is String</span>
+  <span class="nc">Val</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">&gt;</span> <span class="nf">inte</span><span class="o">();</span> <span class="c1">// actual type T is Integer</span>
+  <span class="nc">Val</span><span class="o">&lt;</span><span class="nc">Boolean</span><span class="o">&gt;</span> <span class="nf">bool</span><span class="o">();</span>  <span class="c1">// actual type T is Boolean</span>
 <span class="o">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-javascript" data-lang="javascript"><span></span><span class="p">{</span>
-  <span class="s2">&quot;str&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;val&quot;</span><span class="o">:</span> <span class="s2">&quot;StringValue&quot;</span> <span class="p">},</span>
-  <span class="s2">&quot;ints&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;val&quot;</span><span class="o">:</span> <span class="mi">124</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Just a number&quot;</span> <span class="p">},</span>
-  <span class="s2">&quot;bool&quot;</span><span class="o">:</span> <span class="p">{</span> <span class="s2">&quot;val&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="o">:</span> <span class="s2">&quot;Just a boolean&quot;</span> <span class="p">},</span>
+</code></pre></div></div>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">str</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span> <span class="dl">"</span><span class="s2">val</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">StringValue</span><span class="dl">"</span> <span class="p">},</span>
+  <span class="dl">"</span><span class="s2">ints</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span> <span class="dl">"</span><span class="s2">val</span><span class="dl">"</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span> <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Just a number</span><span class="dl">"</span> <span class="p">},</span>
+  <span class="dl">"</span><span class="s2">bool</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span> <span class="dl">"</span><span class="s2">val</span><span class="dl">"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span> <span class="dl">"</span><span class="s2">description</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Just a boolean</span><span class="dl">"</span> <span class="p">},</span>
 <span class="p">}</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <p>Actual type parameters might not only be simple types as string, numbers or booleans, but also nested documents or arrays or the mentioned types.</p>
 
-<p><em>Note: If generic attributes contain comples nested type variables (think <code>Set&lt;List&lt;T&gt;&gt;</code>), then special routines that extract actual type parameters will be referenced in a generated source code, so you will need org.immutable:json artifact packaged as part of your application, not a compile-only dependency</em></p>
+<p><em>Note: If generic attributes contain comples nested type variables (think <code class="language-plaintext highlighter-rouge">Set&lt;List&lt;T&gt;&gt;</code>), then special routines that extract actual type parameters will be referenced in a generated source code, so you will need org.immutable:json artifact packaged as part of your application, not a compile-only dependency</em></p>
 
-<h4>Field names</h4>
-
+<h4 id="field-names">Field names</h4>
 <p>By default, the JSON field name is the same as the attribute name.
 However, it is very easy to specify the JSON field name as it should appear in the JSON representation.
-Use the <code>value</code> attribute of the <code>com.google.gson.annotations.SerializedName</code> annotation placed on an attribute accessor.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
-<span class="nd">@Gson.TypeAdapters</span>
+Use the <code class="language-plaintext highlighter-rouge">value</code> attribute of the <code class="language-plaintext highlighter-rouge">com.google.gson.annotations.SerializedName</code> annotation placed on an attribute accessor.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
 <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">ValueObject</span> <span class="o">{</span>
-  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;_id&quot;</span><span class="o">)</span>
+  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">"_id"</span><span class="o">)</span>
   <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">long</span> <span class="nf">getId</span><span class="o">();</span>
-  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">)</span>
-  <span class="kd">public</span> <span class="kd">abstract</span> <span class="n">String</span> <span class="nf">getNamedAs</span><span class="o">();</span>
+  <span class="nd">@SerializedName</span><span class="o">(</span><span class="s">"name"</span><span class="o">)</span>
+  <span class="kd">public</span> <span class="kd">abstract</span> <span class="nc">String</span> <span class="nf">getNamedAs</span><span class="o">();</span>
   <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">int</span> <span class="nf">getOtherAttribute</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="n">ValueObject</span> <span class="n">valueObject</span> <span class="o">=</span>
-    <span class="n">ImmutableValueObject</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
+<span class="nc">ValueObject</span> <span class="n">valueObject</span> <span class="o">=</span>
+    <span class="nc">ImmutableValueObject</span><span class="o">.</span><span class="na">builder</span><span class="o">()</span>
         <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="mi">1123</span><span class="o">)</span>
-        <span class="o">.</span><span class="na">namedAs</span><span class="o">(</span><span class="s">&quot;Valuable One&quot;</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">namedAs</span><span class="o">(</span><span class="s">"Valuable One"</span><span class="o">)</span>
         <span class="o">.</span><span class="na">otherAttribute</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
         <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</code></pre></div>
-<p><code>valueObject</code> will be marshaled as:</p>
-<div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="p">{</span>
-  <span class="s2">&quot;_id&quot;</span><span class="o">:</span> <span class="mi">1123</span><span class="p">,</span>
-  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Valuable One&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;otherAttribute&quot;</span><span class="o">:</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">valueObject</code> will be marshaled as:</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">_id</span><span class="dl">"</span><span class="p">:</span> <span class="mi">1123</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Valuable One</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">otherAttribute</span><span class="dl">"</span><span class="p">:</span> <span class="mi">0</span>
 <span class="p">}</span>
-</code></pre></div>
-<p><code>@Gson.Named</code> is deprecated in favor of <em>Gson</em>&#39;s <code>SerializedName</code> annotation.
-As of <em>Gson</em> v2.5 <code>SerializedName</code> is applicable to methods and renders <em>Immutables&#39;</em> custom annotation unnecessary. In addition to that, there&#39;s support for <code>SerializedName.alternate</code> attribute which allows to specify alternative names used during deserialization.</p>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">@Gson.Named</code> is deprecated in favor of <em>Gson</em>’s <code class="language-plaintext highlighter-rouge">SerializedName</code> annotation.
+As of <em>Gson</em> v2.5 <code class="language-plaintext highlighter-rouge">SerializedName</code> is applicable to methods and renders <em>Immutables’</em> custom annotation unnecessary. In addition to that, there’s support for <code class="language-plaintext highlighter-rouge">SerializedName.alternate</code> attribute which allows to specify alternative names used during deserialization.</p>
 
 <p><a name="field-naming-strategy"></a>
-When running on an Oracle JVM, there&#39;s an option to enable field naming strategy support.
-Use <code>@Gson.TypeAdapters(fieldNamingStrategy = true)</code> to enable generation of code which uses a field naming strategy. See Javadoc for <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78">Gson.TypeAdapters#fieldNamingStrategy</a>.
-This feature is not supported on Android and other Java runtimes because of heavy use of reflection hacks to workaround Gson&#39;s limitations to make this work.</p>
+When running on an Oracle JVM, there’s an option to enable field naming strategy support.
+Use <code class="language-plaintext highlighter-rouge">@Gson.TypeAdapters(fieldNamingStrategy = true)</code> to enable generation of code which uses a field naming strategy. See Javadoc for <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java#L78">Gson.TypeAdapters#fieldNamingStrategy</a>.
+This feature is not supported on Android and other Java runtimes because of heavy use of reflection hacks to workaround Gson’s limitations to make this work.</p>
 
-<h4>Ignoring attributes</h4>
+<h4 id="ignoring-attributes">Ignoring attributes</h4>
 
-<p>Collection, optional and default attributes can be ignored during marshaling by using <code>@Gson.Ignore</code> annotation.</p>
+<p>Collection, optional and default attributes can be ignored during marshaling by using <code class="language-plaintext highlighter-rouge">@Gson.Ignore</code> annotation.</p>
 
-<h4>Omitting empty fields</h4>
+<h4 id="omitting-empty-fields">Omitting empty fields</h4>
 
-<p>Use Gson&#39;s configuration <code>GsonBuilder.serializeNulls()</code> to include empty optional and nullable
-fields as <code>null</code>. By default those will be omitted, this generally helps to keep JSON clean and to
+<p>Use Gson’s configuration <code class="language-plaintext highlighter-rouge">GsonBuilder.serializeNulls()</code> to include empty optional and nullable
+fields as <code class="language-plaintext highlighter-rouge">null</code>. By default those will be omitted, this generally helps to keep JSON clean and to
 reduce its size if there are a lot of optional attributes. If you want to omit empty collection
-attributes in the same way as nullable fields &mdash; use <code>@Gson.TypeAdapters(emptyAsNulls = true)</code></p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
-<span class="nd">@Gson.TypeAdapters</span><span class="o">(</span><span class="n">emptyAsNulls</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+attributes in the same way as nullable fields — use <code class="language-plaintext highlighter-rouge">@Gson.TypeAdapters(emptyAsNulls = true)</code></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span><span class="o">(</span><span class="n">emptyAsNulls</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Omits</span> <span class="o">{</span>
-  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">string</span><span class="o">();</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">strings</span><span class="o">();</span>
+  <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">string</span><span class="o">();</span>
+  <span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">strings</span><span class="o">();</span>
 <span class="o">}</span>
 
-<span class="n">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">toJson</span><span class="o">(</span><span class="n">ImmutableOmits</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">build</span><span class="o">());</span>
-</code></pre></div><div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="c1">// omits all empty</span>
+<span class="nc">String</span> <span class="n">json</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">toJson</span><span class="o">(</span><span class="nc">ImmutableOmits</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">build</span><span class="o">());</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// omits all empty</span>
 <span class="p">{</span> <span class="p">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="c1">// with GsonBuilder.serializeNulls()</span>
-<span class="p">{</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
-  <span class="s2">&quot;strings&quot;</span><span class="o">:</span> <span class="p">[]</span> <span class="p">}</span>
-</code></pre></div>
-<h4>Tuples of constructor arguments</h4>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// with GsonBuilder.serializeNulls()</span>
+<span class="p">{</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">:</span> <span class="kc">null</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">strings</span><span class="dl">"</span><span class="p">:</span> <span class="p">[]</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="tuples-of-constructor-arguments">Tuples of constructor arguments</h4>
 
 <p>One of the interesting features of <em>Immutables</em> JSON marshaling is the ability to map tuples
 (triples and so on) of constructor arguments. While not universally useful, some data types
@@ -487,123 +533,135 @@ could be compactly represented in JSON as array of values. Consider, for example
 coordinates or RGB colors.</p>
 
 <p>In order to marshal object as tuple, you need to annotate <a href="/immutable.html#constructor">constructor</a> arguments and disable generation of <a href="/immutable.html#builder">builders</a>.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
-<span class="nd">@Gson.TypeAdapters</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+<span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Coordinates</span> <span class="o">{</span>
-  <span class="nd">@Value.Parameter</span> <span class="kt">double</span> <span class="nf">latitude</span><span class="o">();</span>
-  <span class="nd">@Value.Parameter</span> <span class="kt">double</span> <span class="nf">longitude</span><span class="o">();</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Parameter</span> <span class="kt">double</span> <span class="nf">latitude</span><span class="o">();</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Parameter</span> <span class="kt">double</span> <span class="nf">longitude</span><span class="o">();</span>
 <span class="o">}</span>
 
 <span class="o">...</span>
-<span class="n">Coordinates</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ImmutableCoordinates</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mf">37.783333</span><span class="o">,</span> <span class="o">-</span><span class="mf">122.416667</span><span class="o">);</span>
-</code></pre></div>
-<p><code>coordinates</code> will be marshaled as a JSON array rather than a JSON object</p>
-<div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="p">[</span><span class="mf">37.783333</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.416667</span><span class="p">]</span>
-</code></pre></div>
+<span class="nc">Coordinates</span> <span class="n">coordinates</span> <span class="o">=</span> <span class="nc">ImmutableCoordinates</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mf">37.783333</span><span class="o">,</span> <span class="o">-</span><span class="mf">122.416667</span><span class="o">);</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">coordinates</code> will be marshaled as a JSON array rather than a JSON object</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mf">37.783333</span><span class="p">,</span> <span class="o">-</span><span class="mf">122.416667</span><span class="p">]</span>
+</code></pre></div></div>
+
 <p>A special case of this are values with single constructor parameter.
 Having a tuple of 1 argument is essentially equivalent to having just a single argument. Therefore
 you can marshal and unmarshal such objects as a value of its single argument.
 If you want to make value to be a wrapper type (for the purposes of adding type-safety), but
 nevertheless invisible in BSON, you can define it as having no builder and single argument
 constructor, so that it will become a pure wrapper:</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Gson.TypeAdapters</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
 <span class="kd">interface</span> <span class="nc">WrapperExample</span> <span class="o">{</span>
   <span class="c1">// Name will become wrapper around name string, invisible in JSON</span>
-  <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
   <span class="kd">interface</span> <span class="nc">Name</span> <span class="o">{</span>
-    <span class="nd">@Value.Parameter</span> <span class="n">String</span> <span class="nf">value</span><span class="o">();</span>
+    <span class="nd">@Value</span><span class="o">.</span><span class="na">Parameter</span> <span class="nc">String</span> <span class="nf">value</span><span class="o">();</span>
   <span class="o">}</span>
 
   <span class="c1">// Id will become wrapper around id number, invisible in JSON</span>
-  <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
   <span class="kd">interface</span> <span class="nc">Id</span> <span class="o">{</span>
-    <span class="nd">@Value.Parameter</span> <span class="kt">int</span> <span class="nf">value</span><span class="o">();</span>
+    <span class="nd">@Value</span><span class="o">.</span><span class="na">Parameter</span> <span class="kt">int</span> <span class="nf">value</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="nd">@Value.Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span><span class="o">(</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
   <span class="kd">interface</span> <span class="nc">Val</span> <span class="o">{</span>
-    <span class="n">Id</span> <span class="nf">id</span><span class="o">();</span>
-    <span class="n">Name</span> <span class="nf">name</span><span class="o">();</span>
+    <span class="nc">Id</span> <span class="nf">id</span><span class="o">();</span>
+    <span class="nc">Name</span> <span class="nf">name</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
 
-<span class="n">Val</span> <span class="n">val</span> <span class="o">=</span> <span class="n">ImmutableVal</span><span class="o">.</span><span class="na">build</span><span class="o">()</span>
-  <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="n">ImmutableId</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">124</span><span class="o">))</span>
-  <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="n">ImmutableName</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;Nameless&quot;</span><span class="o">))</span>
+<span class="nc">Val</span> <span class="n">val</span> <span class="o">=</span> <span class="nc">ImmutableVal</span><span class="o">.</span><span class="na">build</span><span class="o">()</span>
+  <span class="o">.</span><span class="na">id</span><span class="o">(</span><span class="nc">ImmutableId</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">124</span><span class="o">))</span>
+  <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="nc">ImmutableName</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"Nameless"</span><span class="o">))</span>
   <span class="o">.</span><span class="na">build</span><span class="o">();</span>
-</code></pre></div><div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="p">{</span>
-  <span class="s2">&quot;id&quot;</span><span class="o">:</span> <span class="mi">124</span><span class="p">,</span>
-  <span class="s2">&quot;name&quot;</span><span class="o">:</span> <span class="s2">&quot;Nameless&quot;</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">id</span><span class="dl">"</span><span class="p">:</span> <span class="mi">124</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">name</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Nameless</span><span class="dl">"</span>
 <span class="p">}</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <p>This makes it possible to achieve the desired level of abstraction and type safety without cluttering JSON data structure.</p>
 
 <p><a name="poly"></a></p>
-
-<h4>Polymorphic mapping</h4>
+<h4 id="polymorphic-mapping">Polymorphic mapping</h4>
 
 <p>An interesting feature of <em>Immutables</em> Gson marshaling is the ability to map an abstract type to one of
-it&#39;s subclasses by structure as opposed to by a &quot;discriminator&quot; field.</p>
+it’s subclasses by structure as opposed to by a “discriminator” field.</p>
 
 <p>Define a common supertype class and subclasses, then use
-<code>@org.immutables.gson.Gson.ExpectedSubtypes</code> annotation to list the expected subtypes. Then, you
+<code class="language-plaintext highlighter-rouge">@org.immutables.gson.Gson.ExpectedSubtypes</code> annotation to list the expected subtypes. Then, you
 can use a supertype in an attribute as a plain reference or as a collection.</p>
 
-<p><code>@Gson.ExpectedSubtypes</code> can be placed on:</p>
+<p><code class="language-plaintext highlighter-rouge">@Gson.ExpectedSubtypes</code> can be placed on:</p>
 
 <ul>
-<li>Abstract supertype</li>
-<li>Attribute with reference or collection of references to supertype.</li>
+  <li>Abstract supertype</li>
+  <li>Attribute with reference or collection of references to supertype.</li>
 </ul>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
-<span class="nd">@Gson.TypeAdapters</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+<span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
 <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">HostDocument</span> <span class="o">{</span>
   <span class="c1">// Host document contain list of values</span>
   <span class="c1">// @Gson.ExpectedSubtypes annotation could be also placed on attribute.</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">AbstractValue</span><span class="o">&gt;</span> <span class="nf">value</span><span class="o">();</span>
+  <span class="nc">List</span><span class="o">&lt;</span><span class="nc">AbstractValue</span><span class="o">&gt;</span> <span class="nf">value</span><span class="o">();</span>
 
-  <span class="nd">@Gson.ExpectedSubtypes</span><span class="o">({</span>
-    <span class="n">InterestingValue</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
-    <span class="n">RelevantValue</span><span class="o">.</span><span class="na">class</span>
+  <span class="nd">@Gson</span><span class="o">.</span><span class="na">ExpectedSubtypes</span><span class="o">({</span>
+    <span class="nc">InterestingValue</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+    <span class="nc">RelevantValue</span><span class="o">.</span><span class="na">class</span>
   <span class="o">})</span>
   <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AbstractValue</span> <span class="o">{}</span>
 
-  <span class="nd">@Value.Immutable</span>
-  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">InterestingValue</span> <span class="kd">extends</span> <span class="n">AbstractValue</span> <span class="o">{</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">InterestingValue</span> <span class="kd">extends</span> <span class="nc">AbstractValue</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="nf">number</span><span class="o">();</span>
   <span class="o">}</span>
 
-  <span class="nd">@Value.Immutable</span>
-  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">RelevantValue</span> <span class="kd">extends</span> <span class="n">AbstractValue</span> <span class="o">{</span>
-    <span class="n">String</span> <span class="nf">string</span><span class="o">();</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
+  <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">RelevantValue</span> <span class="kd">extends</span> <span class="nc">AbstractValue</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="nf">string</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-js" data-lang="js"><span></span><span class="p">{</span>
-  <span class="s2">&quot;values&quot;</span><span class="o">:</span> <span class="p">[</span>
-    <span class="p">{</span> <span class="s2">&quot;number&quot;</span><span class="o">:</span> <span class="mi">2</span> <span class="p">},</span>
-    <span class="p">{</span> <span class="s2">&quot;string&quot;</span><span class="o">:</span> <span class="s2">&quot;Relevant?&quot;</span> <span class="p">},</span>
-    <span class="p">{</span> <span class="s2">&quot;number&quot;</span><span class="o">:</span> <span class="mi">1</span> <span class="p">},</span>
+</code></pre></div></div>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="dl">"</span><span class="s2">values</span><span class="dl">"</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span> <span class="dl">"</span><span class="s2">number</span><span class="dl">"</span><span class="p">:</span> <span class="mi">2</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="dl">"</span><span class="s2">string</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">Relevant?</span><span class="dl">"</span> <span class="p">},</span>
+    <span class="p">{</span> <span class="dl">"</span><span class="s2">number</span><span class="dl">"</span><span class="p">:</span> <span class="mi">1</span> <span class="p">},</span>
   <span class="p">]</span>
 <span class="p">}</span>
-</code></pre></div>
-<p>As you can guess, the above JSON fragment may be deserialized to <code>HostDocument</code>, the <code>value</code>
-attribute of which will contain instances of <code>InterestingValue</code>, followed by <code>RelevantValue</code>,
-and finally <code>InterestingValue</code>.</p>
+</code></pre></div></div>
+
+<p>As you can guess, the above JSON fragment may be deserialized to <code class="language-plaintext highlighter-rouge">HostDocument</code>, the <code class="language-plaintext highlighter-rouge">value</code>
+attribute of which will contain instances of <code class="language-plaintext highlighter-rouge">InterestingValue</code>, followed by <code class="language-plaintext highlighter-rouge">RelevantValue</code>,
+and finally <code class="language-plaintext highlighter-rouge">InterestingValue</code>.</p>
 
 <p>In addition, when using a value <a href="/style.html#nesting">nested in enclosing</a>, the exact set of
 subclasses can be figured out from the set of nested types in the enclosing scope. In that case,
-the <code>@Gson.ExpectedSubtypes</code> annotation may have its &quot;value&quot; attribute omitted.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Gson.TypeAdapters</span>
-<span class="nd">@Value.Enclosing</span>
+the <code class="language-plaintext highlighter-rouge">@Gson.ExpectedSubtypes</code> annotation may have its “value” attribute omitted.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Gson</span><span class="o">.</span><span class="na">TypeAdapters</span>
+<span class="nd">@Value</span><span class="o">.</span><span class="na">Enclosing</span>
 <span class="kd">interface</span> <span class="nc">Enc</span> <span class="o">{</span>
   <span class="kd">interface</span> <span class="nc">A</span> <span class="o">{}</span>
-  <span class="nd">@Value.Immutable</span> <span class="kd">interface</span> <span class="nc">B</span> <span class="kd">extends</span> <span class="n">A</span> <span class="o">{</span> <span class="kt">int</span> <span class="nf">b</span><span class="o">();</span> <span class="o">}</span>
-  <span class="nd">@Value.Immutable</span> <span class="kd">interface</span> <span class="nc">C</span> <span class="kd">extends</span> <span class="n">A</span> <span class="o">{</span> <span class="kt">double</span> <span class="nf">c</span><span class="o">();</span> <span class="o">}</span>
-  <span class="nd">@Value.Immutable</span> <span class="kd">interface</span> <span class="nc">E</span> <span class="o">{</span>
-    <span class="nd">@Gson.ExpectedSubtypes</span> <span class="n">A</span> <span class="nf">a</span><span class="o">();</span> <span class="c1">// B and C will be discovered</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span> <span class="kd">interface</span> <span class="nc">B</span> <span class="kd">extends</span> <span class="no">A</span> <span class="o">{</span> <span class="kt">int</span> <span class="nf">b</span><span class="o">();</span> <span class="o">}</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span> <span class="kd">interface</span> <span class="nc">C</span> <span class="kd">extends</span> <span class="no">A</span> <span class="o">{</span> <span class="kt">double</span> <span class="nf">c</span><span class="o">();</span> <span class="o">}</span>
+  <span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span> <span class="kd">interface</span> <span class="nc">E</span> <span class="o">{</span>
+    <span class="nd">@Gson</span><span class="o">.</span><span class="na">ExpectedSubtypes</span> <span class="no">A</span> <span class="nf">a</span><span class="o">();</span> <span class="c1">// B and C will be discovered</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre></div>
+</code></pre></div></div>
+
 <p>Although a nice feature, you should generally avoid the use of polymorphic marshaling if performance is
 important. Current implementation may suffer JIT deoptimizations due to exceptions being thrown
 and caught during regular deserialization. This renders the polymorphic deserialization feature
@@ -613,70 +671,72 @@ high-throughput document streaming. However, the implementation can be changed (
 <p><strong>Things to be aware of</strong></p>
 
 <ul>
-<li>If none of expected subclasses matches the structure of the JSON, a <code>RuntimeException</code>s is thrown during deserialization</li>
-<li>If subclass structures have a collision, the first matching type wins</li>
-<li>Run-time performance</li>
+  <li>If none of expected subclasses matches the structure of the JSON, a <code class="language-plaintext highlighter-rouge">RuntimeException</code>s is thrown during deserialization</li>
+  <li>If subclass structures have a collision, the first matching type wins</li>
+  <li>Run-time performance</li>
 </ul>
 
 <p><a name="gson-jackson"></a></p>
+<h3 id="gson-jackson-bridge">Gson-Jackson bridge</h3>
 
-<h3>Gson-Jackson bridge</h3>
-
-<p>We can push <em>Gson</em>&#39;s performance to its limits by delegating low-level streaming to
-<em>Jackson</em>. <em>Gson</em> is pretty optimized in itself, but <em>Jackson</em> is playing an &quot;unfair game&quot;
+<p>We can push <em>Gson</em>’s performance to its limits by delegating low-level streaming to
+<em>Jackson</em>. <em>Gson</em> is pretty optimized in itself, but <em>Jackson</em> is playing an “unfair game”
 by optimizing the whole chain of JSON streaming, including UTF-8 encoding handling, recycling
 of special buffers, DIY number parsing and formatting etc. This can be as much as 200% faster
 for some workloads.</p>
 
-<p>There&#39;s sample benchmark which we used only to see relative difference. As usual, take those
-numbers with a grain of salt: it&#39;s just some numbers for some JSON documents on some MacBook.</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text"><span></span>Benchmark                                             Mode  Samples     Score     Error  Units
+<p>There’s sample benchmark which we used only to see relative difference. As usual, take those
+numbers with a grain of salt: it’s just some numbers for some JSON documents on some MacBook.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Benchmark                                             Mode  Samples     Score     Error  Units
 o.i.s.j.JsonBenchmarks.autoJackson                    avgt        5   709.249 ±  19.170  us/op
 o.i.s.j.JsonBenchmarks.immutablesGson                 avgt        5  1155.550 ±  48.843  us/op
 o.i.s.j.JsonBenchmarks.immutablesGsonJackson          avgt        5   682.605 ±  20.839  us/op
 o.i.s.j.JsonBenchmarks.pojoGson                       avgt        5  1402.759 ± 101.077  us/op
 o.i.s.j.JsonBenchmarks.pojoGsonJackson                avgt        5   935.107 ±  58.210  us/op
 o.i.s.j.JsonBenchmarks.pojoJackson                    avgt        5   721.767 ±  47.782  us/op
-</code></pre></div>
+</code></pre></div></div>
+
 <p>It is possible use <em>Gson</em> to serialize to and from various additional textual and binary serialization formats supported by <em>Jackson</em>:</p>
 
 <p><a href="https://github.com/FasterXML/jackson-dataformat-smile">Smile</a>,
 <a href="https://github.com/michel-kraemer/bson4jackson">BSON</a>,
 <a href="https://github.com/FasterXML/jackson-dataformat-cbor">CBOR</a>,
-<a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML</a>... etc.</p>
+<a href="https://github.com/FasterXML/jackson-dataformat-yaml">YAML</a>… etc.</p>
 
 <ul>
-<li>JAX-RS provider also integrates Gson-Jackson bridge out of the box. Use it as an example of how to integrate Gson-Jackson bridge.</li>
-<li>See class <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonGeneratorWriter.java">JsonGeneratorWriter</a></li>
-<li>See class <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonParserReader.java">JsonParserReader</a></li>
-<li>See sample <a href="https://github.com/immutables/samples/tree/master/json/src/org/immutables/samples/json">benchmark code</a></li>
+  <li>JAX-RS provider also integrates Gson-Jackson bridge out of the box. Use it as an example of how to integrate Gson-Jackson bridge.</li>
+  <li>See class <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonGeneratorWriter.java">JsonGeneratorWriter</a></li>
+  <li>See class <a href="https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/stream/JsonParserReader.java">JsonParserReader</a></li>
+  <li>See sample <a href="https://github.com/immutables/samples/tree/master/json/src/org/immutables/samples/json">benchmark code</a></li>
 </ul>
 
 </section>
 <footer class="jumbotron">
   <div class="container">
-    <h2>Guides</h2>
+    <h2 id="guides">Guides</h2>
 
 <ul>
-<li><a href="/getstarted.html">Get started!</a></li>
-<li><a href="/intro.html">Inception</a></li>
-<li><a href="/immutable.html">Immutable objects</a></li>
-<li><a href="/factory.html">Factory builders</a></li>
-<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
-<li><a href="/style.html">Style customization</a></li>
-<li><a href="/json.html">JSON serialization</a></li>
-<li><a href="/criteria.html">Criteria</a></li>
-<li><a href="/mongo.html">MongoDB repositories</a></li>
-<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
-<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+  <li><a href="/getstarted.html">Get started!</a></li>
+  <li><a href="/intro.html">Inception</a></li>
+  <li><a href="/immutable.html">Immutable objects</a></li>
+  <li><a href="/factory.html">Factory builders</a></li>
+  <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+  <li><a href="/style.html">Style customization</a></li>
+  <li><a href="/json.html">JSON serialization</a></li>
+  <li><a href="/criteria.html">Criteria</a></li>
+  <li><a href="/mongo.html">MongoDB repositories</a></li>
+  <li><a href="/dynamodb.html">DynamoDB integration</a></li>
+  <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+  <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 
-<h2>Get involved</h2>
+<h2 id="get-involved">Get involved</h2>
 
 <ul>
-<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
-<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
-<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+  <li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+  <li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+  <li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
 </ul>
 
 <p><a href="/license.html">Apache License 2.0</a></p>

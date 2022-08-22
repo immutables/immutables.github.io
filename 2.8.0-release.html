@@ -31,11 +31,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </header>
 <aside id="toc"></aside>
 <section class="documentation">
-  <h2>Overview</h2>
+  <h2 id="overview">Overview</h2>
 
-<p>Criteria API: combine power of immutable objects with the flexibility of querying them </p>
+<p>Criteria API: combine power of immutable objects with the flexibility of querying them</p>
 
-<p><a href="https://immutables.github.io/">Immutables</a> team is pleased to announce Immutables 2.8.0 release. </p>
+<p><a href="https://immutables.github.io/">Immutables</a> team is pleased to announce Immutables 2.8.0 release.</p>
 
 <p>Major focus of this release was <a href="https://immutables.github.io/criteria.html">Criteria API</a> which enables
 users to generate model-specific query DSL. Generated class (along with criteria runtime) allows accessing different backends in a unified, fluent and type-safe manner.</p>
@@ -43,151 +43,164 @@ users to generate model-specific query DSL. Generated class (along with criteria
 <p>Benefits over raw driver API usage or string based abstractions (DSLs) are:</p>
 
 <ol>
-<li>Compile-time checking and type safety allows for much fewer mistakes </li>
-<li>IDE auto-completion guides through the choice of fields and operators</li>
-<li>Best in class readability due to drastically reduced number of parentheses and specially designed <a href="http://en.wikipedia.org/wiki/Disjunctive_normal_form">DNF</a> approach</li>
-<li>Easier model refactoring </li>
+  <li>Compile-time checking and type safety allows for much fewer mistakes</li>
+  <li>IDE auto-completion guides through the choice of fields and operators</li>
+  <li>Best in class readability due to drastically reduced number of parentheses and specially designed <a href="http://en.wikipedia.org/wiki/Disjunctive_normal_form">DNF</a> approach</li>
+  <li>Easier model refactoring</li>
 </ol>
 
 <p>Benefits over existing frameworks like <a href="https://spring.io/projects/spring-data">Spring Data</a>, <a href="https://morphia.dev/">Morphia</a>, <a href="http://www.querydsl.com/">QueryDSL</a> or <a href="https://www.jooq.org/">jOOQ</a> are:</p>
 
 <ol>
-<li>Derive immutable implementation, query DSL, repository and more from a single definition</li>
-<li>Pluggable Sync / Async / Reactive execution models </li>
-<li>Pluggable backend implementations</li>
-<li>Generated or custom Repositories (aka DAOs) can be controlled to generate reading / writing or <a href="https://docs.mongodb.com/manual/changeStreams/">watching</a> operations on entities</li>
+  <li>Derive immutable implementation, query DSL, repository and more from a single definition</li>
+  <li>Pluggable Sync / Async / Reactive execution models</li>
+  <li>Pluggable backend implementations</li>
+  <li>Generated or custom Repositories (aka DAOs) can be controlled to generate reading / writing or <a href="https://docs.mongodb.com/manual/changeStreams/">watching</a> operations on entities</li>
 </ol>
 
-<h3>Querying</h3>
+<h3 id="querying">Querying</h3>
 
-<p>Define your model ...</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="nd">@Value.Immutable</span>
+<p>Define your model …</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Value</span><span class="o">.</span><span class="na">Immutable</span>
 <span class="nd">@Criteria</span> <span class="c1">// generate query DSL</span>
-<span class="nd">@Criteria.Repository</span> <span class="c1">// generate repository for this model</span>
+<span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span> <span class="c1">// generate repository for this model</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{</span>
-  <span class="n">String</span> <span class="nf">fullName</span><span class="o">();</span>
+  <span class="nc">String</span> <span class="nf">fullName</span><span class="o">();</span>
   <span class="kt">int</span> <span class="nf">age</span><span class="o">();</span>  
-  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">nickName</span><span class="o">();</span>
-  <span class="n">List</span><span class="o">&lt;</span><span class="n">Pet</span><span class="o">&gt;</span> <span class="nf">pets</span><span class="o">();</span> 
-  <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Friend</span><span class="o">&gt;</span> <span class="nf">bestFriend</span><span class="o">();</span> 
+  <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="nf">nickName</span><span class="o">();</span>
+  <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Pet</span><span class="o">&gt;</span> <span class="nf">pets</span><span class="o">();</span> 
+  <span class="nc">Optional</span><span class="o">&lt;</span><span class="nc">Friend</span><span class="o">&gt;</span> <span class="nf">bestFriend</span><span class="o">();</span> 
  <span class="c1">// ... </span>
 <span class="o">}</span>
-</code></pre></div>
-<p>... and start querying it with Criteria API</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// basic query by ID</span>
-<span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">in</span><span class="o">(</span><span class="s">&quot;id1&quot;</span><span class="o">,</span> <span class="s">&quot;id2&quot;</span><span class="o">,</span> <span class="s">&quot;id3&quot;</span><span class="o">);</span>
-<span class="n">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">notIn</span><span class="o">(</span><span class="s">&quot;bad_id&quot;</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p>… and start querying it with Criteria API</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// basic query by ID</span>
+<span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">in</span><span class="o">(</span><span class="s">"id1"</span><span class="o">,</span> <span class="s">"id2"</span><span class="o">,</span> <span class="s">"id3"</span><span class="o">);</span>
+<span class="nc">PersonCriteria</span><span class="o">.</span><span class="na">person</span><span class="o">.</span><span class="na">id</span><span class="o">.</span><span class="na">notIn</span><span class="o">(</span><span class="s">"bad_id"</span><span class="o">);</span>
 
 <span class="c1">// more complex query on Strings, Comparables, Optionals and other nested Criterias</span>
 <span class="n">person</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">&quot;John&quot;</span><span class="o">)</span> <span class="c1">// basic equal</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">&quot;Mary&quot;</span><span class="o">)</span> <span class="c1">// not equal</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;Smith&quot;</span><span class="o">)</span> <span class="c1">// string condition</span>
-    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mf">3.1415D</span><span class="o">)</span> <span class="c1">// ERROR! will not compile since fullName is String (not double)</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="s">"John"</span><span class="o">)</span> <span class="c1">// basic equal</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">isNot</span><span class="o">(</span><span class="s">"Mary"</span><span class="o">)</span> <span class="c1">// not equal</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">"Smith"</span><span class="o">)</span> <span class="c1">// string condition</span>
+    <span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">is</span><span class="o">(</span><span class="mf">3.1415</span><span class="no">D</span><span class="o">)</span> <span class="c1">// ERROR! will not compile since fullName is String (not double)</span>
     <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">isPresent</span><span class="o">()</span> <span class="c1">// for Optional attribute</span>
-    <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&quot;Adam&quot;</span><span class="o">)</span> <span class="c1">// special matcher Optional&lt;String&gt; which is intersetion type between OptionalMatcher and StringMatcher</span>
+    <span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"Adam"</span><span class="o">)</span> <span class="c1">// special matcher Optional&lt;String&gt; which is intersetion type between OptionalMatcher and StringMatcher</span>
     <span class="o">.</span><span class="na">pets</span><span class="o">.</span><span class="na">notEmpty</span><span class="o">()</span> <span class="c1">// condition on an Iterable</span>
     <span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">()</span> <span class="c1">// boolean</span>
     <span class="o">.</span><span class="na">or</span><span class="o">()</span> <span class="c1">// disjunction (equivalent to logical OR)</span>
     <span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">21</span><span class="o">)</span> <span class="c1">// comparable attribute</span>
     <span class="o">.</span><span class="na">or</span><span class="o">()</span>
     <span class="o">.</span><span class="na">not</span><span class="o">(</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="n">p</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">hasLength</span><span class="o">(</span><span class="mi">4</span><span class="o">));</span> <span class="c1">// negation on a Optional&lt;String&gt; attribute</span>
-    <span class="o">.</span><span class="na">bestFriend</span><span class="o">.</span><span class="na">value</span><span class="o">().</span><span class="na">hobby</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">&quot;ing&quot;</span><span class="o">)</span> <span class="c1">// chaining criterias on other entities like Optional&lt;Friend&gt; </span>
-</code></pre></div>
-<p>You will notice that there are no <code>and</code> statements (conjunctions) that is because criteria uses 
+    <span class="o">.</span><span class="na">bestFriend</span><span class="o">.</span><span class="na">value</span><span class="o">().</span><span class="na">hobby</span><span class="o">.</span><span class="na">endsWith</span><span class="o">(</span><span class="s">"ing"</span><span class="o">)</span> <span class="c1">// chaining criterias on other entities like Optional&lt;Friend&gt; </span>
+</code></pre></div></div>
+
+<p>You will notice that there are no <code class="language-plaintext highlighter-rouge">and</code> statements (conjunctions) that is because criteria uses 
 <a href="https://en.wikipedia.org/wiki/Disjunctive_normal_form">Disjunctive Normal Form</a> (in short DNF) by default. Statements are
-combined using logical <code>and</code> unless disjunction <code>or()</code> is explicitly used. One can still build complex logical expressions 
-by composing criterias using <code>and</code>/ <code>or</code> functions.</p>
+combined using logical <code class="language-plaintext highlighter-rouge">and</code> unless disjunction <code class="language-plaintext highlighter-rouge">or()</code> is explicitly used. One can still build complex logical expressions 
+by composing criterias using <code class="language-plaintext highlighter-rouge">and</code>/ <code class="language-plaintext highlighter-rouge">or</code> functions.</p>
 
-<h4>ordering / limit / offset</h4>
+<h4 id="ordering--limit--offset">ordering / limit / offset</h4>
+<p>Typical <code class="language-plaintext highlighter-rouge">ORDER BY</code> / <code class="language-plaintext highlighter-rouge">LIMIT</code> / <code class="language-plaintext highlighter-rouge">OFFSET</code> operations are part of API</p>
 
-<p>Typical <code>ORDER BY</code> / <code>LIMIT</code> / <code>OFFSET</code> operations are part of API</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// query datasource and return reactive type: Flowable</span>
-<span class="n">List</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// query datasource and return reactive type: Flowable</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">persons</span> <span class="o">=</span> <span class="n">repository</span>
          <span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">atLeast</span><span class="o">(</span><span class="mi">33</span><span class="o">))</span>
          <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">fullName</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
          <span class="o">.</span><span class="na">offset</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span>
          <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
          <span class="o">.</span><span class="na">fetch</span><span class="o">();</span> 
-</code></pre></div>
-<h4>Projections and Aggregations</h4>
+</code></pre></div></div>
 
-<p>Projections and Aggregations (like <code>count</code> / <code>min</code> / <code>max</code> / <code>sum</code> / <code>avg</code> ) are also supported.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">()</span>
+<h4 id="projections-and-aggregations">Projections and Aggregations</h4>
+
+<p>Projections and Aggregations (like <code class="language-plaintext highlighter-rouge">count</code> / <code class="language-plaintext highlighter-rouge">min</code> / <code class="language-plaintext highlighter-rouge">max</code> / <code class="language-plaintext highlighter-rouge">sum</code> / <code class="language-plaintext highlighter-rouge">avg</code> ) are also supported.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">findAll</span><span class="o">()</span>
   <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">.</span><span class="na">desc</span><span class="o">())</span>
   <span class="o">.</span><span class="na">groupBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">)</span>
   <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">nickName</span><span class="o">,</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">max</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">min</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">count</span><span class="o">(),</span> <span class="n">person</span><span class="o">.</span><span class="na">age</span><span class="o">.</span><span class="na">sum</span><span class="o">())</span>
-  <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">&quot;nick=&quot;</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; diff=&quot;</span> <span class="o">+</span> <span class="o">(</span><span class="n">max</span> <span class="o">-</span>  <span class="n">min</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot; count=&quot;</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">&quot; sum=&quot;</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span> <span class="c1">// type-safe projections</span>
+  <span class="o">.</span><span class="na">map</span><span class="o">((</span><span class="n">nickName</span><span class="o">,</span> <span class="n">max</span><span class="o">,</span> <span class="n">min</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">sum</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="s">"nick="</span> <span class="o">+</span> <span class="n">nickName</span><span class="o">.</span><span class="na">orElse</span><span class="o">(</span><span class="kc">null</span><span class="o">)</span> <span class="o">+</span> <span class="s">" diff="</span> <span class="o">+</span> <span class="o">(</span><span class="n">max</span> <span class="o">-</span>  <span class="n">min</span><span class="o">)</span> <span class="o">+</span> <span class="s">" count="</span> <span class="o">+</span> <span class="n">count</span> <span class="o">+</span> <span class="s">" sum="</span> <span class="o">+</span> <span class="n">sum</span><span class="o">)))</span> <span class="c1">// type-safe projections</span>
   <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
-</code></pre></div>
-<h3>Backends</h3>
+</code></pre></div></div>
+
+<h3 id="backends">Backends</h3>
 
 <p>Backend is the bridge between criteria abstraction and native driver API (or queries). Instantiate a backend and attach it to a repository. It can then be used by your application.
 Note that backends can be exchanged without impacting existing repository usages.</p>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// pluggable backends</span>
-<span class="n">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MongoBackend</span><span class="o">(...);</span> <span class="c1">// can be different backend (elastic, geode etc.)</span>
-<span class="n">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="n">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
-</code></pre></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// pluggable backends</span>
+<span class="nc">Backend</span> <span class="n">backend</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MongoBackend</span><span class="o">(...);</span> <span class="c1">// can be different backend (elastic, geode etc.)</span>
+<span class="nc">PersonRepository</span> <span class="n">repository</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PersonRepository</span><span class="o">(</span><span class="n">backend</span><span class="o">);</span>
+</code></pre></div></div>
+
 <p>Out of the box, Criteria supports the following backends (you can also integrate your own):</p>
 
 <ol>
-<li>In-Memory Backend. Simple hashmap implementation on the top of <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a></li>
-<li><a href="https://www.elastic.co/">Elastic Search</a></li>
-<li><a href="https://www.mongodb.com/">MongoDB</a></li>
-<li><a href="https://geode.apache.org/">Apache Geode</a></li>
-<li>Bring Your Own Backend (BYOB)</li>
+  <li>In-Memory Backend. Simple hashmap implementation on the top of <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a></li>
+  <li><a href="https://www.elastic.co/">Elastic Search</a></li>
+  <li><a href="https://www.mongodb.com/">MongoDB</a></li>
+  <li><a href="https://geode.apache.org/">Apache Geode</a></li>
+  <li>Bring Your Own Backend (BYOB)</li>
 </ol>
 
-<h3>Sync / Async / Reactive execution models</h3>
+<h3 id="sync--async--reactive-execution-models">Sync / Async / Reactive execution models</h3>
 
 <p>Flexible stream processing models adaptable to various usecases:</p>
 
 <ul>
-<li>Synchronous. Returning List / Optional / void / etc.</li>
-<li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
-<li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
-<li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a>. </li>
-<li><a href="https://projectreactor.io">Project Reactor</a>. Returning <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a> / <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>. </li>
+  <li>Synchronous. Returning List / Optional / void / etc.</li>
+  <li>Asyncronous. Returning <a href="https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletionStage.html">CompletionStage</a></li>
+  <li>Reactive streams. Returning <a href="https://www.reactive-streams.org/reactive-streams-1.0.2-javadoc/org/reactivestreams/Publisher.html">Publisher</a></li>
+  <li><a href="https://github.com/ReactiveX/RxJava">RxJava</a>. Returning <a href="http://reactivex.io/RxJava/2.x/javadoc/io/reactivex/Flowable.html">Flowable</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Single.html">Single</a> / <a href="http://reactivex.io/RxJava/javadoc/io/reactivex/Maybe.html">Maybe</a>.</li>
+  <li><a href="https://projectreactor.io">Project Reactor</a>. Returning <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html">Flux</a> / <a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Mono.html">Mono</a>.</li>
 </ul>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// one of RxJavaReadable/ SyncReadable/ AsyncReadable etc.</span>
-<span class="nd">@Criteria.Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="n">RxJavaReadable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// one of RxJavaReadable/ SyncReadable/ AsyncReadable etc.</span>
+<span class="nd">@Criteria</span><span class="o">.</span><span class="na">Repository</span><span class="o">(</span><span class="n">facets</span><span class="o">=</span><span class="nc">RxJavaReadable</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
 <span class="kd">interface</span> <span class="nc">Person</span> <span class="o">{}</span>
 
 <span class="c1">// return rxjava Flowable type</span>
-<span class="n">Flowable</span><span class="o">&lt;</span><span class="n">Person</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">()).</span><span class="na">fetch</span><span class="o">();</span>
-</code></pre></div>
-<h3>Note on existing Mongo Repositories</h3>
+<span class="nc">Flowable</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">active</span><span class="o">.</span><span class="na">isTrue</span><span class="o">()).</span><span class="na">fetch</span><span class="o">();</span>
+</code></pre></div></div>
 
-<p>While we don&#39;t yet deprecate existing <a href="https://immutables.github.io/mongo.html">mongo repositories</a>, new and current users are encouraged to consider criteria API 
+<h3 id="note-on-existing-mongo-repositories">Note on existing Mongo Repositories</h3>
+
+<p>While we don’t yet deprecate existing <a href="https://immutables.github.io/mongo.html">mongo repositories</a>, new and current users are encouraged to consider criteria API 
 as a better alternative.</p>
 
 <p>Please follow <a href="https://immutables.github.io/criteria.html">official guide</a> for more information.</p>
 
+
 </section>
 <footer class="jumbotron">
   <div class="container">
-    <h2>Guides</h2>
+    <h2 id="guides">Guides</h2>
 
 <ul>
-<li><a href="/getstarted.html">Get started!</a></li>
-<li><a href="/intro.html">Inception</a></li>
-<li><a href="/immutable.html">Immutable objects</a></li>
-<li><a href="/factory.html">Factory builders</a></li>
-<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
-<li><a href="/style.html">Style customization</a></li>
-<li><a href="/json.html">JSON serialization</a></li>
-<li><a href="/criteria.html">Criteria</a></li>
-<li><a href="/mongo.html">MongoDB repositories</a></li>
-<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
-<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+  <li><a href="/getstarted.html">Get started!</a></li>
+  <li><a href="/intro.html">Inception</a></li>
+  <li><a href="/immutable.html">Immutable objects</a></li>
+  <li><a href="/factory.html">Factory builders</a></li>
+  <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+  <li><a href="/style.html">Style customization</a></li>
+  <li><a href="/json.html">JSON serialization</a></li>
+  <li><a href="/criteria.html">Criteria</a></li>
+  <li><a href="/mongo.html">MongoDB repositories</a></li>
+  <li><a href="/dynamodb.html">DynamoDB integration</a></li>
+  <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+  <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 
-<h2>Get involved</h2>
+<h2 id="get-involved">Get involved</h2>
 
 <ul>
-<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
-<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
-<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+  <li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+  <li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+  <li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
 </ul>
 
 <p><a href="/license.html">Apache License 2.0</a></p>

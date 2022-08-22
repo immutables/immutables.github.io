@@ -31,79 +31,79 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </header>
 <aside id="toc"></aside>
 <section class="documentation">
-  <h2>Overview</h2>
+  <h2 id="overview">Overview</h2>
+<p>Main feature of this release is <code class="language-plaintext highlighter-rouge">DISTINCT</code> statement in Criteria. Plus, small functionalities and bugfixes.</p>
 
-<p>Main feature of this release is <code>DISTINCT</code> statement in Criteria. Plus, small functionalities and bugfixes.</p>
+<h1 id="notable-changes">Notable changes</h1>
 
-<h1>Notable changes</h1>
-
-<h3>Criteria</h3>
-
+<h3 id="criteria">Criteria</h3>
 <ul>
-<li>Support for <code>DISTINCT</code> modifier in queries. Simple DSL to allow chaining <code>DISTINCT / LIMIT / OFFSET</code> modifiers (<a href="https://github.com/immutables/immutables/commit/9d6392258ce5b47b09d7d6b35a5f5b168de3471b">9d639225</a>)</li>
+  <li>Support for <code class="language-plaintext highlighter-rouge">DISTINCT</code> modifier in queries. Simple DSL to allow chaining <code class="language-plaintext highlighter-rouge">DISTINCT / LIMIT / OFFSET</code> modifiers (<a href="https://github.com/immutables/immutables/commit/9d6392258ce5b47b09d7d6b35a5f5b168de3471b">9d639225</a>)</li>
 </ul>
-<div class="highlight"><pre><code class="language-java" data-lang="java"><span></span><span class="c1">// example of DISTINCT query</span>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// example of DISTINCT query</span>
 <span class="n">repository</span><span class="o">.</span><span class="na">find</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">isActive</span><span class="o">.</span><span class="na">isTrue</span><span class="o">())</span>
      <span class="o">.</span><span class="na">orderBy</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">name</span><span class="o">.</span><span class="na">asc</span><span class="o">())</span>
      <span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">person</span><span class="o">.</span><span class="na">name</span><span class="o">)</span>
      <span class="o">.</span><span class="na">distinct</span><span class="o">()</span>
      <span class="o">.</span><span class="na">limit</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
      <span class="o">.</span><span class="na">fetch</span><span class="o">();</span>
-</code></pre></div>
-<h3>Geode backend</h3>
+</code></pre></div></div>
 
+<h3 id="geode-backend">Geode backend</h3>
 <ul>
-<li>Escape <a href="https://geode.apache.org/docs/guide/19/developing/querying_basics/reserved_words.html">reserved words</a> (eg. <code>type</code>, <code>time</code>) in OQL (<a href="https://github.com/immutables/immutables/commit/da9b7e1a8052442dd8e0abf0ff1a5a544a8c6b4f">da9b7e1</a>)</li>
+  <li>Escape <a href="https://geode.apache.org/docs/guide/19/developing/querying_basics/reserved_words.html">reserved words</a> (eg. <code class="language-plaintext highlighter-rouge">type</code>, <code class="language-plaintext highlighter-rouge">time</code>) in OQL (<a href="https://github.com/immutables/immutables/commit/da9b7e1a8052442dd8e0abf0ff1a5a544a8c6b4f">da9b7e1</a>)</li>
 </ul>
 
-<h3>Codegen</h3>
-
+<h3 id="codegen">Codegen</h3>
 <ul>
-<li>Remove unnecessary empty line between <code>hashCode()</code> and <code>toString()</code> functions introduced by previous commit</li>
+  <li>Remove unnecessary empty line between <code class="language-plaintext highlighter-rouge">hashCode()</code> and <code class="language-plaintext highlighter-rouge">toString()</code> functions introduced by previous commit</li>
 </ul>
 
-<h3>Gson / JSON Adapters</h3>
-
+<h3 id="gson--json-adapters">Gson / JSON Adapters</h3>
 <ul>
-<li>Fixed issue where integers are always printed as doubles (<a href="https://github.com/immutables/immutables/pull/1120">#1120</a>) by Ben Mazzarol (@bmazzarol)</li>
-<li>Fixed issue using the jackson XML streaming parser where boolean tokens are always strings (<a href="https://github.com/immutables/immutables/pull/1120">#1120</a>) by Ben Mazzarol (@bmazzarol)</li>
+  <li>Fixed issue where integers are always printed as doubles (<a href="https://github.com/immutables/immutables/pull/1120">#1120</a>) by Ben Mazzarol (@bmazzarol)</li>
+  <li>Fixed issue using the jackson XML streaming parser where boolean tokens are always strings (<a href="https://github.com/immutables/immutables/pull/1120">#1120</a>) by Ben Mazzarol (@bmazzarol)</li>
 </ul>
 
-<h3>Other changes</h3>
-
+<h3 id="other-changes">Other changes</h3>
 <ul>
-<li>Change dependency scope of <code>jackson-datatype-guava</code> and <code>jackson-datatype-jdk8</code> to <code>test</code> in ElasticSearch backend. They were used only in tests. </li>
-<li>Enable <a href="https://errorprone.info/">errorprone</a> static analysis in criteria module (<a href="https://github.com/immutables/immutables/commit/ef5f1a2672daca5955ecb2c755a5a975964ae603">ef5f1a267</a>)</li>
+  <li>Change dependency scope of <code class="language-plaintext highlighter-rouge">jackson-datatype-guava</code> and <code class="language-plaintext highlighter-rouge">jackson-datatype-jdk8</code> to <code class="language-plaintext highlighter-rouge">test</code> in ElasticSearch backend. They were used only in tests.</li>
+  <li>Enable <a href="https://errorprone.info/">errorprone</a> static analysis in criteria module (<a href="https://github.com/immutables/immutables/commit/ef5f1a2672daca5955ecb2c755a5a975964ae603">ef5f1a267</a>)</li>
 </ul>
 
-<p>Thanks to all contributors:
-- <a href="https://github.com/bmazzarol">Ben Mazzarol</a></p>
+<p>Thanks to all contributors:</p>
+<ul>
+  <li><a href="https://github.com/bmazzarol">Ben Mazzarol</a></li>
+</ul>
+
 
 </section>
 <footer class="jumbotron">
   <div class="container">
-    <h2>Guides</h2>
+    <h2 id="guides">Guides</h2>
 
 <ul>
-<li><a href="/getstarted.html">Get started!</a></li>
-<li><a href="/intro.html">Inception</a></li>
-<li><a href="/immutable.html">Immutable objects</a></li>
-<li><a href="/factory.html">Factory builders</a></li>
-<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
-<li><a href="/style.html">Style customization</a></li>
-<li><a href="/json.html">JSON serialization</a></li>
-<li><a href="/criteria.html">Criteria</a></li>
-<li><a href="/mongo.html">MongoDB repositories</a></li>
-<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
-<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+  <li><a href="/getstarted.html">Get started!</a></li>
+  <li><a href="/intro.html">Inception</a></li>
+  <li><a href="/immutable.html">Immutable objects</a></li>
+  <li><a href="/factory.html">Factory builders</a></li>
+  <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+  <li><a href="/style.html">Style customization</a></li>
+  <li><a href="/json.html">JSON serialization</a></li>
+  <li><a href="/criteria.html">Criteria</a></li>
+  <li><a href="/mongo.html">MongoDB repositories</a></li>
+  <li><a href="/dynamodb.html">DynamoDB integration</a></li>
+  <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+  <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 
-<h2>Get involved</h2>
+<h2 id="get-involved">Get involved</h2>
 
 <ul>
-<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
-<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
-<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+  <li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+  <li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+  <li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
 </ul>
 
 <p><a href="/license.html">Apache License 2.0</a></p>

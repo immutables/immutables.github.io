@@ -31,13 +31,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 </header>
 <aside id="toc"></aside>
 <section class="documentation">
-  <hr>
-
-<h2>Overview</h2>
+  
+<hr />
+<p>Overview
+——–</p>
 
 <p>As of Java 6, annotation processing became a part of the standard Java compiler.
 Java 7 or higher is required to run the <em>Immutables</em> annotation processor.
-The <em>Immutables</em> annotation processor runs under any Java build tool that uses <code>javac</code> as the compiler backend
+The <em>Immutables</em> annotation processor runs under any Java build tool that uses <code class="language-plaintext highlighter-rouge">javac</code> as the compiler backend
 (assuming that annotation processing is not disabled in the build tool configuration).
 The <em>Eclipse JDT compiler</em> (ECJ) also supports this annotation processor.</p>
 
@@ -47,53 +48,52 @@ However, something usually has to be configured or quirks may exist that prevent
 <p>The annotation processor that is to be plugged into a given IDE is built as single jar without external dependencies.</p>
 
 <ul>
-<li><a href="https://search.maven.org/artifact/org.immutables/value/2.8.2/jar">org.immutables:value:2.8.2</a></li>
+  <li><a href="https://search.maven.org/artifact/org.immutables/value/2.9.1/jar">org.immutables:value:2.9.1</a></li>
 </ul>
 
-<hr>
+<hr />
+<p>Eclipse
+——-</p>
 
-<h2>Eclipse</h2>
+<p>If you are using Maven, then <code class="language-plaintext highlighter-rouge">m2e</code> should configure annotation processing for you. However, for this to work, the <code class="language-plaintext highlighter-rouge">m2e-apt</code> connector should be installed first. Install it from the Eclipse marketplace.</p>
 
-<p>If you are using Maven, then <code>m2e</code> should configure annotation processing for you. However, for this to work, the <code>m2e-apt</code> connector should be installed first. Install it from the Eclipse marketplace.</p>
-
-<p><img src="pix/eclipse-marketplace.png"></p>
+<p><img src="pix/eclipse-marketplace.png" /></p>
 
 <p>Enable JDT/APT autoconfiguration from Maven dependencies globally or per project.
-<img src="https://developer.jboss.org/servlet/JiveServlet/downloadImage/38-4947-18599/620-226/m2e-apt-prefs.png"><br>
+<img src="https://developer.jboss.org/servlet/JiveServlet/downloadImage/38-4947-18599/620-226/m2e-apt-prefs.png" /><br />
 <em>(Picture linked from <a href="https://developer.jboss.org/en/tools/blog/2012/05/20/annotation-processing-support-in-m2e-or-m2e-apt-100-is-out">developer.jboss.org</a>)</em></p>
 
-<p>After this, on each <code>m2e</code> Maven project import/update, annotation processors will be configured from the classpath.</p>
+<p>After this, on each <code class="language-plaintext highlighter-rouge">m2e</code> Maven project import/update, annotation processors will be configured from the classpath.</p>
 
 <ul>
-<li><a href="https://github.com/jbosstools/m2e-apt">jbosstools/m2e-apt project page</a></li>
+  <li><a href="https://github.com/jbosstools/m2e-apt">jbosstools/m2e-apt project page</a></li>
 </ul>
 
-<h3>Manual configuration tutorial</h3>
+<p>###Manual configuration tutorial</p>
 
-<p>Here&#39;s a dialog configuration example to manually configure the annotation processor assuming that jar is already installed in the local Maven repository.
+<p>Here’s a dialog configuration example to manually configure the annotation processor assuming that jar is already installed in the local Maven repository.
 Enable annotation processing in the project settings, and then configure the factory path to point to the annotation processor jar.
-In this example, this is achieved by extending the <code>M2_REPO</code> classpath variable defined by <code>m2e</code>. But otherwise you can add jars from other places.</p>
+In this example, this is achieved by extending the <code class="language-plaintext highlighter-rouge">M2_REPO</code> classpath variable defined by <code class="language-plaintext highlighter-rouge">m2e</code>. But otherwise you can add jars from other places.</p>
 
-<p><img src="pix/eclipse-annotation-processing.png"></p>
+<p><img src="pix/eclipse-annotation-processing.png" /></p>
 
-<p><img src="pix/eclipse-factory-path.png"></p>
+<p><img src="pix/eclipse-factory-path.png" /></p>
 
-<p>Use the correct jar from <code>M2_REPO</code>:</p>
+<p>Use the correct jar from <code class="language-plaintext highlighter-rouge">M2_REPO</code>:</p>
 
 <ul>
-<li><a href="https://search.maven.org/artifact/org.immutables/value/2.8.2/jar">org.immutables:value:2.8.2</a></li>
+  <li><a href="https://search.maven.org/artifact/org.immutables/value/2.9.1/jar">org.immutables:value:2.9.1</a></li>
 </ul>
 
-<hr>
-
-<h2>IntelliJ IDEA</h2>
-
-<p>To configure annotation processing in IntelliJ IDEA, use dialog
+<hr />
+<p>IntelliJ IDEA
+————-
+To configure annotation processing in IntelliJ IDEA, use dialog
 <em>Preferences</em> &gt; <em>Project Settings</em> &gt; <em>Compiler</em> &gt; <em>Annotation Processors</em>.</p>
 
 <p>Obtain annotation processors from the project classpath and specify output directories.</p>
 
-<p><img src="http://restx.io/images/docs/idea-annotation-processor-preferences.png"><br>
+<p><img src="http://restx.io/images/docs/idea-annotation-processor-preferences.png" /><br />
 <em>(Picture linked from <a href="http://restx.io">restx.io</a> documentation)</em></p>
 
 <p>After you do this, classes will be generated on each project build. Generated sources will appear and will be visible to search, autocompletion, and so on.</p>
@@ -101,28 +101,29 @@ In this example, this is achieved by extending the <code>M2_REPO</code> classpat
 </section>
 <footer class="jumbotron">
   <div class="container">
-    <h2>Guides</h2>
+    <h2 id="guides">Guides</h2>
 
 <ul>
-<li><a href="/getstarted.html">Get started!</a></li>
-<li><a href="/intro.html">Inception</a></li>
-<li><a href="/immutable.html">Immutable objects</a></li>
-<li><a href="/factory.html">Factory builders</a></li>
-<li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
-<li><a href="/style.html">Style customization</a></li>
-<li><a href="/json.html">JSON serialization</a></li>
-<li><a href="/criteria.html">Criteria</a></li>
-<li><a href="/mongo.html">MongoDB repositories</a></li>
-<li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
-<li><a href="/apt.html">Using annotation processor in IDE</a></li>
+  <li><a href="/getstarted.html">Get started!</a></li>
+  <li><a href="/intro.html">Inception</a></li>
+  <li><a href="/immutable.html">Immutable objects</a></li>
+  <li><a href="/factory.html">Factory builders</a></li>
+  <li><a href="/functional.html">Functions and Predicates (for Java 7)</a></li>
+  <li><a href="/style.html">Style customization</a></li>
+  <li><a href="/json.html">JSON serialization</a></li>
+  <li><a href="/criteria.html">Criteria</a></li>
+  <li><a href="/mongo.html">MongoDB repositories</a></li>
+  <li><a href="/dynamodb.html">DynamoDB integration</a></li>
+  <li><a href="/encoding.html">Encoding: Customizing attributes and builders (experimental)</a></li>
+  <li><a href="/apt.html">Using annotation processor in IDE</a></li>
 </ul>
 
-<h2>Get involved</h2>
+<h2 id="get-involved">Get involved</h2>
 
 <ul>
-<li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
-<li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
-<li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
+  <li>Clone source repository, contribute bug reports and fixes on <a href="https://github.com/immutables/immutables">GitHub immutables/immutables</a></li>
+  <li>Issue reports, questions and feedback is welcome on issue tracker <a href="https://github.com/immutables/immutables/issues">GitHub immutables/immutables/issues</a></li>
+  <li>News and announcements on twitter <a href="https://twitter.com/ImmutablesOrg">@ImmutablesOrg</a></li>
 </ul>
 
 <p><a href="/license.html">Apache License 2.0</a></p>
