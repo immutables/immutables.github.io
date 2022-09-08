@@ -6,7 +6,7 @@ kramdown:
   syntax_highlighter: rouge
 
 # latest version available in templates under site.v
-v: 2.9.1
+v: 2.9.2
 
 # rootUri for maven central artifactId
 depUri: https://search.maven.org/artifact/org.immutables
