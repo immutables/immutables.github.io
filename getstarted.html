@@ -39,7 +39,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <p>Add the required dependencies for basic immutable object generation:</p>
 
 <ul>
-  <li><a href="https://search.maven.org/artifact/org.immutables/value/2.9.1/jar">org.immutables:value:2.9.1</a>
+  <li><a href="https://search.maven.org/artifact/org.immutables/value/2.9.2/jar">org.immutables:value:2.9.2</a>
     <ul>
       <li>Compile-only annotation processing tool. All in one artifact: annotations, processor with properly repackaged embedded dependencies.</li>
     </ul>
@@ -51,7 +51,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
   <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
   <span class="nt">&lt;artifactId&gt;</span>value<span class="nt">&lt;/artifactId&gt;</span>
-  <span class="nt">&lt;version&gt;</span>2.9.1<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;version&gt;</span>2.9.2<span class="nt">&lt;/version&gt;</span>
   <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
 <span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div></div>
@@ -65,7 +65,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="nt">&lt;dependency&gt;</span>
       <span class="nt">&lt;groupId&gt;</span>org.immutables<span class="nt">&lt;/groupId&gt;</span>
       <span class="nt">&lt;artifactId&gt;</span>bom<span class="nt">&lt;/artifactId&gt;</span>
-      <span class="nt">&lt;version&gt;</span>2.9.1<span class="nt">&lt;/version&gt;</span>
+      <span class="nt">&lt;version&gt;</span>2.9.2<span class="nt">&lt;/version&gt;</span>
       <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
       <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
     <span class="nt">&lt;/dependency&gt;</span>
@@ -157,19 +157,19 @@ Although <em>Immutables</em> annotation processing works with <code class="langu
 <span class="c1">// ...</span>
 <span class="nx">dependencies</span> <span class="p">{</span>
   <span class="nx">compile</span> <span class="nx">fileTree</span><span class="p">(</span><span class="nx">dir</span><span class="p">:</span> <span class="dl">"</span><span class="s2">libs</span><span class="dl">"</span><span class="p">,</span> <span class="nx">include</span><span class="p">:</span> <span class="p">[</span><span class="dl">"</span><span class="s2">*.jar</span><span class="dl">"</span><span class="p">])</span>
-  <span class="nx">apt</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.1</span><span class="dl">"</span> <span class="c1">// &lt;-- for annotation processor</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.1</span><span class="dl">"</span> <span class="c1">// &lt;-- for annotation API</span>
+  <span class="nx">apt</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.2</span><span class="dl">"</span> <span class="c1">// &lt;-- for annotation processor</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.2</span><span class="dl">"</span> <span class="c1">// &lt;-- for annotation API</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>Other compile-only dependencies applicable to Android should be added in the <code class="language-plaintext highlighter-rouge">provided</code> scope. Jar files with annotations such as <a href="https://search.maven.org/artifact/org.immutables/builder/2.9.1/jar">org.immutables:builder:2.9.1</a> (see <a href="factory.html">Factory Builders</a>) or <a href="https://search.maven.org/artifact/org.immutables/gson/2.9.1/jar">org.immutables:gson:2.9.1</a> (see <a href="json.html#gson">GSON support</a>) don’t have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the <code class="language-plaintext highlighter-rouge">gson</code> module provides optional runtime classes which are not suitable for Android apps.</p>
+<p>Other compile-only dependencies applicable to Android should be added in the <code class="language-plaintext highlighter-rouge">provided</code> scope. Jar files with annotations such as <a href="https://search.maven.org/artifact/org.immutables/builder/2.9.2/jar">org.immutables:builder:2.9.2</a> (see <a href="factory.html">Factory Builders</a>) or <a href="https://search.maven.org/artifact/org.immutables/gson/2.9.2/jar">org.immutables:gson:2.9.2</a> (see <a href="json.html#gson">GSON support</a>) don’t have to be propagated to an Android application, especially if there are no runtime classes needed. For example, the <code class="language-plaintext highlighter-rouge">gson</code> module provides optional runtime classes which are not suitable for Android apps.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">dependencies</span> <span class="p">{</span>
   <span class="c1">// ...</span>
-  <span class="nx">apt</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.1</span><span class="dl">"</span> <span class="c1">// for annotation processor</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:value-annotations:2.9.1</span><span class="dl">"</span> <span class="c1">// for annotations</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:builder:2.9.1</span><span class="dl">"</span> <span class="c1">// for annotations</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:gson:2.9.1</span><span class="dl">"</span> <span class="c1">// for annotations</span>
+  <span class="nx">apt</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.2</span><span class="dl">"</span> <span class="c1">// for annotation processor</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:value-annotations:2.9.2</span><span class="dl">"</span> <span class="c1">// for annotations</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:builder:2.9.2</span><span class="dl">"</span> <span class="c1">// for annotations</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:gson:2.9.2</span><span class="dl">"</span> <span class="c1">// for annotations</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
@@ -180,10 +180,10 @@ required at runtime). The above example with the alternative dependencies could 
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">dependencies</span> <span class="p">{</span>
   <span class="c1">// ...</span>
-  <span class="nx">apt</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.1</span><span class="dl">"</span> <span class="c1">// for annotation processor</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.1:annotations</span><span class="dl">"</span> <span class="c1">// annotation-only artifact</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:builder:2.9.1</span><span class="dl">"</span> <span class="c1">// there are only annotations anyway</span>
-  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:gson:2.9.1:annotations</span><span class="dl">"</span> <span class="c1">// annotation-only artifact</span>
+  <span class="nx">apt</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.2</span><span class="dl">"</span> <span class="c1">// for annotation processor</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:value:2.9.2:annotations</span><span class="dl">"</span> <span class="c1">// annotation-only artifact</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:builder:2.9.2</span><span class="dl">"</span> <span class="c1">// there are only annotations anyway</span>
+  <span class="nx">provided</span> <span class="dl">"</span><span class="s2">org.immutables:gson:2.9.2:annotations</span><span class="dl">"</span> <span class="c1">// annotation-only artifact</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
