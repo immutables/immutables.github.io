@@ -9,7 +9,7 @@ The _Immutables_ toolkit and all required dependencies are covered under [The Ap
 
 ```java
 /*
-   Copyright 2013-2016 Immutables Authors and Contributors
+   Copyright 2013-2024 Immutables Authors and Contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
