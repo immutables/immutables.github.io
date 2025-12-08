@@ -5,6 +5,7 @@ import Head from '../components/Head.astro'
 import Footer from '../components/Footer.astro'
 import GoogleTags from '../components/GoogleTags.astro'
 import ThemeScript from '../components/ThemeScript.astro'
+import TocScript from '../components/TocScript.astro'
 
 const { frontmatter } = Astro.props
 const title = frontmatter?.title || 'Immutables'
@@ -17,20 +18,7 @@ const jquery = '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
 <body class="Guide">
 <script src={jquery}></script>
 <GoogleTags/>
-<script defer src="../scripts/jquery.toc.js"></script>
-<script defer>
-$(function() {
-  $('#toc').toc({
-    container: '.Toc',
-    selectors: 'h1,h2,h3',
-    anchorName: function(i, heading, prefix) {
-      heading = $(heading).text();
-      if (heading.trim) heading = heading.trim();
-      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
-    },
-  })
-})
-</script>
+<TocScript/>
 <div class="Sky"></div>
 <div class="Cloud"></div>
 <div class="Rain"></div>
