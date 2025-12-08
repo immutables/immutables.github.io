@@ -1,0 +1,17 @@
+<div class="Code Sample Sample3">
+<pre><span class="annotation">@Value.Immutable(intern = <b>true</b>, prehash = <b>true</b>)</span>
+<b>abstract</b> <b>class</b> Descriptor {'{'}
+  <b>abstract</b> String key();
+  <b>abstract</b> Optional&lt;String&gt; comment();
+  <span class="annotation">@Value.Redacted</span> <b>abstract</b> String secret();
+  <span class="annotation">@Value.NaturalOrder</span>
+  <b>abstract</b> NavigableSet&lt;String&gt; tags();
+  <span class="annotation">@Value.Derived</span> <b>int</b> derivedCode() {'{'}
+    <b>return</b> key().hashCode() ^ secret().hashCode();
+  {'}'}
+  <span class="annotation">@Value.Lazy</span> Access access() {'{'}
+    <b>return</b> Access.createFor(key(), secret());
+  {'}'}
+{'}'}</pre>
+
+</div>

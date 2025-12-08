@@ -1,0 +1,75 @@
+---
+title: 'Using annotation processor in IDE'
+layout: ../layouts/Guide.astro
+---
+import { v, depUri } from "../config.js";
+import AsideToc from "../components/AsideToc.astro";
+
+<div class="headsup">
+While content of this page is quite outdated (as of 2025) and there are some other,
+maybe simpler ways to setup annotation processing (think Gradle integration plugin etc.),
+most of the UI pictures here are about relevant, and overall process is still largerly
+the same since then for manually configuring annotation processing in _Eclipse_ and _IntelliJ IDEA_.
+</div>
+
+<AsideToc/>
+
+
+Overview
+--------
+
+Annotation processing became a part of the standard Java compiler.
+Java 8 or higher is required to run the _Immutables_ annotation processor (Java 6, 7 compatibility has been dropped)
+The _Immutables_ annotation processor runs under any Java build tool that uses `javac` as the compiler backend
+(assuming that annotation processing is not disabled in the build tool configuration).
+The _Eclipse JDT compiler_ (ECJ) also supports this annotation processor.
+
+Nowadays, major IDEs support annotation processing almost out of the box.
+However, something usually has to be configured or quirks may exist that prevent the processor from functioning correctly.
+
+The annotation processor that is to be plugged into a given IDE is built as single jar without external dependencies.
+
+- <a href={`${depUri}/value/${v}/jar`}>org.immutables:value:{v}</a>
+
+
+Eclipse
+-------
+
+If you are using Maven, then `m2e` should configure annotation processing for you. However, for this to work, the `m2e-apt` connector should be installed first. Install it from the Eclipse marketplace.
+
+<img src="/gfx/pix/eclipse-marketplace.png" alt="eclipse-marketplace" />
+
+Enable JDT/APT autoconfiguration from Maven dependencies globally or per project.
+<img src="https://developer.jboss.org/servlet/JiveServlet/downloadImage/38-4947-18599/620-226/m2e-apt-prefs.png" /><br />
+_(Picture linked from [developer.jboss.org](https://developer.jboss.org/en/tools/blog/2012/05/20/annotation-processing-support-in-m2e-or-m2e-apt-100-is-out))_
+
+After this, on each `m2e` Maven project import/update, annotation processors will be configured from the classpath.
+
+- [jbosstools/m2e-apt project page](https://github.com/jbosstools/m2e-apt)
+
+### Manual configuration tutorial
+
+Here's a dialog configuration example to manually configure the annotation processor assuming that jar is already installed in the local Maven repository.
+Enable annotation processing in the project settings, and then configure the factory path to point to the annotation processor jar.
+In this example, this is achieved by extending the `M2_REPO` classpath variable defined by `m2e`. But otherwise you can add jars from other places.
+
+<img src="/gfx/pix/eclipse-annotation-processing.png" alt="eclipse-annotation-processing" />
+
+<img src="/gfx/pix/eclipse-factory-path.png" alt="eclipse-factory-path.png" />
+
+Use the correct jar from `M2_REPO`:
+
+- <a href={`${depUri}/value/${v}/jar`}>org.immutables:value:{v}</a>
+
+
+IntelliJ IDEA
+-------------
+To configure annotation processing in IntelliJ IDEA, use dialog
+_Preferences_ > _Project Settings_ > _Compiler_ > _Annotation Processors_.
+
+Obtain annotation processors from the project classpath and specify output directories.
+
+<img src="http://restx.io/images/docs/idea-annotation-processor-preferences.png" /><br />
+_(Picture linked from [restx.io](http://restx.io) documentation)_
+
+After you do this, classes will be generated on each project build. Generated sources will appear and will be visible to search, autocompletion, and so on.

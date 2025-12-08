@@ -1,0 +1,19 @@
+<div class="Code Sample Sample1">
+  <pre>
+<span class="annotation">@Value.Builder</span>
+<b>record</b> Player(<b>int</b> id, String name, <b>boolean</b> active)
+    <b>implements</b> WithPlayer {'{}'}</pre>
+
+  <pre>
+Player player = <b>new</b> PlayerBuilder()
+  .id(<span class="number">11</span>)
+  .name(<span class="string">"Constantine"</span>)
+  .active(<b>true</b>)
+  .build();</pre>
+
+  <pre>
+Player copy = player
+  .withId(<span class="number">1</span>)
+  .withName(<span class="string">"Variant"</span>)
+  .withActive(<b>false</b>);</pre>
+</div>

@@ -1,0 +1,19 @@
+
+<div class="Code Sample Sample2">
+  <pre><span class="annotation">@Value.Immutable</span>
+<b>interface</b> Book {'{'}
+  String isbn();
+  String title();
+  List&lt;String&gt; authors();
+{'}'}</pre>
+
+  <pre>
+ImmutableBook book = ImmutableBook.builder()
+  .isbn(<span class="string">"978-1-56619-909-4"</span>)
+  .title(<span class="string">"The Elements of Style"</span>)
+  .addAuthors(<span class="string">"William Strunk Jr."</span>, <span class="string">"E.B. White."</span>)
+  .build();</pre>
+
+  <pre>
+ImmutableBook copy = book.withTitle(<span class="string">"Whatever"</span>);</pre>
+</div>

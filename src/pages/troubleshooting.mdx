@@ -1,0 +1,119 @@
+---
+title: 'Troubleshooting'
+layout: ../layouts/Guide.astro
+---
+import { v, depUri } from "../config.js";
+import Code from "../components/Code.astro";
+import AsideToc from "../components/AsideToc.astro";
+
+<AsideToc/>
+
+Useful compiler arguments
+-------------------------
+
+Immutables itself and the surrounding ecosystem of build tools, compilers and even JVM may contain bugs. Please, try to upgrade to the latest stable version of tools you use if possible and report any issues found.
+
+There's known issue with the interaction between the incremental compilation feature of `javac` and annotation processing.
+Build tools like Maven are also affected by this bug. Typically, commands such as `mvn clean compile` will resolve any such problems by a forcing full build.
+Disabling incremental compilation is also an option:
+
+```xml
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <version>3.3</version>
+  <configuration>
+    <compilerVersion>1.8</compilerVersion>
+    <source>1.8</source>
+    <target>1.8</target>
+    <!-- Prevents an endPosTable exception during compilation -->
+    <useIncrementalCompilation>false</useIncrementalCompilation>
+  </configuration>
+</plugin>
+```
+
+Search phrase: ["java.lang.IllegalStateException: endPosTable already set"](https://www.google.com/search?q=java.lang.IllegalStateException%3A+endPosTable+already+set)
+
+```groovy
+// Gradle equivalent
+tasks.withType(JavaCompile).configureEach {
+  options.incremental = false
+}
+```
+
+Sometimes there are too many compilation errors due to generated files not found, that may hinder real annotation processing errors when max error limit is reached. The limit can be configured for javac as `-Xmaxerrs 1000000`. For Maven it could be set as `...
+<compilerArguments><Xmaxerrs>1000000</Xmaxerrs></compilerArguments></configuration>` for `maven-compiler-plugin`.
+
+In case of some spurious errors Some internal annotation processing errors may be not clearly reported for Maven, you may rerun build with `-X` debug output and, possibly, quite verbose compiler configuration:
+
+```xml
+<compilerArgs>
+  <arg>-verbose</arg>
+  <arg>-XprintRounds</arg>
+  <arg>-XprintProcessorInfo</arg>
+  <arg>-Xlint</arg>
+  <arg>-J-verbose</arg>
+</compilerArgs>
+```
+
+Some Gradle example
+
+```groovy
+tasks.withType(JavaCompile).configureEach { compileTask ->
+    // javac options
+  options.compilerArgs += [
+    '-verbose',              // verbose compilation output
+    '-XprintRounds',         // show annotation processing rounds
+    '-XprintProcessorInfo',  // show which processors run
+    '-Xlint'                 // enable lint warnings (or -Xlint:all)
+  ]
+
+  // JVM options for the forked javac process (equivalent to -J…)
+  options.fork = true
+  options.forkOptions.jvmArgs += [
+    '-verbose'               // equivalent to `-J-verbose` from Maven
+    // or '-verbose:class' if you specifically want class loading info
+  ]
+}
+```
+
+<a name="source-access"></a>
+## Enabling source parsing
+
+In order to workaround some compiler bugs and other peculiarities of annotation processing,
+like usage and compiling with types which are not yet generated
+
+<a name="not-yet-generated"></a>
+**Not-yet-generated** types are types which do not exist before compilation and
+are technically unresolvable, but after some rounds of annotation processing those
+java files are generated, and eventually it successfully compiles. The trouble is with
+an annotation processor which have to work in this environment when on a question like what
+type does this method returns, compiler answers: it's some sort of `[[Error]]`. While it would
+be much better if it could say something like `NameOfNotGeneratedType[status: unresolved so far]`.
+This especially manifest itself with types having generic arguments, which are more broken than others.
+That is what workaround tries to achieve, it tries to read the source code of a file
+and find matching original type names, so those could be used to generate code which will eventually
+compiles.
+
+Good news is that _Maven_ seems to make it work out of the box, by settign `-sourcepath`
+compiler argument automatically to a sources root (say `src/main/java/` folder). _Gradle_ is smarter,
+it tries to prevent this default `-sourcepath` behavior when class is not found during
+compilation, compiler will try to find a java file with the corresponding name in source path
+and compile it.
+This way of compiling classes was important in early days of Java when classes often were compiled
+individually (for incrementality) and on-demand, if are used, ok, ok, you can try and find and read
+about those old ways elsewhere; and so _Gradle_ is like "I will isolate you for your own good, yada-yada",
+so it sets `-sourcepath=''` empty by default.
+
+Here's how we can configure it in _Gradle_:
+
+```groovy
+compileJava {
+  options.sourcepath = files("${project.projectDir}/src/main/java")
+  // or somehow get this FilesCollection from sourceSets.main.java in a fancy way
+}
+```
+
+Configuring this properly solved very many issues with not-yet-generated types,
+their generic arguments, and `@Nullable` type annotations (where `target=ElementType.TYPE_USE`).
+

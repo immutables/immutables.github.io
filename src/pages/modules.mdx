@@ -1,0 +1,1086 @@
+---
+title: 'Reference for all modules'
+layout: ../layouts/Guide.astro
+---
+import AsideToc from "../components/AsideToc.astro";
+import AiSlop from "../components/AiSlop.astro";
+import Code from "../components/Code.astro";
+import {v} from "../config.js";
+
+<AiSlop/>
+
+<AsideToc/>
+
+## Core Modules
+
+### `value`
+
+| **Module** | `org.immutables:value` |
+|---|---|
+| **Scope** | `provided` (annotation processor) |
+| **Full Guide** | [Immutable Objects Guide](/immutable.html) |
+| **Source** | [/value/](https://github.com/immutables/immutables/tree/master/value) |
+
+
+The main all-in-one module that most users need. It combines both annotations and the annotation processor in a single shaded JAR.
+
+**Maven**:
+<Code lang="xml" code={`
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>value</artifactId>
+  <version>${v}</version>
+  <scope>provided</scope>
+</dependency>
+`}/>
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:value-annotations:$versionImmutables"
+annotationProcessor "org.immutables:value:$versionImmutables"
+```
+
+Use [`@Value.Immutable`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java) to generate immutable implementations with builders, copy methods, `equals()`, `hashCode()`, and `toString()`. See the [complete guide](/immutable.html) for all features.
+
+#### Separate Annotations and Processor
+
+For more control, you can use the modules separately:
+
+**[value-annotations](https://github.com/immutables/immutables/tree/master/value-annotations)**: Contains only compile-time annotations ([`@Value.Immutable`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java), [`@Value.Default`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java), [`@Value.Style`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java), etc.)
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>value-annotations</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:value-annotations:$versionImmutables"
+```
+
+**[value-processor](https://github.com/immutables/immutables/tree/master/value-processor)**: The annotation processor that generates code
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>value-processor</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+annotationProcessor "org.immutables:value-processor:$versionImmutables"
+```
+
+---
+
+## Builder Module
+
+### `builder`
+
+| **Module** | `org.immutables:builder` |
+|---|---|
+| **Scope** | `provided` |
+| **Full Guide** | [Factory Builders Guide](/factory.html) |
+| **Source** | [/builder/](https://github.com/immutables/immutables/tree/master/builder) |
+
+
+Generate type-safe builders for static factory methods, constructors, and records without using [`@Value.Immutable`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java).
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>builder</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:builder:$versionImmutables"
+annotationProcessor "org.immutables:builder:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@Builder.Factory`](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java) - Generate builder from static factory method
+- [`@Builder.Constructor`](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java) - Generate builder from constructor
+- [`@Builder.Parameter`](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java) - Mark constructor parameters
+- [`@Builder.Switch`](https://github.com/immutables/immutables/blob/master/builder/src/org/immutables/builder/Builder.java) - Enum-based parameter switchers
+
+**Example**:
+
+```java
+import org.immutables.builder.Builder;
+
+public class Factories {
+  @Builder.Factory
+  public static ResultSet query(
+      String sql,
+      int timeout,
+      int fetchSize) {
+    // ... implementation
+  }
+}
+
+// Generated usage:
+ResultSet rs = new QueryBuilder()
+    .sql("SELECT * FROM users")
+    .timeout(30)
+    .fetchSize(100)
+    .build();
+```
+
+See the [full guide](/factory.html) for advanced usage including parameter binding and switch builders.
+
+---
+
+## Serialization Modules
+
+### JSON Serialization
+
+**Full Guides**: [JSON Guide](/json.html), [Encoding Guide](/encoding.html)
+
+Immutables provides first-class support for Jackson JSON serialization directly through [`@Value.Immutable`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java). The dedicated [JSON guide](/json.html) covers Jackson integration in detail.
+
+### `gson`
+
+| **Module** | `org.immutables:gson` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Status** | Outdated - prefer Jackson |
+| **Source** | [/gson/](https://github.com/immutables/immutables/tree/master/gson) |
+
+
+Generate Gson TypeAdapters for JSON serialization. Note that this module predates the improved Jackson integration and is now considered outdated.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>gson</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:gson:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@Gson.TypeAdapters`](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java) - Generate TypeAdapterFactory
+- [`@Gson.Named`](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java) - Custom JSON field names
+- [`@Gson.ExpectedSubtypes`](https://github.com/immutables/immutables/blob/master/gson/src/org/immutables/gson/Gson.java) - Polymorphic deserialization
+
+**Example**:
+
+```java
+@Value.Immutable
+@Gson.TypeAdapters
+interface User {
+  @Gson.Named("user_id")
+  String id();
+  String name();
+}
+
+// Usage:
+GsonBuilder gsonBuilder = new GsonBuilder();
+gsonBuilder.registerTypeAdapterFactory(new GsonAdaptersUser());
+Gson gson = gsonBuilder.create();
+```
+
+**Recommendation**: Use Jackson integration via `@org.immutables.value.Value.Immutable` instead. See [JSON guide](/json.html).
+
+### `encode`
+
+| **Module** | `org.immutables:encode` |
+|---|---|
+| **Scope** | `provided` |
+| **Full Guide** | [Encoding Guide](/encoding.html) |
+| **Source** | [/encode/](https://github.com/immutables/immutables/tree/master/encode) |
+
+
+Create custom attribute type encodings and wrappers that integrate seamlessly with generated immutables.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>encode</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:encode:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@Encoding`](https://github.com/immutables/immutables/blob/master/encode/src/org/immutables/encode/Encoding.java) - Define custom type encoding
+- [`@Encoding.Impl`](https://github.com/immutables/immutables/blob/master/encode/src/org/immutables/encode/Encoding.java) - Implementation field
+- [`@Encoding.Expose`](https://github.com/immutables/immutables/blob/master/encode/src/org/immutables/encode/Encoding.java) - Type accessor
+- [`@Encoding.Copy`](https://github.com/immutables/immutables/blob/master/encode/src/org/immutables/encode/Encoding.java), [`@Encoding.Init`](https://github.com/immutables/immutables/blob/master/encode/src/org/immutables/encode/Encoding.java), [`@Encoding.Build`](https://github.com/immutables/immutables/blob/master/encode/src/org/immutables/encode/Encoding.java) - Lifecycle methods
+
+This powerful feature allows you to create custom wrappers for types like `String`, `Optional`, collections, or any domain type. See the [complete guide](/encoding.html) for examples and advanced usage.
+
+### `serial`
+
+| **Module** | `org.immutables:serial` |
+|---|---|
+| **Scope** | `provided` |
+| **Source** | [/serial/](https://github.com/immutables/immutables/tree/master/serial) |
+
+
+Support for Java object serialization with proper handling of immutable object invariants.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>serial</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:serial:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@Serial.Version`](https://github.com/immutables/immutables/blob/master/serial/src/org/immutables/serial/Serial.java) - Specify `serialVersionUID`
+- [`@Serial.Structural`](https://github.com/immutables/immutables/blob/master/serial/src/org/immutables/serial/Serial.java) - Use structural serialization
+- [`@Serial.AllStructural`](https://github.com/immutables/immutables/blob/master/serial/src/org/immutables/serial/Serial.java) - Apply structural serialization to all in package
+
+**Example**:
+
+```java
+@Value.Immutable
+@Serial.Structural
+@Serial.Version(1L)
+interface Data extends Serializable {
+  String id();
+  List<String> values();
+}
+```
+
+Structural serialization uses builders/constructors during deserialization, maintaining immutable invariants and supporting singleton/interned instances.
+
+---
+
+## Data Access Modules
+
+### `mongo`
+
+| **Module** | `org.immutables:mongo` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Status** | Outdated - use Criteria instead |
+| **Full Guide** | [MongoDB Guide](/mongo.html) |
+| **Source** | [/mongo/](https://github.com/immutables/immutables/tree/master/mongo) |
+
+
+Generate MongoDB repositories with BSON marshaling. This module predates the modern Criteria API and is now considered outdated.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>mongo</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:mongo:$versionImmutables"
+```
+
+**Recommendation**: Use the modern [Criteria API](/criteria.html) for new projects. See the [MongoDB guide](/mongo.html) for legacy documentation.
+
+### `criteria`
+
+| **Module** | `org.immutables:criteria-*` (multiple modules) |
+|---|---|
+| **Scope** | `compile` (runtime + compile) |
+| **Full Guide** | [Criteria API Guide](/criteria.html) |
+| **Source** | [/criteria/](https://github.com/immutables/immutables/tree/master/criteria) |
+
+
+Modern type-safe query DSL for multiple data sources. This is the recommended approach for data access with Immutables.
+
+**Common module** (required):
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-common</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:criteria-common:$versionImmutables"
+```
+
+**Backend modules** (choose one or more):
+
+**Maven**:
+```xml
+<!-- MongoDB backend -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-mongo</artifactId>
+</dependency>
+
+<!-- Elasticsearch backend -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-elasticsearch</artifactId>
+</dependency>
+
+<!-- Apache Geode backend -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-geode</artifactId>
+</dependency>
+
+<!-- In-memory backend -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-inmemory</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:criteria-mongo:$versionImmutables"
+implementation "org.immutables:criteria-elasticsearch:$versionImmutables"
+implementation "org.immutables:criteria-geode:$versionImmutables"
+implementation "org.immutables:criteria-inmemory:$versionImmutables"
+```
+
+**Reactive support**:
+
+**Maven**:
+```xml
+<!-- RxJava2 support -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-rxjava2</artifactId>
+</dependency>
+
+<!-- Project Reactor support -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-reactor</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:criteria-rxjava2:$versionImmutables"
+implementation "org.immutables:criteria-reactor:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@Criteria`](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/Criteria.java) - Generate type-safe query DSL
+- [`@Criteria.Repository`](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/Criteria.java) - Generate repository with specific backend
+- [`@Criteria.Id`](https://github.com/immutables/immutables/blob/master/criteria/common/src/org/immutables/criteria/Criteria.java) - Mark ID field
+
+**Example**:
+
+```java
+@Value.Immutable
+@Criteria
+@Criteria.Repository
+interface Person {
+  @Criteria.Id
+  String id();
+  String name();
+  int age();
+}
+
+// Generated usage:
+PersonRepository repository = new PersonRepository(...);
+
+List<Person> adults = repository.find(
+    person.age.greaterThanOrEqual(18))
+  .fetch();
+
+repository.update(person.id.is("123"))
+  .set(person.age, 25)
+  .execute();
+```
+
+See the [complete Criteria guide](/criteria.html) for query syntax, projections, aggregations, and backend-specific features.
+
+---
+
+## Functional Modules
+
+### `func`
+
+| **Module** | `org.immutables:func` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Full Guide** | [Functional Guide](/functional.html) |
+| **Source** | [/func/](https://github.com/immutables/immutables/tree/master/func) |
+
+
+Generate Guava `Function` and `Predicate` implementations for pre-Java 8 projects.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>func</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:func:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@Functional`](https://github.com/immutables/immutables/blob/master/func/src/org/immutables/func/Functional.java) - Generate projection functions for attributes
+- [`@Functional.BindParameters`](https://github.com/immutables/immutables/blob/master/func/src/org/immutables/func/Functional.java) - Bind method parameters to functions
+
+**Example**:
+
+```java
+@Value.Immutable
+@Functional
+interface Person {
+  String name();
+  int age();
+}
+
+// Generated functions:
+Function<Person, String> nameFunc = PersonFunctions.name();
+Predicate<Person> isAdult = PersonPredicates.age(Predicates.greaterThan(17));
+
+// Usage:
+List<String> names = FluentIterable.from(people)
+    .transform(nameFunc)
+    .toList();
+```
+
+This module is primarily useful for Java 7 projects. For Java 8+, use lambda expressions directly. See the [functional guide](/functional.html) for more details.
+
+### `ordinal`
+
+| **Module** | `org.immutables:ordinal` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Source** | [/ordinal/](https://github.com/immutables/immutables/tree/master/ordinal) |
+
+
+Create enum-like immutable object "domains" with efficient ordinal-based operations.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>ordinal</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:ordinal:$versionImmutables"
+```
+
+Ordinal domains provide:
+- Efficient ordinal/index-based access
+- Fast bit-set operations for set membership testing
+- Type-safe enum-like behavior with immutable objects
+- Support for large domains (thousands of values)
+
+**Example**:
+
+```java
+@Value.Immutable
+interface Status {
+  String code();
+  String description();
+}
+
+// Define domain
+OrdinalDomain<Status> domain = ImmutableOrdinalDomain.builder()
+    .add(ImmutableStatus.builder().code("NEW").description("New").build())
+    .add(ImmutableStatus.builder().code("ACTIVE").description("Active").build())
+    .add(ImmutableStatus.builder().code("CLOSED").description("Closed").build())
+    .build();
+
+// Efficient set operations
+OrdinalSet<Status> activeStatuses = domain.emptySet()
+    .with(domain.get(1)); // ACTIVE
+
+boolean isActive = activeStatuses.contains(someStatus);
+```
+
+Particularly useful when you need enum-like behavior but with complex immutable objects or dynamic domains.
+
+### `trees`
+
+| **Module** | `org.immutables:trees` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Source** | [/trees/](https://github.com/immutables/immutables/tree/master/trees) |
+
+
+Utilities for immutable tree structures and transformations, including Parboiled parser integration.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>trees</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:trees:$versionImmutables"
+```
+
+This module provides:
+- Tree transformation utilities
+- AST (Abstract Syntax Tree) support
+- Integration with Parboiled parser library
+- Visitor and transformer patterns
+
+Useful for implementing compilers, interpreters, or any tree-structured data processing with immutable nodes.
+
+---
+
+## Meta and Advanced Modules
+
+### `annotate`
+
+| **Module** | `org.immutables:annotate` |
+|---|---|
+| **Scope** | `provided` |
+| **Source** | [/annotate/](https://github.com/immutables/immutables/tree/master/annotate) |
+
+
+Inject custom annotations into generated code with template-based control.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>annotate</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:annotate:$versionImmutables"
+```
+
+**Key annotations**:
+- [`@InjectAnnotation`](https://github.com/immutables/immutables/blob/master/annotate/src/org/immutables/annotate/InjectAnnotation.java) - Define custom injection annotations
+- [`@InjectAnnotation.Where`](https://github.com/immutables/immutables/blob/master/annotate/src/org/immutables/annotate/InjectAnnotation.java) - Control placement (fields, accessors, builder, etc.)
+
+**Example**:
+
+```java
+@InjectAnnotation(
+  type = FrameworkLovesIt.class,
+  target = InjectAnnotation.Where.ACCESSOR,
+  code = "(\"[[name]]\")"
+)
+@interface MakeFrameworkish {}
+
+@Value.Immutable
+@MakeFrameworkish
+interface Data {
+  String userId();  // Generated accessor gets @FrameworkLovesIt("userId")
+  String firstName(); // Generated accessor gets @FrameworkLovesIt("firstName")
+}
+```
+
+The annotation system supports:
+- Template placeholders:
+  + `[[*]]` copies all attribute/values from targeting annotation
+  + `[[name]]` attribute name or type name depending on scope
+  + `[[type]]` type name
+- Conditional generation
+- Target-specific injection (fields, accessors, builders, types)
+- Automatic deduplication
+
+Useful for framework integrations requiring specific annotations on generated code.
+
+### `metainf`
+
+| **Module** | `org.immutables:metainf` |
+|---|---|
+| **Scope** | `provided` |
+| **Source** | [/metainf/](https://github.com/immutables/immutables/tree/master/metainf) |
+
+
+Automatically generate `META-INF/services` files for Java ServiceLoader.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>metainf</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:metainf:$versionImmutables"
+annotationProcessor "org.immutables:metainf:$versionImmutables"
+```
+
+**Key annotation**:
+- [`@Metainf.Service`](https://github.com/immutables/immutables/blob/master/metainf/src/org/immutables/metainf/Metainf.java) - Auto-generate service provider configuration
+
+**Example**:
+
+```java
+@Metainf.Service(MyPlugin.class)
+public class MyPluginImpl implements MyPlugin {
+  // Implementation
+}
+
+// Auto-generates META-INF/services/com.example.MyPlugin
+// containing: com.example.MyPluginImpl
+```
+
+Features:
+- Supports multiple service interfaces per implementation
+- Merges multiple providers into single service file
+- Auto-detects interfaces if not specified
+- Shaded standalone JAR (no runtime dependencies)
+
+### `mirror`
+
+| **Module** | `org.immutables:mirror` |
+|---|---|
+| **Scope** | `provided` |
+| **Source** | [/mirror/](https://github.com/immutables/immutables/tree/master/mirror) |
+
+
+Generate type-safe annotation mirror handlers for writing custom annotation processors.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>mirror</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:mirror:$versionImmutables"
+annotationProcessor "org.immutables:mirror:$versionImmutables"
+```
+
+**Key annotation**:
+- [`@Mirror.Annotation`](https://github.com/immutables/immutables/blob/master/mirror/src/org/immutables/mirror/Mirror.java) - Generate mirror handler for annotation
+
+**Example**:
+
+```java
+@Mirror.Annotation
+@interface MyAnnotation {
+  String value();
+  int priority() default 0;
+}
+
+// Generated MyAnnotationMirror provides type-safe access:
+MyAnnotationMirror mirror = MyAnnotationMirror.find(element);
+if (mirror.isPresent()) {
+  String value = mirror.value();
+  int priority = mirror.priority();
+}
+```
+
+This avoids reflection-based annotation access during annotation processing and provides better type safety. Primarily for developers writing custom annotation processors.
+
+---
+
+## Data Modules (Experimental)
+
+### `data`
+
+| **Module** | `org.immutables:data` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Status** | Deprecated - use `datatype` instead |
+| **Source** | [/data/](https://github.com/immutables/immutables/tree/master/data) |
+
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>data</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:data:$versionImmutables"
+```
+
+Early experimental module for datatype metadata generation. Has Guava dependency.
+
+### `datatype`
+
+| **Module** | `org.immutables:datatype` |
+|---|---|
+| **Scope** | `compile` (runtime) |
+| **Status** | Modern replacement for `data` (since 2.11.1) |
+| **Source** | [/datatype/](https://github.com/immutables/immutables/tree/master/datatype) |
+
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>datatype</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:datatype:$versionImmutables"
+```
+
+Modernized version of the `data` module:
+- No Guava dependency
+- Support for records with generated builders
+- Can be used as meta-annotation
+
+**Example**:
+
+```java
+@org.immutables.datatype.Data
+interface Person {
+  String name();
+  int age();
+}
+```
+
+Provides simplified immutable generation with sensible defaults. The [`@Data`](https://github.com/immutables/immutables/blob/master/datatype/src/org/immutables/datatype/Data.java) annotation can also be used as a meta-annotation for custom styles.
+
+---
+
+## Infrastructure Modules
+
+### `bom`
+
+| **Module** | `org.immutables:bom` |
+|---|---|
+| **Scope** | `import` (Bill of Materials) |
+| **Source** | [/bom/](https://github.com/immutables/immutables/tree/master/bom) |
+
+
+Centralized dependency management POM ensuring version consistency across all Immutables modules.
+
+**Maven**:
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>bom</artifactId>
+      <version>2.12.0</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+**Gradle**:
+```groovy
+dependencies {
+  implementation platform("org.immutables:bom:$versionImmutables")
+}
+```
+
+After importing the BOM, you can omit version numbers:
+
+**Maven**:
+```xml
+<dependencies>
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>value</artifactId>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>criteria-mongo</artifactId>
+  </dependency>
+</dependencies>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:value"
+annotationProcessor "org.immutables:value"
+implementation "org.immutables:criteria-mongo"
+```
+
+The BOM ensures all modules use compatible versions.
+
+### `android-stub`
+
+| **Module** | `org.immutables:android-stub` |
+|---|---|
+| **Scope** | `provided` (optional) |
+| **Source** | [/android-stub/](https://github.com/immutables/immutables/tree/master/android-stub) |
+
+
+Minimal `android.R` stub class for Android compilation without the full Android SDK.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>android-stub</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:android-stub:$versionImmutables"
+```
+
+Only needed if:
+- Generating Android-compatible code
+- Not using the actual Android SDK in build
+- Need to indicate Android API presence
+
+Most Android projects using the actual Android SDK don't need this stub.
+
+### `testing`
+
+| **Module** | `org.immutables:testing` |
+|---|---|
+| **Scope** | `test` |
+| **Source** | [/testing/](https://github.com/immutables/immutables/tree/master/testing) |
+
+
+Testing utilities and common test dependencies used by Immutables' own test suite.
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>testing</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+testImplementation "org.immutables:testing:$versionImmutables"
+```
+
+Includes (old stuff):
+- JUnit 5 and JUnit 4
+- Hamcrest matchers
+- Mockito
+- Guava
+- Common testing patterns
+
+Generally not needed by users - primarily for Immutables developers.
+
+---
+
+## Module Selection Guide
+
+### For most projects (immutable value objects):
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>value</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:value:$versionImmutables"
+annotationProcessor "org.immutables:value:$versionImmutables"
+```
+
+See [Immutable Objects Guide](/immutable.html)
+
+### For factory/constructor builders:
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>builder</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:builder:$versionImmutables"
+annotationProcessor "org.immutables:builder:$versionImmutables"
+```
+
+See [Factory Builders Guide](/factory.html)
+
+### For JSON serialization:
+
+Use Jackson integration (built into `value` module). See [JSON Guide](/json.html)
+
+### For database access:
+
+**Maven**:
+```xml
+<!-- Core -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-common</artifactId>
+</dependency>
+
+<!-- Backend (choose one or more) -->
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>criteria-mongo</artifactId>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+implementation "org.immutables:criteria-common:$versionImmutables"
+implementation "org.immutables:criteria-mongo:$versionImmutables"
+```
+
+See [Criteria API Guide](/criteria.html)
+
+### For custom type encodings:
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>encode</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:encode:$versionImmutables"
+```
+
+See [Encoding Guide](/encoding.html)
+
+### For annotation injection:
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>annotate</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:annotate:$versionImmutables"
+```
+
+### For ServiceLoader generation:
+
+**Maven**:
+```xml
+<dependency>
+  <groupId>org.immutables</groupId>
+  <artifactId>metainf</artifactId>
+  <scope>provided</scope>
+</dependency>
+```
+
+**Gradle**:
+```groovy
+compileOnly "org.immutables:metainf:$versionImmutables"
+annotationProcessor "org.immutables:metainf:$versionImmutables"
+```
+
+---
+
+## Version Management
+
+Always use consistent versions across modules. The recommended approach is to use the BOM:
+
+```xml
+<properties>
+  <immutables.version>2.11.7</immutables.version>
+</properties>
+
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>bom</artifactId>
+      <version>${immutables.version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+
+Check [Maven Central](https://search.maven.org/search?q=g:org.immutables) for the latest releases.
+
+---
+
+## Module Dependencies
+
+Most modules are designed to work independently, but some have dependencies:
+
+- **value-processor** requires generator framework (shaded in `value` artifact)
+- **criteria backends** require criteria-common
+- **criteria-rxjava2/reactor** require corresponding reactive library
+- **func** requires Guava
+- **gson** requires Gson library
+- **mongo** requires MongoDB driver + Gson
+- **ordinal** requires Guava
+
+When using the `value` artifact, dependencies are shaded to avoid conflicts.
+
+---
+
+## Further Reading
+
+- [Immutable Objects Guide](/immutable.html) - Complete guide to [`@Value.Immutable`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java)
+- [Style Customization](/style.html) - Configure code generation with [`@Value.Style`](https://github.com/immutables/immutables/blob/master/value-annotations/src/org/immutables/value/Value.java)
+- [Factory Builders](/factory.html) - Generate builders from factory methods
+- [Encoding Guide](/encoding.html) - Create custom type encodings
+- [JSON Guide](/json.html) - Jackson JSON integration
+- [Functional Guide](/functional.html) - Guava Function/Predicate generation
+- [MongoDB Guide](/mongo.html) - Legacy MongoDB repositories
+- [Criteria API](/criteria.html) - Modern type-safe query DSL

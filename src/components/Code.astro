@@ -1,0 +1,29 @@
+---
+import { codeToHtml } from 'shiki'
+import theme from '../immutables-theme.json'
+
+interface Props {
+  code: string
+  lang: string
+}
+
+const { code, lang } = Astro.props
+
+function preprocess(code: string) {
+  if (code[0] === '\n') code = code.substring(1)
+  code = code.trimEnd()
+  return code
+    .split('\n')
+    // add additional leading space to an indent
+    .map(line => ' ' + line)
+    .join('\n')
+}
+
+// Process code through Shiki with our custom theme
+const html = await codeToHtml(preprocess(code), {
+  lang,
+  theme,
+})
+---
+
+<Fragment set:html={html} />

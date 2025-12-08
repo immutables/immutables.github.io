@@ -1,0 +1,44 @@
+---
+
+interface Props {}
+
+const {} = Astro.props
+
+---
+
+<script>
+const THEME_KEY = 'theme-preference';
+const themeToggle = document.getElementById('themeToggle');
+
+function systemThemeMedia() {
+  return window.matchMedia('(prefers-color-scheme: dark)')
+}
+
+function systemTheme() {
+  return systemThemeMedia().matches ? 'dark' : 'light';
+}
+
+function storedTheme() {
+  return localStorage.getItem(THEME_KEY);
+}
+
+function updateTheme(theme, explicitly) {
+  document.documentElement.className = `theme-${theme}`;
+  if (explicitly) localStorage.setItem(THEME_KEY, theme);
+  themeToggle.innerHTML = theme === 'dark'
+      ? '<span class="iconchar">☼ </span>Switch light'
+      : '<span class="iconchar">☾</span>Switch dark'
+}
+
+function toggleTheme() {
+  const current = document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light'
+  updateTheme(current === 'dark' ? 'light' : 'dark', true)
+}
+
+updateTheme(storedTheme() || systemTheme())
+themeToggle.addEventListener('click', toggleTheme)
+
+systemThemeMedia().addEventListener('change', e => {
+  if (!storedTheme()) updateTheme(e.matches ? 'dark' : 'light')
+})
+</script>

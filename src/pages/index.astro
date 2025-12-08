@@ -1,0 +1,85 @@
+---
+import '../styles/global.css'
+
+import Landing from '../layouts/Landing.astro'
+import Head from '../components/Head.astro'
+import Footer from '../components/Footer.astro'
+import ThemeScript from '../components/ThemeScript.astro'
+import CodeSample1 from '../components/CodeSample1.astro'
+import CodeSample2 from '../components/CodeSample2.astro'
+import CodeSample3 from '../components/CodeSample3.astro'
+import Copy1 from '../components/Copy1.md'
+import Copy2 from '../components/Copy2.md'
+import Copy3 from '../components/Copy3.md'
+
+import {v, depUri} from "../config.js"
+import GoogleTags from '../components/GoogleTags.astro'
+---
+
+<!doctype html>
+<html lang="en" class="theme-dark">
+<Head title="Immutables" />
+<body>
+<GoogleTags/>
+  <div class="Sky"></div>
+  <div class="Cloud"></div>
+  <div class="Rain"></div>
+  <div class="Fog"></div>
+  <div class="Hero">
+    <div class="Subtitle">
+      Annotation processor to generate Immutable classes, Builders, with a Style!
+    </div>
+    <br/>
+    <div class="LogoVersion">
+      <div class="Logo" aria-label="Immutables Annotation Processor">
+      </div>
+      <div class="Edition"
+          title="12 Years Since first 0.9 release in late 2013">
+      </div>
+      <div class="Stars">
+        <a href="https://github.com/immutables/immutables" title="Star us on GitHub">
+          <span class="Icon plain icon-star"></span>
+          <span class="Icon hover icon-github"></span>
+          <code>3.5K</code>
+        </a>
+      </div>
+      <div class="Version">
+        <a target="_blank" title={`Current version: ${v}`}
+            href={`${depUri}/value/${v}`}>
+          <code>{v}</code>
+        </a>
+      </div>
+    </div>
+
+    <div class="CallToAction">
+      <a class="Sample1" href="/newandnice.html">New & Nice!</a>
+      <a class="Sample2" href="/getstarted.html">Get Started!</a>
+      <a class="Sample3" href="/immutable.html">Classic Guide</a>
+    </div>
+    <div class="Mart Content">
+      <article>
+        <CodeSample1/>
+      </article>
+      <article>
+        <CodeSample2/>
+      </article>
+      <article>
+        <CodeSample3/>
+      </article>
+      <article>
+        <Copy1/>
+      </article>
+      <article>
+        <Copy2/>
+      </article>
+      <article>
+        <Copy3/>
+      </article>
+    </div>
+  </div>
+
+  <Footer />
+  <ThemeScript />
+</body>
+</html>
+

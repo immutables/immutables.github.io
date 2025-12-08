@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'Iosevka';
+  font-style: normal;
+  font-display: block;
+  font-weight: 400;
+  src: url(https://unpkg.com/@fontsource/iosevka@5.2.5/files/iosevka-latin-400-normal.woff2) format('woff2'), url(https://unpkg.com/@fontsource/iosevka@5.2.5/files/iosevka-latin-400-normal.woff) format('woff');
+}

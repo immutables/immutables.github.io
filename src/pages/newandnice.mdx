@@ -1,0 +1,942 @@
+---
+title: 'New & Nice!'
+layout: ../layouts/Guide.astro
+---
+import { v, depUri } from "../config.js";
+import Code from "../components/Code.astro";
+import AsideToc from "../components/AsideToc.astro";
+
+<AsideToc/>
+
+Records
+-------
+
+### Record Builder
+
+Since version 2.11.0, Java records can have full-featured builders generated using the `@Value.Builder` annotation. This brings the same builder experience you know from [immutable classes](/immutable.html#builder) to records.
+
+```java
+@Value.Builder
+record Person(String name, int age, String email) {}
+
+// Use the generated builder
+Person person = new PersonBuilder()
+    .name("Alice")
+    .age(30)
+    .email("alice@example.com")
+    .build();
+```
+
+The builder provides all the standard features:
+- Mandatory attribute validation (build fails if required attributes are missing)
+- Collection builders with `add*` and `addAll*` methods
+- Optional attributes support
+- Default values via builder constructors or initializers (see [Builder defaults](#builder-defaults))
+
+For more details on builder features, see the [classic builder guide](/immutable.html#builder).
+
+### Nested builder
+
+Since version 2.11.1, you can define a static nested `Builder` class inside a record that extends the generated builder. This allows you to add custom builder methods or hide the generated implementation:
+
+```java
+@Value.Builder
+record Person(String name, int age) {
+  // Extend the generated PersonBuilder
+  static class Builder extends PersonBuilder {
+    // Can add more convenience methods
+    public Builder adult(String name) {
+      return name(name).age(18);
+    }
+  }
+}
+
+// Use your custom builder
+var person = new Person.Builder()
+    .adult("Bob")
+    .build();
+```
+
+These are the same [extending builders](/immutable.html#extending-builder) as for immutable classes,
+giving you full control over the builder API while leveraging the generated implementation.
+
+### Builder defaults
+
+For records, you can set default values for attributes using a builder constructor
+or object initializer block within the generated builder:
+
+```java
+@Value.Builder
+record Config(String host, int port, boolean ssl) {
+  static class Builder extends ConfigBuilder {
+    // Constructor with defaults
+    public Builder() {
+      host("localhost");
+      port(8080);
+      ssl(false);
+    }
+  }
+}
+
+// All defaults are pre-set
+var config = new Config.Builder().build();
+// Config[host=localhost, port=8080, ssl=false]
+
+// Override specific values
+var prodConfig = new Config.Builder()
+    .host("prod.example.com")
+    .ssl(true)
+    .build();
+// Config[host=prod.example.com, port=8080, ssl=true]
+```
+
+This is particularly useful for records where you cannot use `@Value.Default` annotations (those work on method bodies in abstract classes/interfaces).
+
+The other alternative is to lazily check and initialize attributes in overridden build method.
+
+```java
+@Value.Style(isSetOnBuilder = true)  // enables *IsSet methods
+@Value.Builder
+record Config(String host, int port, boolean ssl) {
+  static class Builder extends ConfigBuilder {
+    @Override public Config build() {
+      if (!hostIsSet()) host("localhost");
+      if (!portIsSet()) port(8080);
+      if (!sslIsSet()) ssl(false);
+      return super.build();
+    }
+  }
+}
+```
+
+For compile-time constant defaults, see [Constant defaults](#constant-defaults).
+
+### Constant defaults
+
+Introduced in version 2.11.0, the `@Value.Default.*` family of annotations allows you to specify compile-time constant default values directly on record components and interface/abstract class accessors. These are perfect for primitive (and their wrapper) types and string literals:
+
+```java
+@Value.Immutable
+interface RegularImm {
+  @Value.Default.Boolean(true) boolean enabled();
+  @Value.Default.Int(42) int count();
+  @Value.Default.Long(1000L) long timeout();
+  @Value.Default.String("default") String name();
+  @Value.Default.Char('X') char marker();
+}
+
+@Value.Builder
+record Settings(
+  @Value.Default.Boolean(false) boolean debug,
+  @Value.Default.Int(8080) int port,
+  @Value.Default.String("localhost") String host
+) {}
+```
+
+Available constant default annotations:
+- `@Value.Default.Boolean`
+- `@Value.Default.Int`
+- `@Value.Default.Long`
+- `@Value.Default.Char`
+- `@Value.Default.Float`
+- `@Value.Default.Double`
+- `@Value.Default.String`
+- There's no annotations for `short` or `byte`, use `int` attribute type instead.
+
+These work for both records and regular immutable types. For more complex default logic, use `@Value.Default` on methods as described in the [default attributes guide](/immutable.html#default-attribute).
+
+### Staged builders
+
+[Staged builders](/immutable.html#staged-builder) are supported for records in the same manner
+as for immutable classes. Since version 2.11.7, staged builders work properly with top-level builders,
+including record builders, where stage interfaces are nested in separate top level class named `[TypeName]BuilderStages`. Since the builder class implements all stage interfaces, we need to guide usage through a narrow starting stage. There is a convenience `.start()` factory method generated
+on that `*BuilderStages` class, which can be called directly, but is arguably not very intuitive
+to discover. An obvious alternative is to forward to this method using a static builder method on the record.
+
+```java
+@Value.Style(stagedBuilder = true)
+
+@Value.Builder
+record Person(String name, int age, boolean employed) {
+  static PersonBuilderStages.BuildStart builder() {
+    return PersonBuilderStages.start();
+  }
+}
+
+// Staged builder forces attributes in sequence
+Person person = Person.builder()
+    .name("Charlie")  // NameBuildStage
+    .age(25)      // AgeBuildStage
+    .employed(true)   // EmployedBuildStage
+    .build();       // BuildFinal
+```
+
+`BuildStart` is a stable interface name for the first stage, if you add newAttribute before the name,
+in the example above, `BuildStart` will be the same, but it will now internally extend
+`NewAttributeBuildStage` instead of `NameBuildStage`.
+
+**Note:** Staged builders cannot be mixed well with [nested/extending builders](#nested-builder), as those expose all builder methods,
+while stage interfaces try to hide methods, exposing them only in proper strict sequence.
+
+### Copy methods
+
+Records with builders can automatically implement generated "wither" interfaces. These interfaces provide `with*` copy methods for creating modified copies of records, working the same as [copy methods](/immutable.html#copy-methods) for immutable classes:
+
+```java
+@Value.Builder
+record Point(int x, int y) implements WithPoint {}
+
+// Use wither methods
+Point p1 = new PointBuilder().x(10).y(20).build();
+Point p2 = p1.withX(30);  // Point[x=30, y=20]
+Point p3 = p2.withY(40);  // Point[x=30, y=40]
+```
+
+The generated `With*` interface (like `WithPoint`) is a not-yet-generated type that your record can implement. It provides individual wither methods (like `withX()`, `withY()`) for each attribute implemented as interface default method, so there's no need to implement any on these methods on the record itself, default implementations do the right thing.
+
+Each copy-with method returns a new instance with the specified attribute (record component) changed, using structural sharing for efficiency, or returns the same (`return this`) instance if the new value is the same as the previous value, the comparison is done via `==` which is value equality for primitive types and reference equality for objects, this can be changed to `equals` check via [forceEqualsInWithers](/allstyles.html#forceEqualsInWithers) style option.
+
+This provides a fluent API for "editing" records while maintaining immutability.
+
+Nice things
+-----------
+
+### Attribute builder detection and lambda initializer
+
+The [`attributeBuilderDetection=true`](/allstyles.html#attributeBuilderDetection) style flag enables recognition of builders for objects coming from immutables and also third party objects (even manually written) as long they follow common conventions (can be tuned using [`attributeBuilder`](/allstyles.html#attributeBuilder)). This will generate a bunch of convenience methods on builder to get, set, add(to collection) nested builders (see [`getBuilder`](/allstyles.html#getBuilder), [`setBuilder`](/allstyles.html#setBuilder), [`addBuilder`](/allstyles.html#addBuilder), [`addAllBuilder`](/allstyles.html#addAllBuilder), [`getBuilders`](/allstyles.html#getBuilders), etc.)
+
+But coolest of them all is just regularly named initializer having `Consumer` lambda parameter, a lambda
+which accepts a new nested builder to initialize it. This provides a cleaner, more fluent API when working with complex nested structures:
+
+```java
+@Value.Style(attributeBuilderDetection = true)
+@Value.Immutable
+interface Container {
+  NestedValue nested();
+}
+
+@Value.Immutable
+interface NestedValue {
+  int a();
+  String b();
+}
+
+// Without lambda builders (verbose)
+Container old = ImmutableContainer.builder()
+    .nested(ImmutableNestedValue.builder()
+        .a(1)
+        .b("text")
+        .build())
+    .build();
+
+// With lambda builders (cleaner)
+var modern = ImmutableContainer.builder()
+    .nested(n -> n.a(1).b("text"))
+    .build();
+```
+
+The lambda receives the nested builder, allowing you to configure it inline without explicitly calling `build()`. This works automatically for any attribute whose type has a generated builder, making nested object construction less verbose and having proper nesting structure (then building nested object on the side, out-of-band, so to speak).
+
+### Lambda copy-with methods
+
+The [`withUnaryOperator`](/allstyles.html#withUnaryOperator) style option (introduced in version 2.9.3) generates with-copy methods that accept unary operators. This allows you to transform attribute values functionally:
+
+```java
+@Value.Style(withUnaryOperator = "with*")
+
+@Value.Immutable
+interface Counter {
+  int value();
+}
+
+var counter = ImmutableCounter.builder().value(10).build();
+
+// Traditional wither
+var incremented = counter.withValue(counter.value() + 1);
+
+// Lambda wither with unary operator
+var doubled = counter.withValue(v -> v * 2);
+// Counter{value=20}
+
+// Can chain transformations
+var result = counter
+    .withValue(v -> v * 2)
+    .withValue(v -> v + 5);
+// Counter{value=25}
+```
+
+This one of not that many special style flags which have default value of empty string `""`,
+methods are not generated by default. But when you set those with a naming template
+(like `"with*"` or `"with*Mapped"` for `withUnaryOperator`),
+it will both configure the naming and enable the generation of this method.
+
+_Note: `"with*"` was used in this example, and you can use it too: if you sure you can expect
+no overload clashing.
+If you want to have an attribute of type `UnaryOperator`, say, `UnaryOperator<X> attr()`,
+then when `withUnaryOperator="with*"`, it will try to generate two methods `withAttr(UnaryOperator<X> value)`
+and `withAttr(UnaryOperator<UnaryOperator<X>> value)` which would clash having the same raw type for the parameter.
+In those cases you need to use different naming something like `"with*Mapped"`._
+
+### Add-on builder goodies
+
+Builders are a lot more full-featured than might seem. These features are not enabled by default,
+to not clutter builders unnecessarily, but you can configure them using style options.
+
+- [`canBuild`](/allstyles.html#canBuild) - Check if all mandatory attributes are set before calling `build()` to avoid exceptions
+- [`builderToString`](/allstyles.html#builderToString) - Generate useful `toString()` on builders for debugging
+- [`buildOrThrow`](/allstyles.html#buildOrThrow) - Build with custom exception factory to create context-specific error messages
+- [`isSetOnBuilder`](/allstyles.html#isSetOnBuilder) - Expose methods to check if individual attributes have been set on the builder
+- [`toBuilder`](/allstyles.html#toBuilder) - Convert immutable instances back to builders for convenient modification
+
+And don't forget about, these annotations (from `org.immutables:builder` module),
+which works on all builders, including records and value types:
+
+- [`@Builder.Parameter`](/factory.html#parameters) - Turns attribute or record component in required parameter to a builder (constructor or static builder method)
+
+- [`@Builder.Switch`](/factory.html#switch-parameters) - Turns enum attribute or record component into a "switch" initializers on method.
+
+### Datatype Metamodel
+
+The `org.immutables:datatype` module provides runtime metamodel generation for immutable types. Use the `@Data` annotation to generate type-safe feature descriptors that enable reflection-free introspection and generic data manipulation.
+
+```java
+import org.immutables.datatype.Data;
+import org.immutables.value.Value.Immutable;
+
+@Data
+@Immutable
+interface Person {
+  String name();
+  int age();
+  String email();
+}
+
+// Generated: Datatypes_Person class with metamodel
+import static org.immutables.datatype.Datatypes_Person._Person;
+
+Person_ person = _Person();  // Get metamodel descriptor
+
+// Build using feature descriptors
+var builder = person.builder();
+builder.set(person.name_, "Alice");
+builder.set(person.age_, 30);
+builder.set(person.email_, "alice@example.com");
+
+// Verify constraints before building
+List<Violation> violations = builder.verify();
+if (!violations.isEmpty()) {
+  for (var v : violations) {
+    System.out.println(v);
+  }
+} else {
+  Person p = builder.build();
+
+  // Type-safe property access
+  String name = person.get(person.name_, p);  // "Alice"
+}
+```
+
+The generated metamodel includes feature descriptors (`name_`, `age_`, `email_`) that provide type information and allow generic builder operations. This is useful for frameworks that need to manipulate data structures generically without reflection.
+
+**Additional annotations:**
+- `@Data.Ignore` - This data element should be ignored during reading and writing the data. It is usually a mistake to make required attribute having no defaults as ignorable.
+- `@Data.Inline` - Marks that the type is strongly typed alias (newtype) for the other type it wraps.
+For now, it requires either single parameter to be inlined or otherwise multiple will be
+"inlined" as heterogeneous array/tuple in their data representation/serialization, in positional
+order, for example. However, in our Datatypes metadata framework we only mark those as such on
+a model level, we leave it up to further codecs/serialization to implement it.
+
+Nullable annotations
+--------------------
+
+### JSpecify support
+
+Since version 2.11.0, Immutables supports [JSpecify](https://jspecify.dev) nullability annotations when used in `@NullMarked` mode. JSpecify is becoming the standard for nullability annotations in the Java ecosystem.
+
+```java
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+@NullMarked  // Package or class level
+@Value.Immutable
+interface User {
+  String name();       // Non-null by default in Immutables and with @NullMarked
+  @Nullable String email(); // Explicitly nullable
+  int age();
+}
+
+// Builder respects JSpecify annotations
+User user = ImmutableUser.builder()
+    .name("Alice")
+    // email is nullable and not required
+    .age(30)
+    .build();
+```
+
+**Key features:**
+- `@NullMarked` scope makes all types non-null by default
+- `@Nullable` annotation marks non-mandatory attributes
+- Works with `TYPE_USE` annotations (e.g., `List<@Nullable String>`)
+- Compatible with static analysis tools like Checker Framework and NullAway
+- Generates appropriate nullability checks in builders
+
+_JSpecify_ annotations provide some benefits (like not being unofficially discontinued as JSR-305)
+and should better now or in the future with Java null-checking tools.
+For projects not using _JSpecify_, _Immutables_ continues to support other nullable annotations
+via the [`fallbackNullableAnnotation`](/allstyles.html#fallbackNullableAnnotation) style option.
+
+### The state of type annotations
+
+With version 2.11.0, Immutables has significantly improved support for type annotations
+(`target=ElementType.TYPE_USE`) throughout the codebase.
+This enhancement was further refined in version 2.11.7 to handle some complex
+cases like generics and arrays. To this day (2025, this may change in future) Javac compiler has
+unimplemented/broken functionality of not providing (to annotation processors, or other
+compiler tools like _CheckerFramework_) type annotations placed on arrays/elements,
+or on nested type variables. We partially work around these cases using [source access](/troubleshooting.html#source-access) for `Nullable` type annotations, any nullable annotation, as defined by simple name pattern defined by[`nullableAnnotation`](/allstyles.html#nullableAnnotation) style.
+
+**What works now:**
+- all type annotations propagated and `@Nullable` supported on reference and primitive types
+  + Type annotation _mostly_ propagate through fields, builders, withers, and factory methods
+  + (for arrays or nested arguments see below)
+- `@Nullable` type annotation supported on type variables (`@Nullable V value()`)
+- `@Nullable` type annotation on array types (e.g., `String @Nullable []` vs `@Nullable String[]`)
+- `@Nullable` on collection elements, which are reference types (not type vars, `List<@Nullable String> list()`)
+
+```java
+@NullMarked // JSpecify nullable
+@Value.Immutable
+@Value.Style(jdkOnly = true) // Regular unmodifiable wrapper collections to allow null
+public abstract class GenericVar<V> {
+  public abstract @SomeTypeAnnotation int integer(); // @SomeTypeAnnotation will propagate to a field etc
+  public abstract @Nullable String string(); // works normally
+  public abstract @Nullable V value(); // this should work now
+  // This nullable is for elements, but we can only recognize the whole
+  // array as nullable, unfortunately (elements are not checked anyway)
+  public abstract @Nullable V[] abra();
+  // This works correctly with array being nullable
+  public abstract V @Nullable [] cadabra();
+  public abstract List<@Nullable String> list1(); // should work
+
+  // Here below we mix in also SkipNulls and AllowNulls, both can be placed
+  // on the element (method, field) or . There are any (any-package) type use and/or element
+  // annotation matched by a simple name (hardcoded as `SkipNulls` and `AllowNulls`)
+
+  public abstract List<@SkipNulls String> list2(); // should work, will skip nulls
+
+  // This is working not because @Nullable V, but only because of @AllowNulls
+  // the trouble is nested type variable
+  public abstract @AllowNulls List<@Nullable V> list3();
+}
+```
+
+**Important note:** For `TYPE_USE` annotations on arrays and type variables to work correctly
+in v2.11.7+, you need to configure `-sourcepath` in your compiler options to allow
+the annotation processor to access source code and try to parse out and match annotations.
+
+<a name="jackson3"></a>
+
+Jackson 3
+---------
+
+Starting with version 2.12.0, Immutables fully supports Jackson 3.x serialization and deserialization while maintaining backward compatibility with Jackson 2.x. This allows you to upgrade to Jackson 3 by only changing `@JsonDeserialize`/`@JsonSerialize` annotations, or to be specific, the package they are imported from.
+
+**What you need to know:**
+- The `jackson-annotations` module works with both Jackson 2.x and 3.x
+- All Jackson annotations (`@JsonProperty`, `@JsonCreator`, etc.) are supported in both versions
+- Immutables detects which version of Jackson is on your classpath and generates compatible code
+- No migration required - your existing Jackson 2.x code continues to work
+
+**Example:**
+```java
+// new package for the Jackson 3
+import tools.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.annotation.JsonDeserialize;
+
+// <- binding configuration annotations are in the old package
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+@Value.Immutable
+@JsonSerialize(as = ImmutableUser.class)
+@JsonDeserialize(as = ImmutableUser.class)
+interface User {
+  @JsonProperty("user_name")
+  String name();
+
+  @JsonProperty("user_age")
+  int age();
+}
+```
+
+This code works identically with both Jackson 2.x and Jackson 3.x except for imports for `JsonDeserialize` and `JsonSerialize`.
+The generated code mostly includes unchanged annotations coming from `com.fasterxml.jackson.annotation.`.
+
+For more details on JSON integration, see the [JSON guide](/json.html).
+
+Annotation Processing Options
+-----------------------------
+
+Annotation processor options are those arguments to Java Compiler which are prefixed with `-A`
+and are specific to the annotation processor.
+
+**Maven Configuration:**
+
+In Maven, annotation processor options are passed via the `maven-compiler-plugin` configuration:
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.11.0</version>
+      <configuration>
+        <annotationProcessorPaths>
+          <path>
+            <groupId>org.immutables</groupId>
+            <artifactId>value</artifactId>
+            <version>2.12.0</version>
+          </path>
+        </annotationProcessorPaths>
+        <compilerArgs>
+          <arg>-Aimmutables.gradle.incremental</arg>
+          <arg>-Aimmutables.annotation=com.example.MyImmutable</arg>
+        </compilerArgs>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+```
+
+**Gradle Configuration:**
+
+In Gradle, annotation processor options are configured via the `compilerArgs` option:
+
+```groovy
+dependencies {
+  annotationProcessor 'org.immutables:value:2.12.0'
+  compileOnly 'org.immutables:value-annotations:2.12.0'
+}
+
+tasks.withType(JavaCompile) {
+  options.compilerArgs += [
+    '-Aimmutables.gradle.incremental',
+    '-Aimmutables.annotation=com.example.MyImmutable'
+  ]
+}
+```
+
+### `-Aimmutables.gradle.incremental`
+
+Enables support for Gradle's incremental annotation processing by declaring the processor as "isolating". This allows Gradle to only reprocess files that have changed, significantly improving build performance in large projects.
+
+**How it works:**
+
+When this option is enabled, the Immutables annotation processor adds `"org.gradle.annotation.processing.isolating"` to its supported options. This signals to Gradle that the processor analyzes each source file in isolation without creating new source files that depend on multiple inputs.
+
+**Important consequences:**
+
+1. **No source file access:** In incremental mode, the processor cannot access source files directly. Features that rely on [source path access](/troubleshooting.html#source-access) will not work when this option is enabled.
+
+2. **Isolated file processing:** Each annotated class is processed independently. This means features that require aggregating information across multiple files may not work as expected. For example, Gson's package-level type adapter generation (see [JSON guide](/json.html#generating-type-adapters)) cannot collect all types in a package for a single aggregated output.
+
+3. **Faster incremental builds:** The benefit is that when you modify a single file, Gradle only reruns the annotation processor for that file and its dependents, not the entire project.
+
+**Usage:**
+
+```groovy
+// build.gradle
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.gradle.incremental'
+}
+```
+
+If you encounter issues with incremental processing (such as missing generated code or compilation errors), you can disable this option to fall back to the standard annotation processing mode where all files are processed together.
+
+### `-Aimmutables.guava.suppress`
+
+Forces the annotation processor to ignore Google Guava even if it's present on the classpath, generating JDK-only code instead. This is useful when you have Guava on the classpath but don't want Immutables to use it in generated code.
+
+**When to use:**
+
+By default, Immutables automatically detects whether Guava is on the classpath during annotation processing:
+- If Guava is found → generates code using Guava collections (`ImmutableList`, `ImmutableMap`, etc.)
+- If Guava is absent → generates code using JDK collections
+
+However, you may want to suppress Guava usage even when it's available on the classpath:
+
+1. **Classpath inconsistency:** Guava is on the compilation classpath but won't be available at runtime
+2. **Transitive dependencies:** Another library brings in Guava, but you don't want it used in generated code
+3. **Version conflicts:** Different Guava versions on classpath cause compatibility issues
+4. **Forcing JDK-only mode:** You want deterministic JDK-only generation regardless of classpath
+
+**Usage:**
+
+```groovy
+// build.gradle
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.guava.suppress'
+}
+```
+
+```xml
+<!-- Maven -->
+<compilerArgs>
+  <arg>-Aimmutables.guava.suppress</arg>
+</compilerArgs>
+```
+
+**Relationship with `jdkOnly` style:**
+
+The [`@Value.Style(jdkOnly = true)`](/allstyles.html#jdkOnly) annotation provides a similar effect but at the type, package, or parent-package level depending on where the style is applied:
+
+```java
+// Per-type, package, or parent-package control
+@Value.Style(jdkOnly = true)
+@Value.Immutable
+interface MyType { }
+```
+
+Use `-Aimmutables.guava.suppress` for project-wide control, and `jdkOnly = true` for fine-grained control at different scopes.
+
+**See also:** [`jdkOnly`](/allstyles.html#jdkOnly), [`jdk9Collections`](/allstyles.html#jdk9Collections)
+
+### `-Aimmutables.guava.prefix`
+
+Specifies a custom package prefix for relocated (shaded) Guava dependencies. Use this when you've relocated Guava to a different package namespace to avoid dependency conflicts.
+
+**When to use:**
+
+When building libraries or applications that shade/relocate Guava to avoid version conflicts, you need to tell the Immutables annotation processor about the new package location. Without this option, the generated code will reference the original `com.google.common.*` packages instead of your relocated ones.
+
+**Common scenarios:**
+
+1. **Shading Guava in a library:** Avoiding classpath conflicts with consumers' Guava versions
+2. **Version isolation:** Multiple Guava versions in the same application
+3. **Enterprise requirements:** Corporate policies requiring dependency relocation
+
+**Usage:**
+
+```groovy
+// build.gradle with Shadow plugin
+shadowJar {
+    relocate 'com.google.common', 'com.myapp.shaded.guava'
+}
+
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.guava.prefix=com.myapp.shaded.guava'
+}
+```
+
+Example `maven-shade-plugin`
+
+```xml
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-shade-plugin</artifactId>
+  <configuration>
+    <relocations>
+      <relocation>
+        <pattern>com.google.common</pattern>
+        <shadedPattern>com.myapp.shaded.guava</shadedPattern>
+      </relocation>
+    </relocations>
+  </configuration>
+</plugin>
+```
+
+Example annotation processing configuration
+
+```xml
+<plugin>
+  <groupId>org.apache.maven.plugins</groupId>
+  <artifactId>maven-compiler-plugin</artifactId>
+  <configuration>
+    <compilerArgs>
+      <arg>-Aimmutables.guava.prefix=com.myapp.shaded.guava</arg>
+    </compilerArgs>
+  </configuration>
+</plugin>
+```
+
+**Generated code comparison:**
+
+Without `-Aimmutables.guava.prefix`:
+```java
+// Generated code - won't work with shaded Guava!
+import com.google.common.collect.ImmutableList;
+
+public ImmutableList<String> items() { ... }
+```
+
+With `-Aimmutables.guava.prefix=com.myapp.shaded.guava`:
+```java
+// Generated code - correctly uses relocated package
+import com.myapp.shaded.guava.collect.ImmutableList;
+
+public ImmutableList<String> items() { ... }
+```
+
+**Important:** The prefix value should be the complete replacement for `com.google.common`. The processor will use this prefix to construct the full package names for all Guava classes used in generated code.
+
+### `-Aimmutables.jackson.prefix`
+
+Specifies a custom package prefix for relocated (shaded) Jackson dependencies. Use this when you've relocated Jackson to a different package namespace to avoid dependency conflicts.
+
+**When to use:**
+
+Similar to [`-Aimmutables.guava.prefix`](#-aimmutablesguavaprefix), this option is needed when you shade/relocate Jackson packages. Without it, generated code will reference the original Jackson packages instead of your relocated ones.
+
+**Usage:**
+
+```groovy
+// build.gradle with Shadow plugin
+shadowJar {
+    relocate 'com.fasterxml.jackson', 'com.myapp.shaded.jackson'
+}
+
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.jackson.prefix=com.myapp.shaded.jackson'
+}
+```
+
+```xml
+<!-- Maven with maven-shade-plugin -->
+<compilerArgs>
+  <arg>-Aimmutables.jackson.prefix=com.myapp.shaded.jackson</arg>
+</compilerArgs>
+```
+
+**Generated code comparison:**
+
+Without `-Aimmutables.jackson.prefix`:
+```java
+// Generated code
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+```
+
+With `-Aimmutables.jackson.prefix=com.myapp.shaded.jackson`:
+```java
+// Generated code - uses relocated packages
+import com.myapp.shaded.jackson.annotation.JsonProperty;
+import com.myapp.shaded.jackson.databind.annotation.JsonDeserialize;
+```
+
+**Jackson 3 Warning:**
+
+Jackson 3.x has a **different package structure** compared to Jackson 2.x:
+- **Jackson 2.x:** All packages under `com.fasterxml.jackson.*`
+- **Jackson 3.x:**
+  - Core packages: `tools.jackson.core.*`, `tools.jackson.databind.*`
+  - **Exception:** Annotations remain at `com.fasterxml.jackson.annotation.*`
+
+If you're shading Jackson 3, you need to handle this split carefully:
+
+```groovy
+// Correct shading for Jackson 3
+shadowJar {
+  // Most Jackson 3 packages
+  relocate 'tools.jackson', 'com.myapp.shaded.jackson'
+  // Annotations still use the old package!
+  relocate 'com.fasterxml.jackson.annotation', 'com.myapp.shaded.jackson.annotation'
+}
+```
+
+The `-Aimmutables.jackson.prefix` option works for Jackson 2.x and simple Jackson 3 scenarios, but complex Jackson 3 shading may require additional configuration due to the package split.
+
+**See also:** [Jackson 3 support](#jackson3)
+
+### `-Aimmutables.annotations.pick`
+
+Controls which annotation packages Immutables uses in generated code for standard annotations like `@Generated`, `@Nullable`, and `@ParametersAreNonnullByDefault`.
+
+**Available values:**
+
+- `legacy` - Uses legacy `javax.annotation.*` packages (pre-Jakarta)
+- `javax` - Uses `javax.annotation.*` packages (specifically `javax.annotation.Generated`)
+- `javax+processing` - Uses `javax.annotation.processing.*` packages (specifically `javax.annotation.processing.Generated` instead of `javax.annotation.Generated`)
+- `jakarta` - Uses `jakarta.annotation.*` and `jakarta.annotation.processing.*` packages
+- `none` or empty or any unrecognized value - Disables these auto-generated annotations
+
+The only difference between `javax` and `javax+processing` is which `@Generated` annotation is used: `javax.annotation.Generated` vs `javax.annotation.processing.Generated`.
+
+**Default behavior:**
+
+The default depends on whether the option is specified:
+- **Option not specified:** Defaults to `legacy` behavior (uses `javax.annotation.*`)
+- **Option specified with empty/unrecognized value:** Defaults to `none` (no annotations)
+
+For Jakarta EE 9+ projects (Spring Boot 3+, etc.), explicitly set this to `jakarta`.
+
+**Usage:**
+
+```groovy
+// build.gradle - for Jakarta EE 9+ projects
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.annotations.pick=jakarta'
+}
+```
+
+```xml
+<!-- Maven - for Jakarta EE 9+ projects -->
+<compilerArgs>
+  <arg>-Aimmutables.annotations.pick=jakarta</arg>
+</compilerArgs>
+```
+
+**Generated code comparison:**
+
+With `-Aimmutables.annotations.pick=javax`:
+```java
+import javax.annotation.Generated;
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@Generated("org.immutables.processor.ProxyProcessor")
+@ParametersAreNonnullByDefault
+final class ImmutablePerson { ... }
+```
+
+With `-Aimmutables.annotations.pick=jakarta`:
+```java
+import jakarta.annotation.Generated;
+import jakarta.annotation.ParametersAreNonnullByDefault;
+
+@Generated("org.immutables.processor.ProxyProcessor")
+@ParametersAreNonnullByDefault
+final class ImmutablePerson { ... }
+```
+
+With `-Aimmutables.annotations.pick=` (empty value):
+```java
+// No @Generated or other annotations added
+final class ImmutablePerson { ... }
+```
+
+**When to use each value:**
+
+| Value | Use Case |
+|--------|----------|
+| `jakarta` | Jakarta EE 9+, Spring Boot 3+, modern frameworks |
+| `javax` or `javax+processing` | Java EE 8 and earlier, legacy projects |
+| `legacy` | Older projects using legacy javax annotations |
+| (empty) | When you don't want processor-generated annotations (reduces generated code size) |
+
+**Relationship with `jakarta` and `allowedClasspathAnnotations` styles:**
+
+The [`@Value.Style(jakarta = true)`](/allstyles.html#jakarta) annotation provides similar functionality but at the type, package, or parent-package level depending on where the style is applied. The annotation processor option `-Aimmutables.annotations.pick=jakarta` provides project-wide control that takes precedence.
+
+The [`allowedClasspathAnnotations`](/allstyles.html#allowedClasspathAnnotations) style option controls which annotations are allowed to be auto-discovered on the classpath and used. The global `-Aimmutables.annotations.pick` flag takes precedence over `allowedClasspathAnnotations` for determining annotation packages, but the filtering by `allowedClasspathAnnotations` still applies to restrict which specific annotations can be discovered and used.
+
+**See also:** [`jakarta`](/allstyles.html#jakarta), [`allowedClasspathAnnotations`](/allstyles.html#allowedClasspathAnnotations)
+
+### `-Aimmutables.annotation`
+
+Registers custom annotations to be treated as immutable value type annotations, in addition to the built-in `@Value.Immutable`. This allows you to define your own domain-specific annotations to trigger code generation.
+
+**When to use:**
+
+This option is useful when you want to:
+1. Use a domain-specific annotation name that better fits your project's vocabulary
+2. Avoid direct dependency on `org.immutables.value` annotations in your public API
+3. Combine with `@Value.Style` meta-annotations for project-specific defaults
+
+**How it works:**
+
+During initialization, the annotation processor needs to know which annotations it should process. There are two ways to register custom immutable annotations:
+
+1. **`-Aimmutables.annotation` processor option** (recommended) - More predictable, especially when using `annotationProcessorPath`
+2. **`/META-INF/annotations/org.immutables.value.immutable` file** (legacy) - Can have classpath visibility issues with `annotationProcessorPath`
+
+The processor option is the easier and more reliable approach.
+
+**Usage:**
+
+Specify one or more custom annotation fully qualified class names as a comma-separated list:
+
+```groovy
+// build.gradle - single annotation
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.annotation=com.example.MyImmutable'
+}
+
+// Multiple annotations
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.annotation=com.example.MyImmutable,com.example.MyValue'
+}
+```
+
+```xml
+<!-- Maven - single annotation -->
+<compilerArgs>
+  <arg>-Aimmutables.annotation=com.example.MyImmutable</arg>
+</compilerArgs>
+
+<!-- Multiple annotations -->
+<compilerArgs>
+  <arg>-Aimmutables.annotation=com.example.MyImmutable,com.example.MyValue</arg>
+</compilerArgs>
+```
+
+**Example:**
+
+Define your custom annotation (optionally meta-annotated with `@Value.Style`):
+
+```java
+package com.example;
+
+import org.immutables.value.Value;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.SOURCE)
+// Optionally bundle with custom style
+@Value.Style(
+    typeAbstract = "*Model",
+    typeImmutable = "*",
+    visibility = Value.Style.ImplementationVisibility.PUBLIC
+)
+public @interface MyImmutable {}
+```
+
+Use your custom annotation instead of `@Value.Immutable`:
+
+```java
+package com.example.domain;
+
+import com.example.MyImmutable;
+
+@MyImmutable
+interface PersonModel {
+  String name();
+  int age();
+}
+
+// Generates: Person class (not ImmutablePerson)
+```
+
+Register the annotation with the processor:
+
+```groovy
+tasks.withType(JavaCompile) {
+  options.compilerArgs << '-Aimmutables.annotation=com.example.MyImmutable'
+}
+```
+
+**Important notes:**
+
+- The custom annotation replaces `@Value.Immutable` for triggering code generation
+- You can combine your custom annotation with `@Value.Style` as a meta-annotation to bundle style settings
+- But `@Value.Style` alone is **not** sufficient - you still need a custom immutable annotation registered via this processor option or the META-INF file
+- Multiple annotations can be specified as a comma-separated list: `-Aimmutables.annotation=fqcn1.Ann1,fqcn2.Ann2`
+
+**See also:** The [style guide](/style.html) for more information on using `@Value.Style` with custom annotations.
+
+<div class="headsup"><div class="llama"></div>
+Noticed some llama tracks?<br/>
+That’s about right — parts of this page were generated with an LLM, but under supervision,
+then reviewed and edited, so we could add back the usual human inconsistencies and grammar mistakes
+</div>

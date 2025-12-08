@@ -1,0 +1,50 @@
+---
+import '../styles/global.css'
+
+import Head from '../components/Head.astro'
+import Footer from '../components/Footer.astro'
+import GoogleTags from '../components/GoogleTags.astro'
+import ThemeScript from '../components/ThemeScript.astro'
+
+const { frontmatter } = Astro.props
+const title = frontmatter?.title || 'Immutables'
+const jquery = '//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js'
+---
+
+<!doctype html>
+<html lang="en" class="theme-dark">
+<Head title={title} />
+<body class="Guide">
+<script src={jquery}></script>
+<GoogleTags/>
+<script defer src="/gfx/jquery.toc.min.js"></script>
+<script defer>
+$(function() {
+  $('#toc').toc({
+    container: '.Toc',
+    selectors: 'h1,h2,h3',
+    anchorName: function(i, heading, prefix) {
+      heading = $(heading).text();
+      if (heading.trim) heading = heading.trim();
+      return heading.toLowerCase().replace(/ /g, '-').replace(/[^a-z^\-]+/g, '');
+    },
+  })
+})
+</script>
+<div class="Sky"></div>
+<div class="Cloud"></div>
+<div class="Rain"></div>
+<div class="Fog"></div>
+<div class="around-content">
+  <div class="Content Toc">
+    <a class="Return" href="/" title="Return">⇤</a>
+    <h1>{title}</h1>
+    <div class="Doc">
+      <slot/>
+    </div>
+  </div>
+</div>
+<Footer />
+<ThemeScript />
+</body>
+</html>

@@ -1,0 +1,217 @@
+---
+title: 'Get started!'
+layout: ../layouts/Guide.astro
+---
+import { v, depUri } from "../config.js";
+import Code from "../components/Code.astro";
+import AsideToc from "../components/AsideToc.astro";
+
+<AsideToc/>
+
+Java 8 or higher is required to run the _Immutables_ annotation processor.
+Functionality working with records requires Java 17 or above.
+Works well with Java 21 and Java 25 too (mentioning only LTS releases)
+
+## Maven
+
+### Maven Classic
+
+Add the required dependencies for basic immutable object generation:
+
+- <a href={`${depUri}/value/${v}`}>org.immutables:value:{v}</a>
+  + Compile-only annotation processing tool. All in one artifact: annotations, processor with no external dependencies.
+
+Snippet of Maven dependencies:
+
+<Code lang="xml" code={`
+<dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>value</artifactId>
+    <version>${v}</version>
+    <scope>provided</scope>
+</dependency>`
+} />
+
+In Maven, the dependency can be declared in the "provided" scope, or made "optional". The artifact is not required at runtime; it is compile-only dependency.
+
+This way of working with annotation processing may be deprecated or not work in the future, and
+it doesn't work with Java Module System.
+
+### Maven Modern
+
+Currently, proper, "modern" way is to configure annotation processing using `annotationProcessorPaths`
+and put on the regular dependency classpath only annotations or runtime support jars.
+
+- <a href={`${depUri}/value-annotations/${v}`}>org.immutables:value-annotations:{v}</a>
+  + Compile-only annotations. Reference those in your sources.
+- <a href={`${depUri}/value/${v}`}>org.immutables:value:{v}</a>
+  + Annotation processing tool, all in one artifact: processor with no external dependencies. Classes from this jar are not referenced from the source code.
+
+<Code lang="xml" code={`
+<properties>
+   <immutables.version>${v}</immutables.version>
+</properties>
+`}/>
+
+```xml
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.14.0</version>
+      <configuration>
+        <release>21</release>
+        <!-- Explicit annotation processor path -->
+        <annotationProcessorPaths>
+          <path>
+            <groupId>org.immutables</groupId>
+            <artifactId>value</artifactId> <!-- contains the annotation processor -->
+            <version>${immutables.version}</version>
+          </path>
+        </annotationProcessorPaths>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
+<dependencies>
+  <!-- Only the annotations/API go on the normal compile classpath -->
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>value-annotations</artifactId>
+    <version>${immutables.version}</version>
+    <scope>provided</scope> <!-- compile only -->
+  </dependency>
+</dependencies>
+```
+
+Annotations and processor jar should be at the same version, compilation might fail if not.
+
+### Also Maven BOM
+
+If you are using multiple dependencies like `org.immutables:serial`, `org.immutables:builder`, `org.immutables:datatype` etc., you can import the bill of materials (BoM) in your dependency management and go without specifying the version of the dependency individually:
+
+<Code lang="xml" code={`
+<dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.immutables</groupId>
+        <artifactId>bom</artifactId>
+        <version>${v}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+</dependencyManagement>
+`} />
+
+Then just use dependencies, all automatically aligned to the same version
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>value-annotations</artifactId>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>serial</artifactId>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.immutables</groupId>
+    <artifactId>gson</artifactId>
+  </dependency>
+</dependencies>
+```
+
+JIC Here's [Reference of all modules](/modules.html)
+
+## Gradle
+
+Gradle seems to settle nowadays on just using proper builtin scopes
+
+```groovy
+dependencies {
+  annotationProcessor "org.immutables:value:$versionImmutables"
+  compileOnly "org.immutables:value-annotations:$versionImmutables"
+}
+```
+
+where `versionImmutables` comes from `gradle.properties` or just a variable in build script.
+You can use `libs.` or TOML file, or whatever approach to managing libraries and versions
+you might like, that was just an example.
+
+## Create immutable object
+
+Assuming that required dependencies were added, create an abstract class with abstract accessor methods.
+You can do the same by annotating with interfaces or even annotations (`@interface`):
+
+```java
+package info.sample;
+
+import java.util.List;
+import java.util.Set;
+import org.immutables.value.Value;
+
+@Value.Immutable
+public abstract class FoobarValue {
+  public abstract int foo();
+  public abstract String bar();
+  public abstract List<Integer> buz();
+  public abstract Set<Long> crux();
+}
+```
+
+It is now possible to generate and then use the generated immutable implementation:
+
+```java
+package info.sample;
+
+import java.util.List;
+
+public class FoobarValueMain {
+  public static void main(String... args) {
+    FoobarValue value = ImmutableFoobarValue.builder()
+        .foo(2)
+        .bar("Bar")
+        .addBuz(1, 3, 4)
+        .build(); // FoobarValue{foo=2, bar=Bar, buz=[1, 3, 4], crux={}}
+
+    int foo = value.foo(); // 2
+
+    List<Integer> buz = value.buz(); // ImmutableList.of(1, 3, 4)
+  }
+}
+```
+
+Congratulations! You're done!
+See the sample [generated code](/generated.html) for an example of what kind of code is being generated by the processor.
+
+Even basic immutable class generation has a lot more tricks to show. Check out the [Classic guide](/immutable.html)!
+Or [New & Nice](/newandnice.html) for something new and... nice!
+
+## Compilers and IDE
+
+The _Immutables_ annotation processor runs under any Java build tool that uses `javac` as compiler backend (assuming that annotation processing is not disabled in build tool configuration).
+The _Eclipse JDT compiler_ (ECJ) also supports this annotation processor.
+Some advanced workarounds (read hacks to overcome limitations or compiler bugs) may work or not work
+depending on compiler and build tool, but those are mostly advanced or corner cases.
+
+Gradle or Maven plugins should make it integratable in IDE, but here's a bit rusty,
+but still relatively valid guide (with pictures) on manually configuring annotation processing in IDEs [Using annotation processor in IDE](/apt.html).
+
+
+<a name="troubleshooting"></a>
+## Troubleshooting
+
+<div class="headsup">
+Troobleshooting section moved to a separate page: [Troobleshooting](/troubleshooting.html)
+</div>
+
+
+<div class="headsup">
+Haven't found what you looking for? You can take a look into older version of the guide: [(Legacy) Get Started!](/getlegacy.html). It may be useful for [Android configuration](/getlegacy.html#android)
+</div>
