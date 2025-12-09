@@ -521,6 +521,7 @@ footer {
   margin-bottom: 24px;
 
   a {
+    text-align: center;
     display: inline-block;
     cursor: pointer;
     font-size: 20px;
@@ -605,7 +606,7 @@ footer {
 .Content {
   text-align: left;
 
-  padding-right: -16px;
+  /*padding-right: -16px;*/
 
   &::after {
     content: '';
@@ -614,15 +615,21 @@ footer {
   }
 }
 
-@media (min-width: 430px) {
-
+@media (max-width: 430px) {
+  .LogoVersion {
+    .Logo {
+      width: 90vw !important;
+    }
+  }
 }
 
 @media (max-width: 600px) {
+  .Hero {
+    text-align: left;
+  }
   .LogoVersion {
     .Logo {
-      min-width: 200px !important;
-      min-height: 60px !important;
+      /*width: 400px !important;*/
     }
     .Stars {
       display: block;
@@ -648,7 +655,7 @@ footer {
     }
   }
   .Mart.Content,.Content {
-    min-width: 420px;
+    width: unset !important;
   }
   .Mart > article {
     display: inline-block;
@@ -668,9 +675,6 @@ footer {
     }
     .Stars {
       top: 50px;
-    }
-    .Edition {
-      display: none;
     }
   }
   .CallToAction {
@@ -697,7 +701,7 @@ footer {
     .misc {
       margin-top: 40px;
     }
-    width: 430px;
+    width: 422px;
   }
 }
 
