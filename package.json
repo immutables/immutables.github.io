@@ -10,9 +10,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^6.3.9",
-    "@astrojs/mdx": "^4.3.12",
-    "shiki": "^3.15.0",
-    "astro": "^5.15.9"
+    "@astrojs/markdown-remark": "6.3.9",
+    "@astrojs/mdx": "4.3.12",
+    "shiki": "3.19.0",
+    "astro": "5.16.4"
   }
 }

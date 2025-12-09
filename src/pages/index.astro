@@ -36,17 +36,17 @@ import GoogleTags from '../components/GoogleTags.astro'
       <div class="Edition"
           title="12 Years Since first 0.9 release in late 2013">
       </div>
+      <div class="Version">
+        <a target="_blank" title={`Current version: ${v}`}
+            href={`${depUri}/value/${v}`}>
+          <code>{v}</code>
+        </a>
+      </div>
       <div class="Stars">
         <a href="https://github.com/immutables/immutables" title="Star us on GitHub">
           <span class="Icon plain icon-star"></span>
           <span class="Icon hover icon-github"></span>
           <code>3.5K</code>
-        </a>
-      </div>
-      <div class="Version">
-        <a target="_blank" title={`Current version: ${v}`}
-            href={`${depUri}/value/${v}`}>
-          <code>{v}</code>
         </a>
       </div>
     </div>
