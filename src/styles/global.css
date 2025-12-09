@@ -365,6 +365,7 @@ footer {
   height: 24px;
   line-height: 24px;
 
+  text-align: center;
   border: 2px solid var(--color-text);
   border-radius: 3px;
 
@@ -404,6 +405,7 @@ footer {
   position: absolute;
   line-height: 24px;
   width: 76px;
+  text-align: center;
 
   code {
     font-size: 20px;
@@ -626,6 +628,10 @@ footer {
 @media (max-width: 600px) {
   .Hero {
     text-align: left;
+  }
+  .Subtitle {
+    transform: none;
+    font-size: 12px;
   }
   .LogoVersion {
     .Logo {
