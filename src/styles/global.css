@@ -34,12 +34,12 @@ html {
   font-family: "Helvetica", Arial, sans-serif;
   font-size: 16px;
 
-  background-color: var(--color-contrast);
+  background-color: var(--color-background);
+  /*background-color: var(--color-contrast);*/
 }
 
 body {
   color: var(--color-text);
-  background-color: var(--color-background);
 }
 
 html, body {
@@ -623,6 +623,12 @@ footer {
       width: 90vw !important;
     }
   }
+/*  .Content {
+    width: 90vw !important;
+  }*/
+/*  .Mart.Content article {
+    max-width: 370px;
+  }*/
 }
 
 @media (max-width: 600px) {
@@ -660,13 +666,16 @@ footer {
       width: auto;
     }
   }
-  .Mart.Content,.Content {
+  .Mart.Content {
     width: unset !important;
   }
-  .Mart > article {
+  .Guide .Content {
+    width: 420px;
+  }
+/*  .Mart > article {
     display: inline-block;
     width: unset;
-  }
+  }*/
 }
 
 @media (max-width: 1000px) {
