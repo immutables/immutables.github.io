@@ -42,6 +42,10 @@ body {
   background-color: var(--color-background);
 }
 
+html, body {
+  min-height: 100%;
+}
+
 a {
   color: #0073b3;
 
