@@ -34,8 +34,18 @@ Snippet of Maven dependencies:
 
 In Maven, the dependency can be declared in the "provided" scope, or made "optional". The artifact is not required at runtime; it is compile-only dependency.
 
-This way of working with annotation processing may be deprecated or not work in the future, and
-it doesn't work with Java Module System.
+This way of working with annotation processing is deprecated (as of JDK 22), and
+it doesn't work with Java Module System. There is workaround for JDK 22+, to use compiler arguments
+like this in `maven-compiler-plugin`.
+
+```xml
+<compilerArgs>
+  <arg>-parameters</arg>
+  <arg>-proc:full</arg>
+</compilerArgs>
+```
+
+But it's also a good idea to switch to `annotationProcessorPaths`, see below.
 
 ### Maven Modern
 
