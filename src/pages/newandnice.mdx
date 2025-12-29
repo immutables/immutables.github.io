@@ -510,7 +510,7 @@ In Maven, annotation processor options are passed via the `maven-compiler-plugin
 
 **Gradle Configuration:**
 
-In Gradle, annotation processor options are configured via the `compilerArgs` option:
+In Gradle, annotation processor options are configured via the `compilerArgs` option in `build.gradle`:
 
 ```groovy
 dependencies {
@@ -523,6 +523,22 @@ tasks.withType(JavaCompile) {
     '-Aimmutables.gradle.incremental',
     '-Aimmutables.annotation=com.example.MyImmutable'
   ]
+}
+```
+
+or in `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    annotationProcessor("org.immutables:value:2.12.0")
+    compileOnly("org.immutables:value-annotations:2.12.0")
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.compilerArgs.addAll(listOf(
+        "-Aimmutables.gradle.incremental",
+        "-Aimmutables.annotation=com.example.MyImmutable"
+    ))
 }
 ```
 
