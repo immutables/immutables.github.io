@@ -495,7 +495,7 @@ In Maven, annotation processor options are passed via the `maven-compiler-plugin
           <path>
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
-            <version>2.12.0</version>
+            <version>2.12.1</version>
           </path>
         </annotationProcessorPaths>
         <compilerArgs>
@@ -514,8 +514,8 @@ In Gradle, annotation processor options are configured via the `compilerArgs` op
 
 ```groovy
 dependencies {
-  annotationProcessor 'org.immutables:value:2.12.0'
-  compileOnly 'org.immutables:value-annotations:2.12.0'
+  annotationProcessor 'org.immutables:value:2.12.1'
+  compileOnly 'org.immutables:value-annotations:2.12.1'
 }
 
 tasks.withType(JavaCompile) {
@@ -530,8 +530,8 @@ or in `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    annotationProcessor("org.immutables:value:2.12.0")
-    compileOnly("org.immutables:value-annotations:2.12.0")
+    annotationProcessor("org.immutables:value:2.12.1")
+    compileOnly("org.immutables:value-annotations:2.12.1")
 }
 
 tasks.withType<JavaCompile>().configureEach {

@@ -797,19 +797,20 @@ Provides simplified immutable generation with sensible defaults. The [`@Data`](h
 Centralized dependency management POM ensuring version consistency across all Immutables modules.
 
 **Maven**:
-```xml
+
+<Code lang="xml" code={`
 <dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>bom</artifactId>
-      <version>2.12.0</version>
+      <version>${v}</version>
       <type>pom</type>
       <scope>import</scope>
     </dependency>
   </dependencies>
 </dependencyManagement>
-```
+`} />
 
 **Gradle**:
 ```groovy
