@@ -395,6 +395,10 @@ unimplemented/broken functionality of not providing (to annotation processors, o
 compiler tools like _CheckerFramework_) type annotations placed on arrays/elements,
 or on nested type variables. We partially work around these cases using [source access](/troubleshooting.html#source-access) for `Nullable` type annotations, any nullable annotation, as defined by simple name pattern defined by[`nullableAnnotation`](/allstyles.html#nullableAnnotation) style.
 
+_Note: source access workaround, when Immutables tries to look at the source code instead of
+relying on language elements and types model, works on `nullableAnnotation` configured, like  `@Nullable`.
+If you use fully-qualified name, it will NOT match! The parser and matcher are not quite smart there.
+
 **What works now:**
 - all type annotations propagated and `@Nullable` supported on reference and primitive types
   + Type annotation _mostly_ propagate through fields, builders, withers, and factory methods
