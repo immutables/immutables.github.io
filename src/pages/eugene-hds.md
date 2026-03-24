@@ -11,14 +11,15 @@ hardware and software components. It was shown to our investors and interested c
 Micro, Toyota, Amazon.
 
 Here's HDS team in Plainfield, IA, 2021 (IIRC)
-
-![HDS team 2021](/pix/hds-team.jpg){width=600}
-
+ 
+<img alt="HDS team 2021" src="/pix/hds-team.jpg" width=600>
 
 
 This was our first version of UI, before we've switched to 3D,
 
-![UI](/pix/robofs-ui.png){width=400}![RoboFS](/pix/robofs.png){width=400}
+<img alt="UI" src="/pix/robofs-ui.png" width=400>
+
+<img alt="RoboFS" src="/pix/robofs.png" width=400>
 
 
 
