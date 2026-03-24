@@ -12,14 +12,14 @@ Micro, Toyota, Amazon.
 
 Here's HDS team in Plainfield, IA, 2021 (IIRC)
 
-![HDS team 2021](/pix/hds-team.jpg)
+![HDS team 2021](/pix/hds-team.jpg){width=600}
 
 
 
 This was our first version of UI, before we've switched to 3D,
 
-![UI](/pix/robofs-ui.png)
+![UI](/pix/robofs-ui.png){width=400}![RoboFS](/pix/robofs.png){width=400}
 
-![RoboFS](/pix/robofs.png)
+
 
 
