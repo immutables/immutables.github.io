@@ -1,5 +1,5 @@
 ---
-title: 'Eugene Lukash, HDS'
+title: 'Eugene Lukash'
 layout: ../layouts/Guide.astro
 ---
 
