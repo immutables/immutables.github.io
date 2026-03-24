@@ -10,7 +10,7 @@ The system was put together in our Technology Center at Plainfield, IA, demonstr
 hardware and software components. It was shown to our investors and interested companies, including Ingram
 Micro, Toyota, Amazon.
 
-Here's HDS team in Plainfield, IA, 2021 (IIRC)
+Here's HDS team in Plainfield, IA, 2022
  
 <img alt="HDS team 2021" src="/pix/hds-team.jpg" width=600>
 
