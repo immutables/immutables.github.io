@@ -13,6 +13,6 @@
     "@astrojs/markdown-remark": "6.3.9",
     "@astrojs/mdx": "4.3.12",
     "shiki": "3.19.0",
-    "astro": "5.16.4"
+    "astro": "5.18.1"
   }
 }
