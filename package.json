@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@astrojs/markdown-remark": "6.3.9",
-    "@astrojs/mdx": "5.0.5",
+    "@astrojs/mdx": "5.0.6",
     "shiki": "3.19.0",
-    "astro": "6.3.2"
+    "astro": "6.3.3"
   }
 }
