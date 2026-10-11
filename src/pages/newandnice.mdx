@@ -406,6 +406,7 @@ If you use fully-qualified name, it will NOT match! The parser and matcher are n
 - `@Nullable` type annotation supported on type variables (`@Nullable V value()`)
 - `@Nullable` type annotation on array types (e.g., `String @Nullable []` vs `@Nullable String[]`)
 - `@Nullable` on collection elements, which are reference types (not type vars, `List<@Nullable String> list()`)
+- Since 2.12.3, `TYPE_USE` annotations on nested type arguments and wildcard bounds are correctly retained (e.g., `Map.Entry<String, ? extends @Nullable Object>`)
 
 ```java
 @NullMarked // JSpecify nullable
@@ -450,6 +451,7 @@ Starting with version 2.12.0, Immutables fully supports Jackson 3.x serializatio
 - All Jackson annotations (`@JsonProperty`, `@JsonCreator`, etc.) are supported in both versions
 - Immutables detects which version of Jackson is on your classpath and generates compatible code
 - No migration required - your existing Jackson 2.x code continues to work
+- Since 2.12.3, Jackson 3 `@JsonSerialize`/`@JsonDeserialize` meta-annotations (e.g. on custom style annotations or in `package-info.java`) are properly recognized
 
 **Example:**
 ```java

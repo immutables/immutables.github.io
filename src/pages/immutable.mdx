@@ -387,6 +387,28 @@ HostWithPort hostWithPort = ImmutableHostWithPort.of("localhost", 8081);
 
 If you want to automatically turn all attributes into parameters to generate constructor, you could use styles for that, see [tuple style](#tuples) pattern.
 
+#### Optional trailing parameters (Experimental)
+
+Since 2.12.3, `@Value.Parameter(optional = true)` can be used on trailing parameters to generate
+telescoping `of()` factory method overloads. Optional parameters must be at the end of the parameter list and must have a default value (via `@Value.Default`) or be nullable.
+
+```java
+@Value.Immutable
+public abstract class Connection {
+  @Value.Parameter
+  public abstract String host();
+  @Value.Parameter(optional = true)
+  @Value.Default
+  public int port() { return 8080; }
+}
+...
+// Both are valid
+Connection c1 = ImmutableConnection.of("localhost", 3000);
+Connection c2 = ImmutableConnection.of("localhost"); // port defaults to 8080
+```
+
+When multiple trailing parameters are marked as optional, a set of factory methods is generated, each dropping one optional parameter from the end.
+
 #### Plain public constructor
 
 If there's a need for plain public constructor instead of the factory method we can achieve it using [styles](style.html) by "renaming" `of` method to `new`:
